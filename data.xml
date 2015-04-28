@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE Map[]>
+<Map srs="+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over">
+
+<Parameters>
+  <Parameter name="center">9.5526,47.1575,11</Parameter>
+  <Parameter name="format">pbf</Parameter>
+  <Parameter name="json"><![CDATA[{"vector_layers":[{"id":"Admin","description":"","fields":{"osm_id":"Number","access":"String","addr:housename":"String","addr:housenumber":"String","addr:interpolation":"String","admin_level":"String","aerialway":"String","aeroway":"String","amenity":"String","area":"String","barrier":"String","bicycle":"String","brand":"String","bridge":"String","boundary":"String","building":"String","construction":"String","covered":"String","culvert":"String","cutting":"String","denomination":"String","disused":"String","embankment":"String","foot":"String","generator:source":"String","harbour":"String","highway":"String","historic":"String","horse":"String","intermittent":"String","junction":"String","landuse":"String","layer":"String","leisure":"String","lock":"String","man_made":"String","military":"String","motorcar":"String","name":"String","natural":"String","office":"String","oneway":"String","operator":"String","place":"String","population":"String","power":"String","power_source":"String","public_transport":"String","railway":"String","ref":"String","religion":"String","route":"String","service":"String","shop":"String","sport":"String","surface":"String","toll":"String","tourism":"String","tower:type":"String","tracktype":"String","tunnel":"String","water":"String","waterway":"String","wetland":"String","width":"String","wood":"String","z_order":"Number","way_area":"Number"}},{"id":"planet_osm_roads","description":"","fields":{"osm_id":"Number","access":"String","addr:housename":"String","addr:housenumber":"String","addr:interpolation":"String","admin_level":"String","aerialway":"String","aeroway":"String","amenity":"String","area":"String","barrier":"String","bicycle":"String","brand":"String","bridge":"String","boundary":"String","building":"String","construction":"String","covered":"String","culvert":"String","cutting":"String","denomination":"String","disused":"String","embankment":"String","foot":"String","generator:source":"String","harbour":"String","highway":"String","historic":"String","horse":"String","intermittent":"String","junction":"String","landuse":"String","layer":"String","leisure":"String","lock":"String","man_made":"String","military":"String","motorcar":"String","name":"String","natural":"String","office":"String","oneway":"String","operator":"String","place":"String","population":"String","power":"String","power_source":"String","public_transport":"String","railway":"String","ref":"String","religion":"String","route":"String","service":"String","shop":"String","sport":"String","surface":"String","toll":"String","tourism":"String","tower:type":"String","tracktype":"String","tunnel":"String","water":"String","waterway":"String","wetland":"String","width":"String","wood":"String","z_order":"Number","way_area":"Number"}},{"id":"planet_osm_line","description":"","fields":{"osm_id":"Number","access":"String","addr:housename":"String","addr:housenumber":"String","addr:interpolation":"String","admin_level":"String","aerialway":"String","aeroway":"String","amenity":"String","area":"String","barrier":"String","bicycle":"String","brand":"String","bridge":"String","boundary":"String","building":"String","construction":"String","covered":"String","culvert":"String","cutting":"String","denomination":"String","disused":"String","embankment":"String","foot":"String","generator:source":"String","harbour":"String","highway":"String","historic":"String","horse":"String","intermittent":"String","junction":"String","landuse":"String","layer":"String","leisure":"String","lock":"String","man_made":"String","military":"String","motorcar":"String","name":"String","natural":"String","office":"String","oneway":"String","operator":"String","place":"String","population":"String","power":"String","power_source":"String","public_transport":"String","railway":"String","ref":"String","religion":"String","route":"String","service":"String","shop":"String","sport":"String","surface":"String","toll":"String","tourism":"String","tower:type":"String","tracktype":"String","tunnel":"String","water":"String","waterway":"String","wetland":"String","width":"String","wood":"String","z_order":"Number","way_area":"Number"}},{"id":"planet_osm_point","description":"","fields":{"osm_id":"Number","access":"String","addr:housename":"String","addr:housenumber":"String","addr:interpolation":"String","admin_level":"String","aerialway":"String","aeroway":"String","amenity":"String","area":"String","barrier":"String","bicycle":"String","brand":"String","bridge":"String","boundary":"String","building":"String","capital":"String","construction":"String","covered":"String","culvert":"String","cutting":"String","denomination":"String","disused":"String","ele":"String","embankment":"String","foot":"String","generator:source":"String","harbour":"String","highway":"String","historic":"String","horse":"String","intermittent":"String","junction":"String","landuse":"String","layer":"String","leisure":"String","lock":"String","man_made":"String","military":"String","motorcar":"String","name":"String","natural":"String","office":"String","oneway":"String","operator":"String","place":"String","poi":"String","population":"String","power":"String","power_source":"String","public_transport":"String","railway":"String","ref":"String","religion":"String","route":"String","service":"String","shop":"String","sport":"String","surface":"String","toll":"String","tourism":"String","tower:type":"String","tunnel":"String","water":"String","waterway":"String","wetland":"String","width":"String","wood":"String","z_order":"Number"}},{"id":"planet_osm_polygon","description":"","fields":{"osm_id":"Number","access":"String","addr:housename":"String","addr:housenumber":"String","addr:interpolation":"String","admin_level":"String","aerialway":"String","aeroway":"String","amenity":"String","area":"String","barrier":"String","bicycle":"String","brand":"String","bridge":"String","boundary":"String","building":"String","construction":"String","covered":"String","culvert":"String","cutting":"String","denomination":"String","disused":"String","embankment":"String","foot":"String","generator:source":"String","harbour":"String","highway":"String","historic":"String","horse":"String","intermittent":"String","junction":"String","landuse":"String","layer":"String","leisure":"String","lock":"String","man_made":"String","military":"String","motorcar":"String","name":"String","natural":"String","office":"String","oneway":"String","operator":"String","place":"String","population":"String","power":"String","power_source":"String","public_transport":"String","railway":"String","ref":"String","religion":"String","route":"String","service":"String","shop":"String","sport":"String","surface":"String","toll":"String","tourism":"String","tower:type":"String","tracktype":"String","tunnel":"String","water":"String","waterway":"String","wetland":"String","width":"String","wood":"String","z_order":"Number","way_area":"Number"}}]}]]></Parameter>
+  <Parameter name="maxzoom">13</Parameter>
+  <Parameter name="minzoom">4</Parameter>
+  <Parameter name="name"><![CDATA[lightenstein]]></Parameter>
+</Parameters>
+
+
+<Layer name="Admin"
+  buffer-size="8"
+  srs="+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over">
+    
+    <Datasource>
+       <Parameter name="dbname"><![CDATA[gis]]></Parameter>
+       <Parameter name="extent"><![CDATA[-20037508.34,-20037508.34,20037508.34,20037508.34]]></Parameter>
+       <Parameter name="geometry_field"><![CDATA[]]></Parameter>
+       <Parameter name="geometry_table"><![CDATA[]]></Parameter>
+       <Parameter name="host"><![CDATA[]]></Parameter>
+       <Parameter name="key_field"><![CDATA[]]></Parameter>
+       <Parameter name="max_size"><![CDATA[512]]></Parameter>
+       <Parameter name="password"><![CDATA[]]></Parameter>
+       <Parameter name="port"><![CDATA[]]></Parameter>
+       <Parameter name="table"><![CDATA[(select * from planet_osm_polygon where boundary='administrative') Admin]]></Parameter>
+       <Parameter name="type"><![CDATA[postgis]]></Parameter>
+       <Parameter name="user"><![CDATA[]]></Parameter>
+    </Datasource>
+  </Layer>
+
+<Layer name="planet_osm_roads"
+  buffer-size="8"
+  srs="+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over">
+    
+    <Datasource>
+       <Parameter name="dbname"><![CDATA[gis]]></Parameter>
+       <Parameter name="extent"><![CDATA[-20037508.34,-20037508.34,20037508.34,20037508.34]]></Parameter>
+       <Parameter name="geometry_field"><![CDATA[]]></Parameter>
+       <Parameter name="geometry_table"><![CDATA[]]></Parameter>
+       <Parameter name="host"><![CDATA[]]></Parameter>
+       <Parameter name="key_field"><![CDATA[]]></Parameter>
+       <Parameter name="max_size"><![CDATA[512]]></Parameter>
+       <Parameter name="password"><![CDATA[]]></Parameter>
+       <Parameter name="port"><![CDATA[]]></Parameter>
+       <Parameter name="table"><![CDATA[planet_osm_roads]]></Parameter>
+       <Parameter name="type"><![CDATA[postgis]]></Parameter>
+       <Parameter name="user"><![CDATA[]]></Parameter>
+    </Datasource>
+  </Layer>
+
+<Layer name="planet_osm_line"
+  buffer-size="8"
+  srs="+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over">
+    
+    <Datasource>
+       <Parameter name="dbname"><![CDATA[gis]]></Parameter>
+       <Parameter name="extent"><![CDATA[-20037508.34,-20037508.34,20037508.34,20037508.34]]></Parameter>
+       <Parameter name="geometry_field"><![CDATA[]]></Parameter>
+       <Parameter name="geometry_table"><![CDATA[]]></Parameter>
+       <Parameter name="host"><![CDATA[]]></Parameter>
+       <Parameter name="key_field"><![CDATA[]]></Parameter>
+       <Parameter name="max_size"><![CDATA[512]]></Parameter>
+       <Parameter name="password"><![CDATA[]]></Parameter>
+       <Parameter name="port"><![CDATA[]]></Parameter>
+       <Parameter name="table"><![CDATA[planet_osm_line]]></Parameter>
+       <Parameter name="type"><![CDATA[postgis]]></Parameter>
+       <Parameter name="user"><![CDATA[]]></Parameter>
+    </Datasource>
+  </Layer>
+
+<Layer name="planet_osm_point"
+  buffer-size="8"
+  srs="+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over">
+    
+    <Datasource>
+       <Parameter name="dbname"><![CDATA[gis]]></Parameter>
+       <Parameter name="extent"><![CDATA[-20037508.34,-20037508.34,20037508.34,20037508.34]]></Parameter>
+       <Parameter name="geometry_field"><![CDATA[]]></Parameter>
+       <Parameter name="geometry_table"><![CDATA[]]></Parameter>
+       <Parameter name="host"><![CDATA[]]></Parameter>
+       <Parameter name="key_field"><![CDATA[]]></Parameter>
+       <Parameter name="max_size"><![CDATA[512]]></Parameter>
+       <Parameter name="password"><![CDATA[]]></Parameter>
+       <Parameter name="port"><![CDATA[]]></Parameter>
+       <Parameter name="table"><![CDATA[planet_osm_point]]></Parameter>
+       <Parameter name="type"><![CDATA[postgis]]></Parameter>
+       <Parameter name="user"><![CDATA[]]></Parameter>
+    </Datasource>
+  </Layer>
+
+<Layer name="planet_osm_polygon"
+  buffer-size="8"
+  srs="+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over">
+    
+    <Datasource>
+       <Parameter name="dbname"><![CDATA[gis]]></Parameter>
+       <Parameter name="extent"><![CDATA[-20037508.34,-20037508.34,20037508.34,20037508.34]]></Parameter>
+       <Parameter name="geometry_field"><![CDATA[]]></Parameter>
+       <Parameter name="geometry_table"><![CDATA[]]></Parameter>
+       <Parameter name="host"><![CDATA[]]></Parameter>
+       <Parameter name="key_field"><![CDATA[]]></Parameter>
+       <Parameter name="max_size"><![CDATA[512]]></Parameter>
+       <Parameter name="password"><![CDATA[]]></Parameter>
+       <Parameter name="port"><![CDATA[]]></Parameter>
+       <Parameter name="table"><![CDATA[planet_osm_polygon]]></Parameter>
+       <Parameter name="type"><![CDATA[postgis]]></Parameter>
+       <Parameter name="user"><![CDATA[]]></Parameter>
+    </Datasource>
+  </Layer>
+
+</Map>
