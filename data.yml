@@ -1,17 +1,21 @@
 _prefs: 
-  disabled: []
+  disabled: 
+    - planet_osm_polygon
+    - planet_osm_point
+    - planet_osm_line
+    - planet_osm_roads
   inspector: false
   mapid: ''
   rev: ''
   saveCenter: true
 attribution: ''
 center: 
-  - 9.5526
-  - 47.1575
-  - 11
+  - 9.5763
+  - 47.1092
+  - 13
 description: ''
 Layer: 
-  - id: Admin
+  - id: waterway
     Datasource: 
       dbname: gis
       extent: -20037508.34,-20037508.34,20037508.34,20037508.34
@@ -22,79 +26,53 @@ Layer:
       max_size: 512
       password: ''
       port: ''
-      table: (select * from planet_osm_polygon where boundary='administrative') Admin
+      table: (select waterway AS class, width, z_order, way from planet_osm_line where waterway is not null AND way && !bbox!) waterway
       type: postgis
       user: ''
     description: ''
     fields: 
-      access: String
-      "addr:housename": String
-      "addr:housenumber": String
-      "addr:interpolation": String
-      admin_level: String
-      aerialway: String
-      aeroway: String
-      amenity: String
-      area: String
-      barrier: String
-      bicycle: String
-      boundary: String
-      brand: String
-      bridge: String
-      building: String
-      construction: String
-      covered: String
-      culvert: String
-      cutting: String
-      denomination: String
-      disused: String
-      embankment: String
-      foot: String
-      "generator:source": String
-      harbour: String
-      highway: String
-      historic: String
-      horse: String
-      intermittent: String
-      junction: String
-      landuse: String
-      layer: String
-      leisure: String
-      lock: String
-      man_made: String
-      military: String
-      motorcar: String
-      name: String
-      natural: String
-      office: String
-      oneway: String
-      operator: String
-      osm_id: Number
-      place: String
-      population: String
-      power: String
-      power_source: String
-      public_transport: String
-      railway: String
-      ref: String
-      religion: String
-      route: String
-      service: String
-      shop: String
-      sport: String
-      surface: String
-      toll: String
-      tourism: String
-      "tower:type": String
-      tracktype: String
-      tunnel: String
-      water: String
-      waterway: String
-      way_area: Number
-      wetland: String
+      class: String
       width: String
-      wood: String
       z_order: Number
+    properties: 
+      "buffer-size": 8
+    srs: +proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over
+  - id: water
+    Datasource: 
+      dbname: gis
+      extent: -20037508.34,-20037508.34,20037508.34,20037508.34
+      geometry_field: ''
+      geometry_table: ''
+      host: ''
+      key_field: ''
+      max_size: 512
+      password: ''
+      port: ''
+      table: (select way from planet_osm_polygon p where p.natural = 'water' AND way && !bbox!) water
+      type: postgis
+      user: ''
+    description: ''
+    fields: {}
+    properties: 
+      "buffer-size": 8
+    srs: +proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over
+  - id: admin
+    Datasource: 
+      dbname: gis
+      extent: -20037508.34,-20037508.34,20037508.34,20037508.34
+      geometry_field: ''
+      geometry_table: ''
+      host: ''
+      key_field: ''
+      max_size: 512
+      password: ''
+      port: ''
+      table: (select admin_level,way from planet_osm_polygon where boundary='administrative' AND way && !bbox!) admin
+      type: postgis
+      user: ''
+    description: ''
+    fields: 
+      admin_level: String
     properties: 
       "buffer-size": 8
     srs: +proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over
@@ -449,4 +427,4 @@ Layer:
     srs: +proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over
 maxzoom: 13
 minzoom: 4
-name: lightenstein
+name: osm2pgsql-osm-bright
