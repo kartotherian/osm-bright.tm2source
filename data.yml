@@ -6,9 +6,9 @@ _prefs:
   saveCenter: true
 attribution: ''
 center: 
-  - 6.0974
-  - 49.7043
-  - 11
+  - 6.1359
+  - 49.7977
+  - 10
 description: ''
 Layer: 
   - id: bridge
@@ -64,7 +64,15 @@ Layer:
       max_size: 512
       password: ''
       port: ''
-      table: (select landuse AS class, z_order, way from planet_osm_polygon where landuse is not null AND way && !bbox!) landuse
+      table: |-
+        (SELECT landuse AS class, z_order, way
+          FROM planet_osm_polygon
+          WHERE
+            landuse is not null
+            AND landuse <> 'reservoir'
+            AND landuse <> 'pond'
+            AND way && !bbox!
+        ) landuse
       type: postgis
       user: ''
     description: ''
@@ -107,7 +115,17 @@ Layer:
       max_size: 512
       password: ''
       port: ''
-      table: (select way from planet_osm_polygon p where p.natural = 'water' AND way && !bbox!) water
+      table: |-
+        (SELECT way
+          FROM planet_osm_polygon
+          WHERE
+            (
+              "natural" = 'water'
+              OR landuse = 'reservoir'
+              OR landuse = 'pond'
+            )
+            AND way && !bbox!
+        ) water
       type: postgis
       user: ''
     description: ''

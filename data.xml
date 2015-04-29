@@ -66,7 +66,14 @@
        <Parameter name="max_size"><![CDATA[512]]></Parameter>
        <Parameter name="password"><![CDATA[]]></Parameter>
        <Parameter name="port"><![CDATA[]]></Parameter>
-       <Parameter name="table"><![CDATA[(select landuse AS class, z_order, way from planet_osm_polygon where landuse is not null AND way && !bbox!) landuse]]></Parameter>
+       <Parameter name="table"><![CDATA[(SELECT landuse AS class, z_order, way
+  FROM planet_osm_polygon
+  WHERE
+    landuse is not null
+    AND landuse <> 'reservoir'
+    AND landuse <> 'pond'
+    AND way && !bbox!
+) landuse]]></Parameter>
        <Parameter name="type"><![CDATA[postgis]]></Parameter>
        <Parameter name="user"><![CDATA[]]></Parameter>
     </Datasource>
@@ -106,7 +113,16 @@
        <Parameter name="max_size"><![CDATA[512]]></Parameter>
        <Parameter name="password"><![CDATA[]]></Parameter>
        <Parameter name="port"><![CDATA[]]></Parameter>
-       <Parameter name="table"><![CDATA[(select way from planet_osm_polygon p where p.natural = 'water' AND way && !bbox!) water]]></Parameter>
+       <Parameter name="table"><![CDATA[(SELECT way
+  FROM planet_osm_polygon
+  WHERE
+    (
+      "natural" = 'water'
+      OR landuse = 'reservoir'
+      OR landuse = 'pond'
+    )
+    AND way && !bbox!
+) water]]></Parameter>
        <Parameter name="type"><![CDATA[postgis]]></Parameter>
        <Parameter name="user"><![CDATA[]]></Parameter>
     </Datasource>
