@@ -3,7 +3,7 @@
 <Map srs="+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over">
 
 <Parameters>
-  <Parameter name="center">6.0974,49.7043,11</Parameter>
+  <Parameter name="center">6.1372,49.7835,10</Parameter>
   <Parameter name="format">pbf</Parameter>
   <Parameter name="json"><![CDATA[{"vector_layers":[{"id":"bridge","description":"","fields":{"class":"String","z_order":"Number"}},{"id":"road","description":"","fields":{"class":"String","z_order":"Number"}},{"id":"landuse","description":"","fields":{"class":"String","z_order":"Number"}},{"id":"waterway","description":"","fields":{"class":"String","width":"String","z_order":"Number"}},{"id":"water","description":"","fields":{}},{"id":"admin","description":"","fields":{"admin_level":"String"}}]}]]></Parameter>
   <Parameter name="maxzoom">13</Parameter>
@@ -66,7 +66,41 @@
        <Parameter name="max_size"><![CDATA[512]]></Parameter>
        <Parameter name="password"><![CDATA[]]></Parameter>
        <Parameter name="port"><![CDATA[]]></Parameter>
-       <Parameter name="table"><![CDATA[(select landuse AS class, z_order, way from planet_osm_polygon where landuse is not null AND way && !bbox!) landuse]]></Parameter>
+       <Parameter name="table"><![CDATA[(
+SELECT landuse AS class, z_order, way
+  FROM planet_osm_polygon
+  WHERE
+    landuse IN ('cemetery', 'hospital')
+    AND z(!scale_denominator!) >= 10
+    AND way && !bbox!
+UNION ALL
+SELECT 'park' AS class, z_order, way
+  FROM planet_osm_polygon
+  WHERE
+    (
+      landuse IN ('park', 'village_green', 'playground')
+      AND z(!scale_denominator!) >= 10
+    ) OR (
+      landuse IN ('nature_reserve', 'national_reserve', 'conservation',
+              'national_park')
+      AND z(!scale_denominator!) >= 7
+    )
+    AND way && !bbox!
+UNION ALL
+SELECT 'school' AS class, z_order, way
+  FROM planet_osm_polygon
+  WHERE
+    landuse IN ('school', 'university')
+    AND z(!scale_denominator!) >= 10
+    AND way && !bbox!
+UNION ALL
+SELECT 'wood' AS class, z_order, way
+  FROM planet_osm_polygon
+  WHERE
+    landuse IN ('wood', 'forest')
+    AND z(!scale_denominator!) >= 7
+    AND way && !bbox!
+) landuse]]></Parameter>
        <Parameter name="type"><![CDATA[postgis]]></Parameter>
        <Parameter name="user"><![CDATA[]]></Parameter>
     </Datasource>
@@ -106,7 +140,16 @@
        <Parameter name="max_size"><![CDATA[512]]></Parameter>
        <Parameter name="password"><![CDATA[]]></Parameter>
        <Parameter name="port"><![CDATA[]]></Parameter>
-       <Parameter name="table"><![CDATA[(select way from planet_osm_polygon p where p.natural = 'water' AND way && !bbox!) water]]></Parameter>
+       <Parameter name="table"><![CDATA[(SELECT way
+  FROM planet_osm_polygon
+  WHERE
+    (
+      "natural" = 'water'
+      OR landuse = 'reservoir'
+      OR landuse = 'pond'
+    )
+    AND way && !bbox!
+) water]]></Parameter>
        <Parameter name="type"><![CDATA[postgis]]></Parameter>
        <Parameter name="user"><![CDATA[]]></Parameter>
     </Datasource>
