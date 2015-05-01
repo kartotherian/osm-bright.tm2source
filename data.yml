@@ -6,9 +6,9 @@ _prefs:
   saveCenter: true
 attribution: ''
 center: 
-  - 6.0651
-  - 49.7535
-  - 11
+  - 6.004
+  - 49.7476
+  - 9
 description: ''
 Layer: 
   - id: bridge
@@ -36,20 +36,128 @@ Layer:
     Datasource: 
       dbname: gis
       extent: -20037508.34,-20037508.34,20037508.34,20037508.34
-      geometry_field: ''
+      geometry_field: way
       geometry_table: ''
       host: ''
       key_field: ''
       max_size: 512
       password: ''
       port: ''
-      table: (select 'main' AS class, z_order, way from planet_osm_roads where bridge is null and tunnel is null AND way && !bbox!) road
+      table: |-
+        (
+        SELECT way, 'motorway' AS class
+          FROM  planet_osm_roads
+          WHERE
+            bridge IS NULL
+            AND tunnel IS NULL
+            AND highway IN ('motorway')
+            AND z(!scale_denominator!) >= 5
+            AND way && !bbox!
+        UNION ALL
+        SELECT way, 'motorway_link' AS class
+          FROM  planet_osm_roads
+          WHERE
+            bridge IS NULL
+            AND tunnel IS NULL
+            AND highway IN ('motorway_link')
+            AND z(!scale_denominator!) >= 13
+            AND way && !bbox!
+        UNION ALL
+        SELECT way, 'main' AS class
+          FROM  planet_osm_roads
+          WHERE
+            bridge IS NULL
+            AND tunnel IS NULL
+            AND highway IN ('primary', 'primary_link', 'trunk', 'trunk_link')
+            AND z(!scale_denominator!) >= 5
+            AND way && !bbox!
+        UNION ALL
+        SELECT way, 'main' AS class
+          FROM  planet_osm_roads
+          WHERE
+            bridge IS NULL
+            AND tunnel IS NULL
+            AND highway IN ('secondary', 'secondary_link')
+            AND z(!scale_denominator!) >= 9
+            AND way && !bbox!
+        UNION ALL
+        SELECT way, 'main' AS class
+          FROM  planet_osm_roads
+          WHERE
+            bridge IS NULL
+            AND tunnel IS NULL
+            AND highway IN ('tertiary', 'tertiary_link')
+            AND z(!scale_denominator!) >= 12
+            AND way && !bbox!
+        UNION ALL
+        SELECT way, 'street' AS class
+          FROM  planet_osm_roads
+          WHERE
+            bridge IS NULL
+            AND tunnel IS NULL
+            AND highway IN ('residential', 'unclassified', 'living_street')
+            AND z(!scale_denominator!) >= 12
+            AND way && !bbox!
+        UNION ALL
+        SELECT way, 'street_limited' AS class
+          FROM  planet_osm_roads
+          WHERE
+            bridge IS NULL
+            AND tunnel IS NULL
+            AND (highway IN ('pedestrian', 'construction') or access = 'private')
+            AND z(!scale_denominator!) >= 12
+            AND way && !bbox!
+        UNION ALL
+        SELECT way, 'service' AS class
+          FROM  planet_osm_roads
+          WHERE
+            bridge IS NULL
+            AND tunnel IS NULL
+            AND highway IN ('service', 'track')
+            AND z(!scale_denominator!) >= 15
+            AND way && !bbox!
+        UNION ALL
+        SELECT way, 'driveway' AS class
+          FROM  planet_osm_roads
+          WHERE
+            bridge IS NULL
+            AND tunnel IS NULL
+            AND highway IN ('driveway')
+            AND z(!scale_denominator!) >= 15
+            AND way && !bbox!
+        UNION ALL
+        SELECT way, 'path' AS class
+          FROM  planet_osm_roads
+          WHERE
+            bridge IS NULL
+            AND tunnel IS NULL
+            AND highway IN ('path', 'cycleway', 'ski', 'steps', 'bridleway')
+            AND z(!scale_denominator!) >= 15
+            AND way && !bbox!
+        UNION ALL
+        SELECT way, 'major_rail' AS class
+          FROM  planet_osm_roads
+          WHERE
+            bridge IS NULL
+            AND tunnel IS NULL
+            AND highway IN ('rail', 'monorail', 'narrow_gauge', 'subway', 'tram')
+            AND z(!scale_denominator!) >= 12
+            AND way && !bbox!
+        UNION ALL
+        SELECT way, 'minor_rail' AS class
+          FROM  planet_osm_roads
+          WHERE
+            bridge IS NULL
+            AND tunnel IS NULL
+            AND highway IN ('funicular', 'light_rail', 'preserved')
+            AND z(!scale_denominator!) >= 15
+            AND way && !bbox!
+        ) road
       type: postgis
       user: ''
     description: ''
     fields: 
       class: String
-      z_order: Number
     properties: 
       "buffer-size": 8
     srs: +proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over
@@ -206,6 +314,7 @@ Layer:
       port: ''
       table: |-
         (
+        SELECT DISTINCT ON(labelgrid(way, 64, 1)) * FROM(
         /* TODO calculate real ranks and ldir */
         SELECT way, osm_id, name, place AS "type",
             'SE' AS ldir, 1 AS localrank
@@ -227,7 +336,7 @@ Layer:
           FROM planet_osm_point
           WHERE
             place = 'village'
-            AND z(!scale_denominator!) >= 10
+            AND z(!scale_denominator!) >= 11
             AND way && !bbox!
         UNION ALL
         SELECT way, osm_id, name, place AS "type",
@@ -235,8 +344,9 @@ Layer:
           FROM planet_osm_point
           WHERE
             place IN ('hamlet', 'suburb','neighbourhood')
-            AND z(!scale_denominator!) >= 12
+            AND z(!scale_denominator!) >= 13
             AND way && !bbox!
+        ) data
         ) place_label
       type: postgis
       user: ''
@@ -248,7 +358,7 @@ Layer:
       osm_id: Number
       type: String
     properties: 
-      "buffer-size": 8
+      "buffer-size": 64
     srs: +proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over
   - id: country_label
     Datasource: 
