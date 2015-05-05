@@ -3,162 +3,14 @@
 <Map srs="+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over">
 
 <Parameters>
-  <Parameter name="center">6.004,49.7476,9</Parameter>
+  <Parameter name="center">6.1208,49.7977,10</Parameter>
   <Parameter name="format">pbf</Parameter>
-  <Parameter name="json"><![CDATA[{"vector_layers":[{"id":"bridge","description":"","fields":{"class":"String","z_order":"Number"}},{"id":"road","description":"","fields":{"class":"String"}},{"id":"landuse","description":"","fields":{"class":"String","z_order":"Number"}},{"id":"waterway","description":"","fields":{"class":"String","width":"String","z_order":"Number"}},{"id":"water","description":"","fields":{}},{"id":"admin","description":"","fields":{"admin_level":"String","maritime":"Number"}},{"id":"place_label","description":"","fields":{"osm_id":"Number","name":"String","type":"String","ldir":"String","localrank":"Number"}},{"id":"country_label","description":"","fields":{"name":"String","scalerank":"Number"}}]}]]></Parameter>
+  <Parameter name="json"><![CDATA[{"vector_layers":[{"id":"landuse","description":"","fields":{"class":"String","z_order":"Number"}},{"id":"waterway","description":"","fields":{"class":"String"}},{"id":"water","description":"","fields":{}},{"id":"tunnel","description":"","fields":{"class":"String"}},{"id":"road","description":"","fields":{"class":"String"}},{"id":"bridge","description":"","fields":{"class":"String"}},{"id":"admin","description":"","fields":{"admin_level":"String","maritime":"Number"}},{"id":"country_label","description":"","fields":{"name":"String","scalerank":"Number"}},{"id":"place_label","description":"","fields":{"osm_id":"Number","name":"String","type":"String","ldir":"String","localrank":"Number"}},{"id":"road_label","description":"","fields":{"name":"String","ref":"String","reflen":"Number","len":"Number","class":"String"}}]}]]></Parameter>
   <Parameter name="maxzoom">13</Parameter>
   <Parameter name="minzoom">4</Parameter>
   <Parameter name="name"><![CDATA[osm2pgsql-osm-bright]]></Parameter>
 </Parameters>
 
-
-<Layer name="bridge"
-  buffer-size="8"
-  srs="+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over">
-    
-    <Datasource>
-       <Parameter name="dbname"><![CDATA[gis]]></Parameter>
-       <Parameter name="extent"><![CDATA[-20037508.34,-20037508.34,20037508.34,20037508.34]]></Parameter>
-       <Parameter name="geometry_field"><![CDATA[]]></Parameter>
-       <Parameter name="geometry_table"><![CDATA[]]></Parameter>
-       <Parameter name="host"><![CDATA[]]></Parameter>
-       <Parameter name="key_field"><![CDATA[]]></Parameter>
-       <Parameter name="max_size"><![CDATA[512]]></Parameter>
-       <Parameter name="password"><![CDATA[]]></Parameter>
-       <Parameter name="port"><![CDATA[]]></Parameter>
-       <Parameter name="table"><![CDATA[(select 'main' AS class, z_order, way from planet_osm_roads where bridge='yes' AND way && !bbox!) bridge]]></Parameter>
-       <Parameter name="type"><![CDATA[postgis]]></Parameter>
-       <Parameter name="user"><![CDATA[]]></Parameter>
-    </Datasource>
-  </Layer>
-
-<Layer name="road"
-  buffer-size="8"
-  srs="+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over">
-    
-    <Datasource>
-       <Parameter name="dbname"><![CDATA[gis]]></Parameter>
-       <Parameter name="extent"><![CDATA[-20037508.34,-20037508.34,20037508.34,20037508.34]]></Parameter>
-       <Parameter name="geometry_field"><![CDATA[way]]></Parameter>
-       <Parameter name="geometry_table"><![CDATA[]]></Parameter>
-       <Parameter name="host"><![CDATA[]]></Parameter>
-       <Parameter name="key_field"><![CDATA[]]></Parameter>
-       <Parameter name="max_size"><![CDATA[512]]></Parameter>
-       <Parameter name="password"><![CDATA[]]></Parameter>
-       <Parameter name="port"><![CDATA[]]></Parameter>
-       <Parameter name="table"><![CDATA[(
-SELECT way, 'motorway' AS class
-  FROM  planet_osm_roads
-  WHERE
-    bridge IS NULL
-    AND tunnel IS NULL
-    AND highway IN ('motorway')
-    AND z(!scale_denominator!) >= 5
-    AND way && !bbox!
-UNION ALL
-SELECT way, 'motorway_link' AS class
-  FROM  planet_osm_roads
-  WHERE
-    bridge IS NULL
-    AND tunnel IS NULL
-    AND highway IN ('motorway_link')
-    AND z(!scale_denominator!) >= 13
-    AND way && !bbox!
-UNION ALL
-SELECT way, 'main' AS class
-  FROM  planet_osm_roads
-  WHERE
-    bridge IS NULL
-    AND tunnel IS NULL
-    AND highway IN ('primary', 'primary_link', 'trunk', 'trunk_link')
-    AND z(!scale_denominator!) >= 5
-    AND way && !bbox!
-UNION ALL
-SELECT way, 'main' AS class
-  FROM  planet_osm_roads
-  WHERE
-    bridge IS NULL
-    AND tunnel IS NULL
-    AND highway IN ('secondary', 'secondary_link')
-    AND z(!scale_denominator!) >= 9
-    AND way && !bbox!
-UNION ALL
-SELECT way, 'main' AS class
-  FROM  planet_osm_roads
-  WHERE
-    bridge IS NULL
-    AND tunnel IS NULL
-    AND highway IN ('tertiary', 'tertiary_link')
-    AND z(!scale_denominator!) >= 12
-    AND way && !bbox!
-UNION ALL
-SELECT way, 'street' AS class
-  FROM  planet_osm_roads
-  WHERE
-    bridge IS NULL
-    AND tunnel IS NULL
-    AND highway IN ('residential', 'unclassified', 'living_street')
-    AND z(!scale_denominator!) >= 12
-    AND way && !bbox!
-UNION ALL
-SELECT way, 'street_limited' AS class
-  FROM  planet_osm_roads
-  WHERE
-    bridge IS NULL
-    AND tunnel IS NULL
-    AND (highway IN ('pedestrian', 'construction') or access = 'private')
-    AND z(!scale_denominator!) >= 12
-    AND way && !bbox!
-UNION ALL
-SELECT way, 'service' AS class
-  FROM  planet_osm_roads
-  WHERE
-    bridge IS NULL
-    AND tunnel IS NULL
-    AND highway IN ('service', 'track')
-    AND z(!scale_denominator!) >= 15
-    AND way && !bbox!
-UNION ALL
-SELECT way, 'driveway' AS class
-  FROM  planet_osm_roads
-  WHERE
-    bridge IS NULL
-    AND tunnel IS NULL
-    AND highway IN ('driveway')
-    AND z(!scale_denominator!) >= 15
-    AND way && !bbox!
-UNION ALL
-SELECT way, 'path' AS class
-  FROM  planet_osm_roads
-  WHERE
-    bridge IS NULL
-    AND tunnel IS NULL
-    AND highway IN ('path', 'cycleway', 'ski', 'steps', 'bridleway')
-    AND z(!scale_denominator!) >= 15
-    AND way && !bbox!
-UNION ALL
-SELECT way, 'major_rail' AS class
-  FROM  planet_osm_roads
-  WHERE
-    bridge IS NULL
-    AND tunnel IS NULL
-    AND highway IN ('rail', 'monorail', 'narrow_gauge', 'subway', 'tram')
-    AND z(!scale_denominator!) >= 12
-    AND way && !bbox!
-UNION ALL
-SELECT way, 'minor_rail' AS class
-  FROM  planet_osm_roads
-  WHERE
-    bridge IS NULL
-    AND tunnel IS NULL
-    AND highway IN ('funicular', 'light_rail', 'preserved')
-    AND z(!scale_denominator!) >= 15
-    AND way && !bbox!
-) road]]></Parameter>
-       <Parameter name="type"><![CDATA[postgis]]></Parameter>
-       <Parameter name="user"><![CDATA[]]></Parameter>
-    </Datasource>
-  </Layer>
 
 <Layer name="landuse"
   buffer-size="8"
@@ -228,7 +80,25 @@ SELECT 'wood' AS class, z_order, way
        <Parameter name="max_size"><![CDATA[512]]></Parameter>
        <Parameter name="password"><![CDATA[]]></Parameter>
        <Parameter name="port"><![CDATA[]]></Parameter>
-       <Parameter name="table"><![CDATA[(select waterway AS class, width, z_order, way from planet_osm_line where waterway is not null AND way && !bbox!) waterway]]></Parameter>
+       <Parameter name="table"><![CDATA[(
+SELECT way, waterway AS class
+  FROM planet_osm_line
+  WHERE waterway IN ('river', 'canal')
+  AND z(!scale_denominator!) >= 8
+  AND way && !bbox!
+UNION ALL
+SELECT way, waterway AS class
+  FROM planet_osm_line
+  WHERE waterway IN ('stream', 'stream_intermittent')
+  AND z(!scale_denominator!) >= 13
+  AND way && !bbox!
+UNION ALL
+SELECT way, waterway AS class
+  FROM planet_osm_line
+  WHERE waterway IN ('drain', 'ditch')
+  AND z(!scale_denominator!) >= 15
+  AND way && !bbox!
+) waterway]]></Parameter>
        <Parameter name="type"><![CDATA[postgis]]></Parameter>
        <Parameter name="user"><![CDATA[]]></Parameter>
     </Datasource>
@@ -264,6 +134,376 @@ SELECT way
     </Datasource>
   </Layer>
 
+<Layer name="tunnel"
+  buffer-size="8"
+  srs="+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over">
+    
+    <Datasource>
+       <Parameter name="dbname"><![CDATA[gis]]></Parameter>
+       <Parameter name="extent"><![CDATA[-20037508.34,-20037508.34,20037508.34,20037508.34]]></Parameter>
+       <Parameter name="geometry_field"><![CDATA[]]></Parameter>
+       <Parameter name="geometry_table"><![CDATA[]]></Parameter>
+       <Parameter name="host"><![CDATA[]]></Parameter>
+       <Parameter name="key_field"><![CDATA[]]></Parameter>
+       <Parameter name="max_size"><![CDATA[512]]></Parameter>
+       <Parameter name="password"><![CDATA[]]></Parameter>
+       <Parameter name="port"><![CDATA[]]></Parameter>
+       <Parameter name="table"><![CDATA[(
+SELECT way, 'motorway' AS class
+  FROM  planet_osm_line
+  WHERE
+    tunnel = 'yes'
+    AND highway IN ('motorway')
+    AND z(!scale_denominator!) >= 5
+    AND way && !bbox!
+UNION ALL
+SELECT way, 'motorway_link' AS class
+  FROM  planet_osm_line
+  WHERE
+    tunnel = 'yes'
+    AND highway IN ('motorway_link')
+    AND z(!scale_denominator!) >= 13
+    AND way && !bbox!
+UNION ALL
+SELECT way, 'main' AS class
+  FROM  planet_osm_line
+  WHERE
+    tunnel = 'yes'
+    AND highway IN ('primary', 'primary_link', 'trunk', 'trunk_link')
+    AND z(!scale_denominator!) >= 5
+    AND way && !bbox!
+UNION ALL
+SELECT way, 'main' AS class
+  FROM  planet_osm_line
+  WHERE
+    tunnel = 'yes'
+    AND highway IN ('secondary', 'secondary_link')
+    AND z(!scale_denominator!) >= 9
+    AND way && !bbox!
+UNION ALL
+SELECT way, 'main' AS class
+  FROM  planet_osm_line
+  WHERE
+    tunnel = 'yes'
+    AND highway IN ('tertiary', 'tertiary_link')
+    AND z(!scale_denominator!) >= 12
+    AND way && !bbox!
+UNION ALL
+SELECT way, 'street' AS class
+  FROM  planet_osm_line
+  WHERE
+    tunnel = 'yes'
+    AND highway IN ('residential', 'unclassified', 'living_street')
+    AND z(!scale_denominator!) >= 12
+    AND way && !bbox!
+UNION ALL
+SELECT way, 'street_limited' AS class
+  FROM  planet_osm_line
+  WHERE
+    tunnel = 'yes'
+    AND (highway IN ('pedestrian', 'construction') or access = 'private')
+    AND z(!scale_denominator!) >= 12
+    AND way && !bbox!
+UNION ALL
+SELECT way, 'service' AS class
+  FROM  planet_osm_line
+  WHERE
+    tunnel = 'yes'
+    AND highway IN ('service', 'track')
+    AND z(!scale_denominator!) >= 15
+    AND way && !bbox!
+UNION ALL
+SELECT way, 'driveway' AS class
+  FROM  planet_osm_line
+  WHERE
+    tunnel = 'yes'
+    AND highway IN ('driveway')
+    AND z(!scale_denominator!) >= 15
+    AND way && !bbox!
+UNION ALL
+SELECT way, 'path' AS class
+  FROM  planet_osm_line
+  WHERE
+    tunnel = 'yes'
+    AND highway IN ('path', 'cycleway', 'ski', 'steps', 'bridleway')
+    AND z(!scale_denominator!) >= 15
+    AND way && !bbox!
+UNION ALL
+SELECT way, 'major_rail' AS class
+  FROM  planet_osm_line
+  WHERE
+    tunnel = 'yes'
+    AND highway IN ('rail', 'monorail', 'narrow_gauge', 'subway', 'tram')
+    AND z(!scale_denominator!) >= 12
+    AND way && !bbox!
+UNION ALL
+SELECT way, 'minor_rail' AS class
+  FROM  planet_osm_line
+  WHERE
+    tunnel = 'yes'
+    AND highway IN ('funicular', 'light_rail', 'preserved')
+    AND z(!scale_denominator!) >= 15
+    AND way && !bbox!
+) tunnel]]></Parameter>
+       <Parameter name="type"><![CDATA[postgis]]></Parameter>
+       <Parameter name="user"><![CDATA[]]></Parameter>
+    </Datasource>
+  </Layer>
+
+<Layer name="road"
+  buffer-size="8"
+  srs="+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over">
+    
+    <Datasource>
+       <Parameter name="dbname"><![CDATA[gis]]></Parameter>
+       <Parameter name="extent"><![CDATA[-20037508.34,-20037508.34,20037508.34,20037508.34]]></Parameter>
+       <Parameter name="geometry_field"><![CDATA[way]]></Parameter>
+       <Parameter name="geometry_table"><![CDATA[]]></Parameter>
+       <Parameter name="host"><![CDATA[]]></Parameter>
+       <Parameter name="key_field"><![CDATA[]]></Parameter>
+       <Parameter name="max_size"><![CDATA[512]]></Parameter>
+       <Parameter name="password"><![CDATA[]]></Parameter>
+       <Parameter name="port"><![CDATA[]]></Parameter>
+       <Parameter name="table"><![CDATA[(
+SELECT way, 'motorway' AS class
+  FROM  planet_osm_line
+  WHERE
+    bridge IS NULL
+    AND tunnel IS NULL
+    AND highway IN ('motorway')
+    AND z(!scale_denominator!) >= 5
+    AND way && !bbox!
+UNION ALL
+SELECT way, 'motorway_link' AS class
+  FROM  planet_osm_line
+  WHERE
+    bridge IS NULL
+    AND tunnel IS NULL
+    AND highway IN ('motorway_link')
+    AND z(!scale_denominator!) >= 13
+    AND way && !bbox!
+UNION ALL
+SELECT way, 'main' AS class
+  FROM  planet_osm_line
+  WHERE
+    bridge IS NULL
+    AND tunnel IS NULL
+    AND highway IN ('primary', 'primary_link', 'trunk', 'trunk_link')
+    AND z(!scale_denominator!) >= 5
+    AND way && !bbox!
+UNION ALL
+SELECT way, 'main' AS class
+  FROM  planet_osm_line
+  WHERE
+    bridge IS NULL
+    AND tunnel IS NULL
+    AND highway IN ('secondary', 'secondary_link')
+    AND z(!scale_denominator!) >= 9
+    AND way && !bbox!
+UNION ALL
+SELECT way, 'main' AS class
+  FROM  planet_osm_line
+  WHERE
+    bridge IS NULL
+    AND tunnel IS NULL
+    AND highway IN ('tertiary', 'tertiary_link')
+    AND z(!scale_denominator!) >= 12
+    AND way && !bbox!
+UNION ALL
+SELECT way, 'street' AS class
+  FROM  planet_osm_line
+  WHERE
+    bridge IS NULL
+    AND tunnel IS NULL
+    AND highway IN ('residential', 'unclassified', 'living_street')
+    AND z(!scale_denominator!) >= 12
+    AND way && !bbox!
+UNION ALL
+SELECT way, 'street' AS class
+  FROM  planet_osm_line
+  WHERE
+    bridge IS NULL
+    AND tunnel IS NULL
+    AND highway IN ('residential', 'unclassified', 'living_street')
+    AND z(!scale_denominator!) >= 12
+    AND way && !bbox!
+UNION ALL
+SELECT way, 'street_limited' AS class
+  FROM  planet_osm_line
+  WHERE
+    bridge IS NULL
+    AND tunnel IS NULL
+    AND (highway IN ('pedestrian', 'construction') or access = 'private')
+    AND z(!scale_denominator!) >= 12
+    AND way && !bbox!
+UNION ALL
+SELECT way, 'service' AS class
+  FROM  planet_osm_line
+  WHERE
+    bridge IS NULL
+    AND tunnel IS NULL
+    AND highway IN ('service', 'track')
+    AND z(!scale_denominator!) >= 15
+    AND way && !bbox!
+UNION ALL
+SELECT way, 'driveway' AS class
+  FROM  planet_osm_line
+  WHERE
+    bridge IS NULL
+    AND tunnel IS NULL
+    AND highway IN ('driveway')
+    AND z(!scale_denominator!) >= 15
+    AND way && !bbox!
+UNION ALL
+SELECT way, 'path' AS class
+  FROM  planet_osm_line
+  WHERE
+    bridge IS NULL
+    AND tunnel IS NULL
+    AND highway IN ('path', 'cycleway', 'ski', 'steps', 'bridleway')
+    AND z(!scale_denominator!) >= 15
+    AND way && !bbox!
+UNION ALL
+SELECT way, 'major_rail' AS class
+  FROM  planet_osm_line
+  WHERE
+    bridge IS NULL
+    AND tunnel IS NULL
+    AND railway IN ('rail', 'monorail', 'narrow_gauge', 'subway', 'tram')
+    AND z(!scale_denominator!) >= 12
+    AND way && !bbox!
+UNION ALL
+SELECT way, 'minor_rail' AS class
+  FROM  planet_osm_line
+  WHERE
+    bridge IS NULL
+    AND tunnel IS NULL
+    AND railway IN ('funicular', 'light_rail', 'preserved')
+    AND z(!scale_denominator!) >= 15
+    AND way && !bbox!
+) road
+]]></Parameter>
+       <Parameter name="type"><![CDATA[postgis]]></Parameter>
+       <Parameter name="user"><![CDATA[]]></Parameter>
+    </Datasource>
+  </Layer>
+
+<Layer name="bridge"
+  buffer-size="8"
+  srs="+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over">
+    
+    <Datasource>
+       <Parameter name="dbname"><![CDATA[gis]]></Parameter>
+       <Parameter name="extent"><![CDATA[-20037508.34,-20037508.34,20037508.34,20037508.34]]></Parameter>
+       <Parameter name="geometry_field"><![CDATA[]]></Parameter>
+       <Parameter name="geometry_table"><![CDATA[]]></Parameter>
+       <Parameter name="host"><![CDATA[]]></Parameter>
+       <Parameter name="key_field"><![CDATA[]]></Parameter>
+       <Parameter name="max_size"><![CDATA[512]]></Parameter>
+       <Parameter name="password"><![CDATA[]]></Parameter>
+       <Parameter name="port"><![CDATA[]]></Parameter>
+       <Parameter name="table"><![CDATA[(
+SELECT way, 'motorway' AS class
+  FROM  planet_osm_line
+  WHERE
+    bridge = 'yes'
+    AND highway IN ('motorway')
+    AND z(!scale_denominator!) >= 5
+    AND way && !bbox!
+UNION ALL
+SELECT way, 'motorway_link' AS class
+  FROM  planet_osm_line
+  WHERE
+    bridge = 'yes'
+    AND highway IN ('motorway_link')
+    AND z(!scale_denominator!) >= 13
+    AND way && !bbox!
+UNION ALL
+SELECT way, 'main' AS class
+  FROM  planet_osm_line
+  WHERE
+    bridge = 'yes'
+    AND highway IN ('primary', 'primary_link', 'trunk', 'trunk_link')
+    AND z(!scale_denominator!) >= 5
+    AND way && !bbox!
+UNION ALL
+SELECT way, 'main' AS class
+  FROM  planet_osm_line
+  WHERE
+    bridge = 'yes'
+    AND highway IN ('secondary', 'secondary_link')
+    AND z(!scale_denominator!) >= 9
+    AND way && !bbox!
+UNION ALL
+SELECT way, 'main' AS class
+  FROM  planet_osm_line
+  WHERE
+    bridge = 'yes'
+    AND highway IN ('tertiary', 'tertiary_link')
+    AND z(!scale_denominator!) >= 12
+    AND way && !bbox!
+UNION ALL
+SELECT way, 'street' AS class
+  FROM  planet_osm_line
+  WHERE
+    bridge = 'yes'
+    AND highway IN ('residential', 'unclassified', 'living_street')
+    AND z(!scale_denominator!) >= 12
+    AND way && !bbox!
+UNION ALL
+SELECT way, 'street_limited' AS class
+  FROM  planet_osm_line
+  WHERE
+    bridge = 'yes'
+    AND (highway IN ('pedestrian', 'construction') or access = 'private')
+    AND z(!scale_denominator!) >= 12
+    AND way && !bbox!
+UNION ALL
+SELECT way, 'service' AS class
+  FROM  planet_osm_line
+  WHERE
+    bridge = 'yes'
+    AND highway IN ('service', 'track')
+    AND z(!scale_denominator!) >= 15
+    AND way && !bbox!
+UNION ALL
+SELECT way, 'driveway' AS class
+  FROM  planet_osm_line
+  WHERE
+    bridge = 'yes'
+    AND highway IN ('driveway')
+    AND z(!scale_denominator!) >= 15
+    AND way && !bbox!
+UNION ALL
+SELECT way, 'path' AS class
+  FROM  planet_osm_line
+  WHERE
+    bridge = 'yes'
+    AND highway IN ('path', 'cycleway', 'ski', 'steps', 'bridleway')
+    AND z(!scale_denominator!) >= 15
+    AND way && !bbox!
+UNION ALL
+SELECT way, 'major_rail' AS class
+  FROM  planet_osm_line
+  WHERE
+    bridge = 'yes'
+    AND highway IN ('rail', 'monorail', 'narrow_gauge', 'subway', 'tram')
+    AND z(!scale_denominator!) >= 12
+    AND way && !bbox!
+UNION ALL
+SELECT way, 'minor_rail' AS class
+  FROM  planet_osm_line
+  WHERE
+    bridge = 'yes'
+    AND highway IN ('funicular', 'light_rail', 'preserved')
+    AND z(!scale_denominator!) >= 15
+    AND way && !bbox!
+) bridge]]></Parameter>
+       <Parameter name="type"><![CDATA[postgis]]></Parameter>
+       <Parameter name="user"><![CDATA[]]></Parameter>
+    </Datasource>
+  </Layer>
+
 <Layer name="admin"
   buffer-size="8"
   srs="+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over">
@@ -289,6 +529,39 @@ SELECT admin_level, way, 0 AS maritime
     )
     AND way && !bbox!
 ) admin]]></Parameter>
+       <Parameter name="type"><![CDATA[postgis]]></Parameter>
+       <Parameter name="user"><![CDATA[]]></Parameter>
+    </Datasource>
+  </Layer>
+
+<Layer name="country_label"
+  buffer-size="8"
+  srs="+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over">
+    
+    <Datasource>
+       <Parameter name="dbname"><![CDATA[gis]]></Parameter>
+       <Parameter name="extent"><![CDATA[-20037508.34,-20037508.34,20037508.34,20037508.34]]></Parameter>
+       <Parameter name="geometry_field"><![CDATA[]]></Parameter>
+       <Parameter name="geometry_table"><![CDATA[]]></Parameter>
+       <Parameter name="host"><![CDATA[]]></Parameter>
+       <Parameter name="key_field"><![CDATA[]]></Parameter>
+       <Parameter name="max_size"><![CDATA[512]]></Parameter>
+       <Parameter name="password"><![CDATA[]]></Parameter>
+       <Parameter name="port"><![CDATA[]]></Parameter>
+       <Parameter name="table"><![CDATA[(
+SELECT way, name, CASE
+      WHEN CAST(population AS int) >= 250000000 THEN 1
+      WHEN CAST(population AS int) >= 100000000 AND CAST(population AS int) < 250000000 THEN 2
+      WHEN CAST(population AS int) >= 50000000 AND CAST(population AS int) < 100000000 THEN 3
+      WHEN CAST(population AS int) >= 25000000 AND CAST(population AS int) < 50000000 THEN 4
+      WHEN CAST(population AS int) >= 10000000 AND CAST(population AS int) < 25000000 THEN 5
+      WHEN CAST(population AS int) < 10000000 THEN 6
+    END scalerank
+  FROM planet_osm_point
+  WHERE
+    place = 'country'
+    AND way && !bbox!
+) country_label]]></Parameter>
        <Parameter name="type"><![CDATA[postgis]]></Parameter>
        <Parameter name="user"><![CDATA[]]></Parameter>
     </Datasource>
@@ -348,7 +621,7 @@ SELECT way, osm_id, name, place AS "type",
     </Datasource>
   </Layer>
 
-<Layer name="country_label"
+<Layer name="road_label"
   buffer-size="8"
   srs="+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over">
     
@@ -363,19 +636,103 @@ SELECT way, osm_id, name, place AS "type",
        <Parameter name="password"><![CDATA[]]></Parameter>
        <Parameter name="port"><![CDATA[]]></Parameter>
        <Parameter name="table"><![CDATA[(
-SELECT way, name, CASE
-      WHEN CAST(population AS int) >= 250000000 THEN 1
-      WHEN CAST(population AS int) >= 100000000 AND CAST(population AS int) < 250000000 THEN 2
-      WHEN CAST(population AS int) >= 50000000 AND CAST(population AS int) < 100000000 THEN 3
-      WHEN CAST(population AS int) >= 25000000 AND CAST(population AS int) < 50000000 THEN 4
-      WHEN CAST(population AS int) >= 10000000 AND CAST(population AS int) < 25000000 THEN 5
-      WHEN CAST(population AS int) < 10000000 THEN 6
-    END scalerank
-  FROM planet_osm_point
+SELECT way, name, ref, char_length(ref) AS reflen,
+  ROUND(merc_length(way)) AS len, 'motorway' AS class
+  FROM planet_osm_roads
   WHERE
-    place = 'country'
+    bridge IS NULL AND tunnel IS NULL AND highway IN ('motorway')
+    AND z(!scale_denominator!) >= 5
+    AND linelabel(z(!scale_denominator!), name, way)
     AND way && !bbox!
-) country_label]]></Parameter>
+UNION ALL
+SELECT way, name, ref, char_length(ref) AS reflen,
+  ROUND(merc_length(way)) AS len, 'motorway_link' AS class
+  FROM planet_osm_roads
+  WHERE
+    bridge IS NULL AND tunnel IS NULL AND highway IN ('motorway_link')
+    AND z(!scale_denominator!) >= 13
+    AND linelabel(z(!scale_denominator!), name, way)
+    AND way && !bbox!
+UNION ALL
+SELECT way, name, ref, char_length(ref) AS reflen,
+  ROUND(merc_length(way)) AS len, 'main' AS class
+  FROM planet_osm_roads
+  WHERE
+    bridge IS NULL AND tunnel IS NULL AND highway IN ('primary',
+  'primary_link', 'trunk', 'trunk_link')
+    AND z(!scale_denominator!) >= 5
+    AND linelabel(z(!scale_denominator!), name, way)
+    AND way && !bbox!
+UNION ALL
+SELECT way, name, ref, char_length(ref) AS reflen,
+  ROUND(merc_length(way)) AS len, 'main' AS class
+  FROM planet_osm_roads
+  WHERE
+    bridge IS NULL AND tunnel IS NULL AND highway IN ('secondary',
+  'secondary_link')
+    AND z(!scale_denominator!) >= 9
+    AND linelabel(z(!scale_denominator!), name, way)
+    AND way && !bbox!
+UNION ALL
+SELECT way, name, ref, char_length(ref) AS reflen,
+  ROUND(merc_length(way)) AS len, 'main' AS class
+  FROM planet_osm_roads
+  WHERE
+    bridge IS NULL AND tunnel IS NULL AND highway IN ('tertiary',
+  'tertiary_link')
+    AND z(!scale_denominator!) >= 12
+    AND linelabel(z(!scale_denominator!), name, way)
+    AND way && !bbox!
+UNION ALL
+SELECT way, name, ref, char_length(ref) AS reflen,
+  ROUND(merc_length(way)) AS len, 'street' AS class
+  FROM planet_osm_roads
+  WHERE
+    bridge IS NULL AND tunnel IS NULL AND highway IN ('residential',
+  'unclassified', 'living_street')
+    AND z(!scale_denominator!) >= 12
+    AND linelabel(z(!scale_denominator!), name, way)
+    AND way && !bbox!
+UNION ALL
+SELECT way, name, ref, char_length(ref) AS reflen,
+  ROUND(merc_length(way)) AS len, 'street_limited' AS class
+  FROM planet_osm_roads
+  WHERE
+    bridge IS NULL AND tunnel IS NULL AND (highway IN ('pedestrian',
+  'construction') OR access = 'private')
+    AND z(!scale_denominator!) >= 12
+    AND linelabel(z(!scale_denominator!), name, way)
+    AND way && !bbox!
+UNION ALL
+SELECT way, name, ref, char_length(ref) AS reflen,
+  ROUND(merc_length(way)) AS len, 'service' AS class
+  FROM planet_osm_roads
+  WHERE
+    bridge IS NULL AND tunnel IS NULL AND highway IN ('service',
+  'track')
+    AND z(!scale_denominator!) >= 15
+    AND linelabel(z(!scale_denominator!), name, way)
+    AND way && !bbox!
+UNION ALL
+SELECT way, name, ref, char_length(ref) AS reflen,
+  ROUND(merc_length(way)) AS len, 'driveway' AS class
+  FROM planet_osm_roads
+  WHERE
+    bridge IS NULL AND tunnel IS NULL AND highway IN ('driveway')
+    AND z(!scale_denominator!) >= 15
+    AND linelabel(z(!scale_denominator!), name, way)
+    AND way && !bbox!
+UNION ALL
+SELECT way, name, ref, char_length(ref) AS reflen,
+  ROUND(merc_length(way)) AS len, 'path' AS class
+  FROM planet_osm_roads
+  WHERE
+    bridge IS NULL AND tunnel IS NULL AND highway IN ('path',
+  'cycleway', 'ski', 'steps', 'bridleway')
+    AND z(!scale_denominator!) >= 15
+    AND linelabel(z(!scale_denominator!), name, way)
+    AND way && !bbox!
+) AS road_label]]></Parameter>
        <Parameter name="type"><![CDATA[postgis]]></Parameter>
        <Parameter name="user"><![CDATA[]]></Parameter>
     </Datasource>
