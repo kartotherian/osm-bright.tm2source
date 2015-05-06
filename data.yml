@@ -6,7 +6,7 @@ _prefs:
   saveCenter: true
 attribution: ''
 center: 
-  - 6.1263
+  - 6.1304
   - 49.8056
   - 10
 description: ''
@@ -130,9 +130,15 @@ Layer:
           FROM planet_osm_polygon
           WHERE
             (
-              "natural" = 'water'
+              "natural" IN ('water', 'bay')
+              OR waterway IS NOT NULL
               OR landuse = 'reservoir'
               OR landuse = 'pond'
+            )
+            AND
+            (
+              z(!scale_denominator!) >= 14
+              OR way_area >= 5000000000 / 2.3^z(!scale_denominator!)
             )
             AND way && !bbox!
         ) water

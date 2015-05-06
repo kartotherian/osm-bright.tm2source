@@ -3,7 +3,7 @@
 <Map srs="+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over">
 
 <Parameters>
-  <Parameter name="center">6.1263,49.8056,10</Parameter>
+  <Parameter name="center">6.1304,49.8056,10</Parameter>
   <Parameter name="format">pbf</Parameter>
   <Parameter name="json"><![CDATA[{"vector_layers":[{"id":"landuse","description":"","fields":{"class":"String","z_order":"Number"}},{"id":"waterway","description":"","fields":{"class":"String"}},{"id":"water","description":"","fields":{}},{"id":"tunnel","description":"","fields":{"class":"String"}},{"id":"road","description":"","fields":{"class":"String"}},{"id":"bridge","description":"","fields":{"class":"String"}},{"id":"admin","description":"","fields":{"admin_level":"String","maritime":"Number"}},{"id":"country_label","description":"","fields":{"name":"String","scalerank":"Number"}},{"id":"place_label","description":"","fields":{"osm_id":"Number","name":"String","type":"String","ldir":"String","localrank":"Number"}},{"id":"road_label","description":"","fields":{"name":"String","ref":"String","reflen":"Number","len":"Number","class":"String"}}]}]]></Parameter>
   <Parameter name="maxzoom">13</Parameter>
@@ -130,9 +130,15 @@ SELECT way
   FROM planet_osm_polygon
   WHERE
     (
-      "natural" = 'water'
+      "natural" IN ('water', 'bay')
+      OR waterway IS NOT NULL
       OR landuse = 'reservoir'
       OR landuse = 'pond'
+    )
+    AND
+    (
+      z(!scale_denominator!) >= 14
+      OR way_area >= 5000000000 / 2.3^z(!scale_denominator!)
     )
     AND way && !bbox!
 ) water]]></Parameter>
