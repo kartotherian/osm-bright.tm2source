@@ -6,8 +6,8 @@ _prefs:
   saveCenter: true
 attribution: ''
 center: 
-  - 6.1208
-  - 49.7977
+  - 6.1263
+  - 49.8056
   - 10
 description: ''
 Layer: 
@@ -27,7 +27,7 @@ Layer:
         SELECT landuse AS class, z_order, way
           FROM planet_osm_polygon
           WHERE
-            landuse IN ('cemetery', 'hospital')
+            (landuse = 'cemetery' OR amenity = 'hospital')
             AND z(!scale_denominator!) >= 10
             AND way && !bbox!
         UNION ALL
@@ -35,11 +35,18 @@ Layer:
           FROM planet_osm_polygon
           WHERE
             (
-              landuse IN ('park', 'village_green', 'playground')
+              (
+                landuse = 'village_green'
+                OR leisure IN ('park', 'playground')
+              )
               AND z(!scale_denominator!) >= 10
             ) OR (
-              landuse IN ('nature_reserve', 'national_reserve', 'conservation',
-                      'national_park')
+              (
+                leisure IN ('national_reserve', 'nature_reserve', 'golf_course')
+                OR boundary = 'national_park'
+              )
+              -- TODO:
+              --landuse IN ('conservation')
               AND z(!scale_denominator!) >= 7
             )
             AND way && !bbox!
@@ -47,7 +54,7 @@ Layer:
         SELECT 'school' AS class, z_order, way
           FROM planet_osm_polygon
           WHERE
-            landuse IN ('school', 'university')
+            amenity IN ('school', 'university')
             AND z(!scale_denominator!) >= 10
             AND way && !bbox!
         UNION ALL
