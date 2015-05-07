@@ -566,7 +566,7 @@ Layer:
       port: ''
       table: |-
         (
-        SELECT way, name, CASE
+        SELECT way, name AS name_en, CASE
               WHEN CAST(population AS int) >= 250000000 THEN 1
               WHEN CAST(population AS int) >= 100000000 AND CAST(population AS int) < 250000000 THEN 2
               WHEN CAST(population AS int) >= 50000000 AND CAST(population AS int) < 100000000 THEN 3
@@ -583,7 +583,7 @@ Layer:
       user: ''
     description: ''
     fields: 
-      name: String
+      name_en: String
       scalerank: Number
     properties: 
       "buffer-size": 8
@@ -603,14 +603,14 @@ Layer:
         (
         SELECT DISTINCT ON(labelgrid(way, 64, 1)) * FROM(
         /* TODO calculate real ranks and ldir */
-        SELECT way, osm_id, name, place AS "type",
+        SELECT way, name AS name_en, place AS "type",
             'SE' AS ldir, 1 AS localrank
           FROM planet_osm_point
           WHERE
             place = 'city'
             AND way && !bbox!
         UNION ALL
-        SELECT way, osm_id, name, place AS "type",
+        SELECT way, name AS name_en, place AS "type",
             'SE' AS ldir, 1 AS localrank
           FROM planet_osm_point
           WHERE
@@ -618,7 +618,7 @@ Layer:
             AND z(!scale_denominator!) >= 7
             AND way && !bbox!
         UNION ALL
-        SELECT way, osm_id, name, place AS "type",
+        SELECT way, name AS name_en, place AS "type",
             'SE' AS ldir, 1 AS localrank
           FROM planet_osm_point
           WHERE
@@ -626,7 +626,7 @@ Layer:
             AND z(!scale_denominator!) >= 11
             AND way && !bbox!
         UNION ALL
-        SELECT way, osm_id, name, place AS "type",
+        SELECT way, name AS name_en, place AS "type",
             'SE' AS ldir, 1 AS localrank
           FROM planet_osm_point
           WHERE
@@ -641,8 +641,7 @@ Layer:
     fields: 
       ldir: String
       localrank: Number
-      name: String
-      osm_id: Number
+      name_en: String
       type: String
     properties: 
       "buffer-size": 64
@@ -660,7 +659,7 @@ Layer:
       port: ''
       table: |-
         (
-        SELECT way, name, ref, char_length(ref) AS reflen,
+        SELECT way, name AS name_en, ref, char_length(ref) AS reflen,
           ROUND(merc_length(way)) AS len, 'motorway' AS class
           FROM planet_osm_roads
           WHERE
@@ -669,7 +668,7 @@ Layer:
             AND linelabel(z(!scale_denominator!), name, way)
             AND way && !bbox!
         UNION ALL
-        SELECT way, name, ref, char_length(ref) AS reflen,
+        SELECT way, name AS name_en, ref, char_length(ref) AS reflen,
           ROUND(merc_length(way)) AS len, 'motorway_link' AS class
           FROM planet_osm_roads
           WHERE
@@ -678,7 +677,7 @@ Layer:
             AND linelabel(z(!scale_denominator!), name, way)
             AND way && !bbox!
         UNION ALL
-        SELECT way, name, ref, char_length(ref) AS reflen,
+        SELECT way, name AS name_en, ref, char_length(ref) AS reflen,
           ROUND(merc_length(way)) AS len, 'main' AS class
           FROM planet_osm_roads
           WHERE
@@ -688,7 +687,7 @@ Layer:
             AND linelabel(z(!scale_denominator!), name, way)
             AND way && !bbox!
         UNION ALL
-        SELECT way, name, ref, char_length(ref) AS reflen,
+        SELECT way, name AS name_en, ref, char_length(ref) AS reflen,
           ROUND(merc_length(way)) AS len, 'main' AS class
           FROM planet_osm_roads
           WHERE
@@ -698,7 +697,7 @@ Layer:
             AND linelabel(z(!scale_denominator!), name, way)
             AND way && !bbox!
         UNION ALL
-        SELECT way, name, ref, char_length(ref) AS reflen,
+        SELECT way, name AS name_en, ref, char_length(ref) AS reflen,
           ROUND(merc_length(way)) AS len, 'main' AS class
           FROM planet_osm_roads
           WHERE
@@ -708,7 +707,7 @@ Layer:
             AND linelabel(z(!scale_denominator!), name, way)
             AND way && !bbox!
         UNION ALL
-        SELECT way, name, ref, char_length(ref) AS reflen,
+        SELECT way, name AS name_en, ref, char_length(ref) AS reflen,
           ROUND(merc_length(way)) AS len, 'street' AS class
           FROM planet_osm_roads
           WHERE
@@ -718,7 +717,7 @@ Layer:
             AND linelabel(z(!scale_denominator!), name, way)
             AND way && !bbox!
         UNION ALL
-        SELECT way, name, ref, char_length(ref) AS reflen,
+        SELECT way, name AS name_en, ref, char_length(ref) AS reflen,
           ROUND(merc_length(way)) AS len, 'street_limited' AS class
           FROM planet_osm_roads
           WHERE
@@ -728,7 +727,7 @@ Layer:
             AND linelabel(z(!scale_denominator!), name, way)
             AND way && !bbox!
         UNION ALL
-        SELECT way, name, ref, char_length(ref) AS reflen,
+        SELECT way, name AS name_en, ref, char_length(ref) AS reflen,
           ROUND(merc_length(way)) AS len, 'service' AS class
           FROM planet_osm_roads
           WHERE
@@ -738,7 +737,7 @@ Layer:
             AND linelabel(z(!scale_denominator!), name, way)
             AND way && !bbox!
         UNION ALL
-        SELECT way, name, ref, char_length(ref) AS reflen,
+        SELECT way, name AS name_en, ref, char_length(ref) AS reflen,
           ROUND(merc_length(way)) AS len, 'driveway' AS class
           FROM planet_osm_roads
           WHERE
@@ -747,7 +746,7 @@ Layer:
             AND linelabel(z(!scale_denominator!), name, way)
             AND way && !bbox!
         UNION ALL
-        SELECT way, name, ref, char_length(ref) AS reflen,
+        SELECT way, name AS name_en, ref, char_length(ref) AS reflen,
           ROUND(merc_length(way)) AS len, 'path' AS class
           FROM planet_osm_roads
           WHERE
@@ -763,7 +762,7 @@ Layer:
     fields: 
       class: String
       len: Number
-      name: String
+      name_en: String
       ref: String
       reflen: Number
     properties: 
