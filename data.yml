@@ -1,14 +1,18 @@
 _prefs: 
-  disabled: []
+  disabled: 
+    - place_label
+    - country_label
+    - admin
+    - bridge
   inspector: false
   mapid: ''
   rev: ''
   saveCenter: true
 attribution: ''
 center: 
-  - 6.1304
-  - 49.8056
-  - 10
+  - -122.3821
+  - 37.6215
+  - 16
 description: ''
 Layer: 
   - id: landuse
@@ -24,14 +28,28 @@ Layer:
       port: ''
       table: |-
         (
-        SELECT landuse AS class, z_order, way
+        SELECT osm_id, way, landuse AS class, z_order
           FROM planet_osm_polygon
           WHERE
-            (landuse = 'cemetery' OR amenity = 'hospital')
+            landuse IN ('cemetery', 'industrial')
             AND z(!scale_denominator!) >= 10
             AND way && !bbox!
         UNION ALL
-        SELECT 'park' AS class, z_order, way
+        SELECT osm_id, way, 'industrial' AS class, z_order
+          FROM planet_osm_polygon
+          WHERE
+            aeroway IS NOT NULL
+            AND z(!scale_denominator!) >= 10
+            AND way && !bbox!
+        UNION ALL
+        SELECT osm_id, way, 'hospital' AS class, z_order
+          FROM planet_osm_polygon
+          WHERE
+            amenity = 'hospital'
+            AND z(!scale_denominator!) >= 12
+            AND way && !bbox!
+        UNION ALL
+        SELECT osm_id, way, 'park' AS class, z_order
           FROM planet_osm_polygon
           WHERE
             (
@@ -51,14 +69,14 @@ Layer:
             )
             AND way && !bbox!
         UNION ALL
-        SELECT 'school' AS class, z_order, way
+        SELECT osm_id, way, 'school' AS class, z_order
           FROM planet_osm_polygon
           WHERE
             amenity IN ('school', 'university')
             AND z(!scale_denominator!) >= 10
             AND way && !bbox!
         UNION ALL
-        SELECT 'wood' AS class, z_order, way
+        SELECT osm_id, way, 'wood' AS class, z_order
           FROM planet_osm_polygon
           WHERE
             landuse IN ('wood', 'forest')
@@ -70,6 +88,7 @@ Layer:
     description: ''
     fields: 
       class: String
+      osm_id: Number
       z_order: Number
     properties: 
       "buffer-size": 8
@@ -87,22 +106,16 @@ Layer:
       port: ''
       table: |-
         (
-        SELECT way, waterway AS class
+        SELECT osm_id, way, waterway AS class
           FROM planet_osm_line
           WHERE waterway IN ('river', 'canal')
           AND z(!scale_denominator!) >= 8
           AND way && !bbox!
         UNION ALL
-        SELECT way, waterway AS class
+        SELECT osm_id, way, waterway AS class
           FROM planet_osm_line
           WHERE waterway IN ('stream', 'stream_intermittent')
           AND z(!scale_denominator!) >= 13
-          AND way && !bbox!
-        UNION ALL
-        SELECT way, waterway AS class
-          FROM planet_osm_line
-          WHERE waterway IN ('drain', 'ditch')
-          AND z(!scale_denominator!) >= 15
           AND way && !bbox!
         ) waterway
       type: postgis
@@ -110,6 +123,7 @@ Layer:
     description: ''
     fields: 
       class: String
+      osm_id: Number
     properties: 
       "buffer-size": 8
     srs: +proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over
@@ -126,7 +140,7 @@ Layer:
       port: ''
       table: |-
         (
-        SELECT way
+        SELECT osm_id, way
           FROM planet_osm_polygon
           WHERE
             (
@@ -145,7 +159,45 @@ Layer:
       type: postgis
       user: ''
     description: ''
-    fields: {}
+    fields: 
+      osm_id: Number
+    properties: 
+      "buffer-size": 8
+    srs: +proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over
+  - id: aeroway
+    Datasource: 
+      dbname: gis
+      extent: -20037508.34,-20037508.34,20037508.34,20037508.34
+      geometry_field: ''
+      geometry_table: ''
+      host: ''
+      key_field: ''
+      max_size: 512
+      password: ''
+      port: ''
+      table: |-
+        (
+        SELECT osm_id, way, aeroway AS type
+          FROM planet_osm_polygon
+          WHERE
+            aeroway IS NOT NULL
+            AND aeroway <> 'aerodrome'
+            AND z(!scale_denominator!) >= 12
+            AND way && !bbox!
+        UNION ALL
+        SELECT osm_id, way, aeroway AS type
+          FROM planet_osm_line
+          WHERE
+            aeroway IS NOT NULL
+            AND z(!scale_denominator!) >= 12
+            AND way && !bbox!
+        ) aeroway
+      type: postgis
+      user: ''
+    description: ''
+    fields: 
+      osm_id: Number
+      type: String
     properties: 
       "buffer-size": 8
     srs: +proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over
@@ -162,7 +214,7 @@ Layer:
       port: ''
       table: |-
         (
-        SELECT way, 'motorway' AS class
+        SELECT osm_id, way, 'motorway' AS class
           FROM  planet_osm_line
           WHERE
             tunnel = 'yes'
@@ -170,7 +222,7 @@ Layer:
             AND z(!scale_denominator!) >= 5
             AND way && !bbox!
         UNION ALL
-        SELECT way, 'motorway_link' AS class
+        SELECT osm_id, way, 'motorway_link' AS class
           FROM  planet_osm_line
           WHERE
             tunnel = 'yes'
@@ -178,7 +230,7 @@ Layer:
             AND z(!scale_denominator!) >= 13
             AND way && !bbox!
         UNION ALL
-        SELECT way, 'main' AS class
+        SELECT osm_id, way, 'main' AS class
           FROM  planet_osm_line
           WHERE
             tunnel = 'yes'
@@ -186,7 +238,7 @@ Layer:
             AND z(!scale_denominator!) >= 5
             AND way && !bbox!
         UNION ALL
-        SELECT way, 'main' AS class
+        SELECT osm_id, way, 'main' AS class
           FROM  planet_osm_line
           WHERE
             tunnel = 'yes'
@@ -194,7 +246,7 @@ Layer:
             AND z(!scale_denominator!) >= 9
             AND way && !bbox!
         UNION ALL
-        SELECT way, 'main' AS class
+        SELECT osm_id, way, 'main' AS class
           FROM  planet_osm_line
           WHERE
             tunnel = 'yes'
@@ -202,7 +254,7 @@ Layer:
             AND z(!scale_denominator!) >= 12
             AND way && !bbox!
         UNION ALL
-        SELECT way, 'street' AS class
+        SELECT osm_id, way, 'street' AS class
           FROM  planet_osm_line
           WHERE
             tunnel = 'yes'
@@ -210,7 +262,7 @@ Layer:
             AND z(!scale_denominator!) >= 12
             AND way && !bbox!
         UNION ALL
-        SELECT way, 'street_limited' AS class
+        SELECT osm_id, way, 'street_limited' AS class
           FROM  planet_osm_line
           WHERE
             tunnel = 'yes'
@@ -218,7 +270,7 @@ Layer:
             AND z(!scale_denominator!) >= 12
             AND way && !bbox!
         UNION ALL
-        SELECT way, 'service' AS class
+        SELECT osm_id, way, 'service' AS class
           FROM  planet_osm_line
           WHERE
             tunnel = 'yes'
@@ -226,7 +278,7 @@ Layer:
             AND z(!scale_denominator!) >= 15
             AND way && !bbox!
         UNION ALL
-        SELECT way, 'driveway' AS class
+        SELECT osm_id, way, 'driveway' AS class
           FROM  planet_osm_line
           WHERE
             tunnel = 'yes'
@@ -234,7 +286,7 @@ Layer:
             AND z(!scale_denominator!) >= 15
             AND way && !bbox!
         UNION ALL
-        SELECT way, 'path' AS class
+        SELECT osm_id, way, 'path' AS class
           FROM  planet_osm_line
           WHERE
             tunnel = 'yes'
@@ -242,7 +294,7 @@ Layer:
             AND z(!scale_denominator!) >= 15
             AND way && !bbox!
         UNION ALL
-        SELECT way, 'major_rail' AS class
+        SELECT osm_id, way, 'major_rail' AS class
           FROM  planet_osm_line
           WHERE
             tunnel = 'yes'
@@ -250,7 +302,7 @@ Layer:
             AND z(!scale_denominator!) >= 12
             AND way && !bbox!
         UNION ALL
-        SELECT way, 'minor_rail' AS class
+        SELECT osm_id, way, 'minor_rail' AS class
           FROM  planet_osm_line
           WHERE
             tunnel = 'yes'
@@ -263,6 +315,7 @@ Layer:
     description: ''
     fields: 
       class: String
+      osm_id: Number
     properties: 
       "buffer-size": 8
     srs: +proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over
@@ -279,7 +332,7 @@ Layer:
       port: ''
       table: |
         (
-        SELECT way, 'motorway' AS class
+        SELECT osm_id, way, 'motorway' AS class
           FROM  planet_osm_line
           WHERE
             bridge IS NULL
@@ -288,7 +341,7 @@ Layer:
             AND z(!scale_denominator!) >= 5
             AND way && !bbox!
         UNION ALL
-        SELECT way, 'motorway_link' AS class
+        SELECT osm_id, way, 'motorway_link' AS class
           FROM  planet_osm_line
           WHERE
             bridge IS NULL
@@ -297,7 +350,7 @@ Layer:
             AND z(!scale_denominator!) >= 13
             AND way && !bbox!
         UNION ALL
-        SELECT way, 'main' AS class
+        SELECT osm_id, way, 'main' AS class
           FROM  planet_osm_line
           WHERE
             bridge IS NULL
@@ -306,7 +359,7 @@ Layer:
             AND z(!scale_denominator!) >= 5
             AND way && !bbox!
         UNION ALL
-        SELECT way, 'main' AS class
+        SELECT osm_id, way, 'main' AS class
           FROM  planet_osm_line
           WHERE
             bridge IS NULL
@@ -315,7 +368,7 @@ Layer:
             AND z(!scale_denominator!) >= 9
             AND way && !bbox!
         UNION ALL
-        SELECT way, 'main' AS class
+        SELECT osm_id, way, 'main' AS class
           FROM  planet_osm_line
           WHERE
             bridge IS NULL
@@ -324,7 +377,7 @@ Layer:
             AND z(!scale_denominator!) >= 12
             AND way && !bbox!
         UNION ALL
-        SELECT way, 'street' AS class
+        SELECT osm_id, way, 'street' AS class
           FROM  planet_osm_line
           WHERE
             bridge IS NULL
@@ -333,7 +386,7 @@ Layer:
             AND z(!scale_denominator!) >= 12
             AND way && !bbox!
         UNION ALL
-        SELECT way, 'street' AS class
+        SELECT osm_id, way, 'street' AS class
           FROM  planet_osm_line
           WHERE
             bridge IS NULL
@@ -342,7 +395,7 @@ Layer:
             AND z(!scale_denominator!) >= 12
             AND way && !bbox!
         UNION ALL
-        SELECT way, 'street_limited' AS class
+        SELECT osm_id, way, 'street_limited' AS class
           FROM  planet_osm_line
           WHERE
             bridge IS NULL
@@ -351,7 +404,7 @@ Layer:
             AND z(!scale_denominator!) >= 12
             AND way && !bbox!
         UNION ALL
-        SELECT way, 'service' AS class
+        SELECT osm_id, way, 'service' AS class
           FROM  planet_osm_line
           WHERE
             bridge IS NULL
@@ -360,7 +413,7 @@ Layer:
             AND z(!scale_denominator!) >= 15
             AND way && !bbox!
         UNION ALL
-        SELECT way, 'driveway' AS class
+        SELECT osm_id, way, 'driveway' AS class
           FROM  planet_osm_line
           WHERE
             bridge IS NULL
@@ -369,16 +422,16 @@ Layer:
             AND z(!scale_denominator!) >= 15
             AND way && !bbox!
         UNION ALL
-        SELECT way, 'path' AS class
+        SELECT osm_id, way, 'path' AS class
           FROM  planet_osm_line
           WHERE
             bridge IS NULL
             AND tunnel IS NULL
-            AND highway IN ('path', 'cycleway', 'ski', 'steps', 'bridleway')
+            AND highway IN ('path', 'cycleway', 'ski', 'steps', 'bridleway', 'footway')
             AND z(!scale_denominator!) >= 15
             AND way && !bbox!
         UNION ALL
-        SELECT way, 'major_rail' AS class
+        SELECT osm_id, way, 'major_rail' AS class
           FROM  planet_osm_line
           WHERE
             bridge IS NULL
@@ -387,7 +440,7 @@ Layer:
             AND z(!scale_denominator!) >= 12
             AND way && !bbox!
         UNION ALL
-        SELECT way, 'minor_rail' AS class
+        SELECT osm_id, way, 'minor_rail' AS class
           FROM  planet_osm_line
           WHERE
             bridge IS NULL
@@ -401,6 +454,7 @@ Layer:
     description: ''
     fields: 
       class: String
+      osm_id: Number
     properties: 
       "buffer-size": 8
     srs: +proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over
@@ -417,7 +471,7 @@ Layer:
       port: ''
       table: |-
         (
-        SELECT way, 'motorway' AS class
+        SELECT osm_id, way, 'motorway' AS class
           FROM  planet_osm_line
           WHERE
             bridge = 'yes'
@@ -425,7 +479,7 @@ Layer:
             AND z(!scale_denominator!) >= 5
             AND way && !bbox!
         UNION ALL
-        SELECT way, 'motorway_link' AS class
+        SELECT osm_id, way, 'motorway_link' AS class
           FROM  planet_osm_line
           WHERE
             bridge = 'yes'
@@ -433,7 +487,7 @@ Layer:
             AND z(!scale_denominator!) >= 13
             AND way && !bbox!
         UNION ALL
-        SELECT way, 'main' AS class
+        SELECT osm_id, way, 'main' AS class
           FROM  planet_osm_line
           WHERE
             bridge = 'yes'
@@ -441,7 +495,7 @@ Layer:
             AND z(!scale_denominator!) >= 5
             AND way && !bbox!
         UNION ALL
-        SELECT way, 'main' AS class
+        SELECT osm_id, way, 'main' AS class
           FROM  planet_osm_line
           WHERE
             bridge = 'yes'
@@ -449,7 +503,7 @@ Layer:
             AND z(!scale_denominator!) >= 9
             AND way && !bbox!
         UNION ALL
-        SELECT way, 'main' AS class
+        SELECT osm_id, way, 'main' AS class
           FROM  planet_osm_line
           WHERE
             bridge = 'yes'
@@ -457,7 +511,7 @@ Layer:
             AND z(!scale_denominator!) >= 12
             AND way && !bbox!
         UNION ALL
-        SELECT way, 'street' AS class
+        SELECT osm_id, way, 'street' AS class
           FROM  planet_osm_line
           WHERE
             bridge = 'yes'
@@ -465,7 +519,7 @@ Layer:
             AND z(!scale_denominator!) >= 12
             AND way && !bbox!
         UNION ALL
-        SELECT way, 'street_limited' AS class
+        SELECT osm_id, way, 'street_limited' AS class
           FROM  planet_osm_line
           WHERE
             bridge = 'yes'
@@ -473,7 +527,7 @@ Layer:
             AND z(!scale_denominator!) >= 12
             AND way && !bbox!
         UNION ALL
-        SELECT way, 'service' AS class
+        SELECT osm_id, way, 'service' AS class
           FROM  planet_osm_line
           WHERE
             bridge = 'yes'
@@ -481,7 +535,7 @@ Layer:
             AND z(!scale_denominator!) >= 15
             AND way && !bbox!
         UNION ALL
-        SELECT way, 'driveway' AS class
+        SELECT osm_id, way, 'driveway' AS class
           FROM  planet_osm_line
           WHERE
             bridge = 'yes'
@@ -489,7 +543,7 @@ Layer:
             AND z(!scale_denominator!) >= 15
             AND way && !bbox!
         UNION ALL
-        SELECT way, 'path' AS class
+        SELECT osm_id, way, 'path' AS class
           FROM  planet_osm_line
           WHERE
             bridge = 'yes'
@@ -497,7 +551,7 @@ Layer:
             AND z(!scale_denominator!) >= 15
             AND way && !bbox!
         UNION ALL
-        SELECT way, 'major_rail' AS class
+        SELECT osm_id, way, 'major_rail' AS class
           FROM  planet_osm_line
           WHERE
             bridge = 'yes'
@@ -505,7 +559,7 @@ Layer:
             AND z(!scale_denominator!) >= 12
             AND way && !bbox!
         UNION ALL
-        SELECT way, 'minor_rail' AS class
+        SELECT osm_id, way, 'minor_rail' AS class
           FROM  planet_osm_line
           WHERE
             bridge = 'yes'
@@ -518,6 +572,7 @@ Layer:
     description: ''
     fields: 
       class: String
+      osm_id: Number
     properties: 
       "buffer-size": 8
     srs: +proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over
@@ -534,7 +589,7 @@ Layer:
       port: ''
       table: |-
         (
-        SELECT admin_level, way, 0 AS maritime
+        SELECT osm_id, way, admin_level, 0 AS maritime /* TODO */
           FROM planet_osm_polygon
           WHERE
             boundary = 'administrative'
@@ -550,6 +605,7 @@ Layer:
     fields: 
       admin_level: String
       maritime: Number
+      osm_id: Number
     properties: 
       "buffer-size": 8
     srs: +proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over
@@ -566,7 +622,7 @@ Layer:
       port: ''
       table: |-
         (
-        SELECT way, name AS name_en, CASE
+        SELECT osm_id, way, name AS name_en, CASE
               WHEN CAST(population AS int) >= 250000000 THEN 1
               WHEN CAST(population AS int) >= 100000000 AND CAST(population AS int) < 250000000 THEN 2
               WHEN CAST(population AS int) >= 50000000 AND CAST(population AS int) < 100000000 THEN 3
@@ -584,6 +640,7 @@ Layer:
     description: ''
     fields: 
       name_en: String
+      osm_id: Number
       scalerank: Number
     properties: 
       "buffer-size": 8
@@ -603,14 +660,14 @@ Layer:
         (
         SELECT DISTINCT ON(labelgrid(way, 64, 1)) * FROM(
         /* TODO calculate real ranks and ldir */
-        SELECT way, name AS name_en, place AS "type",
+        SELECT osm_id, way, name AS name_en, place AS "type",
             'SE' AS ldir, 1 AS localrank
           FROM planet_osm_point
           WHERE
             place = 'city'
             AND way && !bbox!
         UNION ALL
-        SELECT way, name AS name_en, place AS "type",
+        SELECT osm_id, way, name AS name_en, place AS "type",
             'SE' AS ldir, 1 AS localrank
           FROM planet_osm_point
           WHERE
@@ -618,7 +675,7 @@ Layer:
             AND z(!scale_denominator!) >= 7
             AND way && !bbox!
         UNION ALL
-        SELECT way, name AS name_en, place AS "type",
+        SELECT osm_id, way, name AS name_en, place AS "type",
             'SE' AS ldir, 1 AS localrank
           FROM planet_osm_point
           WHERE
@@ -626,7 +683,7 @@ Layer:
             AND z(!scale_denominator!) >= 11
             AND way && !bbox!
         UNION ALL
-        SELECT way, name AS name_en, place AS "type",
+        SELECT osm_id, way, name AS name_en, place AS "type",
             'SE' AS ldir, 1 AS localrank
           FROM planet_osm_point
           WHERE
@@ -642,9 +699,10 @@ Layer:
       ldir: String
       localrank: Number
       name_en: String
+      osm_id: Number
       type: String
     properties: 
-      "buffer-size": 64
+      "buffer-size": 8
     srs: +proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over
   - id: road_label
     Datasource: 
@@ -659,7 +717,7 @@ Layer:
       port: ''
       table: |-
         (
-        SELECT way, name AS name_en, ref, char_length(ref) AS reflen,
+        SELECT osm_id, way, name AS name_en, ref, char_length(ref) AS reflen,
           ROUND(merc_length(way)) AS len, 'motorway' AS class
           FROM planet_osm_roads
           WHERE
@@ -668,7 +726,7 @@ Layer:
             AND linelabel(z(!scale_denominator!), name, way)
             AND way && !bbox!
         UNION ALL
-        SELECT way, name AS name_en, ref, char_length(ref) AS reflen,
+        SELECT osm_id, way, name AS name_en, ref, char_length(ref) AS reflen,
           ROUND(merc_length(way)) AS len, 'motorway_link' AS class
           FROM planet_osm_roads
           WHERE
@@ -677,7 +735,7 @@ Layer:
             AND linelabel(z(!scale_denominator!), name, way)
             AND way && !bbox!
         UNION ALL
-        SELECT way, name AS name_en, ref, char_length(ref) AS reflen,
+        SELECT osm_id, way, name AS name_en, ref, char_length(ref) AS reflen,
           ROUND(merc_length(way)) AS len, 'main' AS class
           FROM planet_osm_roads
           WHERE
@@ -687,7 +745,7 @@ Layer:
             AND linelabel(z(!scale_denominator!), name, way)
             AND way && !bbox!
         UNION ALL
-        SELECT way, name AS name_en, ref, char_length(ref) AS reflen,
+        SELECT osm_id, way, name AS name_en, ref, char_length(ref) AS reflen,
           ROUND(merc_length(way)) AS len, 'main' AS class
           FROM planet_osm_roads
           WHERE
@@ -697,7 +755,7 @@ Layer:
             AND linelabel(z(!scale_denominator!), name, way)
             AND way && !bbox!
         UNION ALL
-        SELECT way, name AS name_en, ref, char_length(ref) AS reflen,
+        SELECT osm_id, way, name AS name_en, ref, char_length(ref) AS reflen,
           ROUND(merc_length(way)) AS len, 'main' AS class
           FROM planet_osm_roads
           WHERE
@@ -707,7 +765,7 @@ Layer:
             AND linelabel(z(!scale_denominator!), name, way)
             AND way && !bbox!
         UNION ALL
-        SELECT way, name AS name_en, ref, char_length(ref) AS reflen,
+        SELECT osm_id, way, name AS name_en, ref, char_length(ref) AS reflen,
           ROUND(merc_length(way)) AS len, 'street' AS class
           FROM planet_osm_roads
           WHERE
@@ -717,7 +775,7 @@ Layer:
             AND linelabel(z(!scale_denominator!), name, way)
             AND way && !bbox!
         UNION ALL
-        SELECT way, name AS name_en, ref, char_length(ref) AS reflen,
+        SELECT osm_id, way, name AS name_en, ref, char_length(ref) AS reflen,
           ROUND(merc_length(way)) AS len, 'street_limited' AS class
           FROM planet_osm_roads
           WHERE
@@ -727,7 +785,7 @@ Layer:
             AND linelabel(z(!scale_denominator!), name, way)
             AND way && !bbox!
         UNION ALL
-        SELECT way, name AS name_en, ref, char_length(ref) AS reflen,
+        SELECT osm_id, way, name AS name_en, ref, char_length(ref) AS reflen,
           ROUND(merc_length(way)) AS len, 'service' AS class
           FROM planet_osm_roads
           WHERE
@@ -737,7 +795,7 @@ Layer:
             AND linelabel(z(!scale_denominator!), name, way)
             AND way && !bbox!
         UNION ALL
-        SELECT way, name AS name_en, ref, char_length(ref) AS reflen,
+        SELECT osm_id, way, name AS name_en, ref, char_length(ref) AS reflen,
           ROUND(merc_length(way)) AS len, 'driveway' AS class
           FROM planet_osm_roads
           WHERE
@@ -746,7 +804,7 @@ Layer:
             AND linelabel(z(!scale_denominator!), name, way)
             AND way && !bbox!
         UNION ALL
-        SELECT way, name AS name_en, ref, char_length(ref) AS reflen,
+        SELECT osm_id, way, name AS name_en, ref, char_length(ref) AS reflen,
           ROUND(merc_length(way)) AS len, 'path' AS class
           FROM planet_osm_roads
           WHERE
@@ -763,11 +821,12 @@ Layer:
       class: String
       len: Number
       name_en: String
+      osm_id: Number
       ref: String
       reflen: Number
     properties: 
       "buffer-size": 8
     srs: +proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over
-maxzoom: 13
-minzoom: 4
+maxzoom: 16
+minzoom: 0
 name: osm2pgsql-osm-bright
