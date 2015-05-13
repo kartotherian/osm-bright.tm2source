@@ -6,9 +6,9 @@ _prefs:
   saveCenter: true
 attribution: ''
 center: 
-  - -122.408
-  - 37.775
-  - 15
+  - -122.4069
+  - 37.803
+  - 16
 description: ''
 Layer: 
   - id: landuse
@@ -378,7 +378,7 @@ Layer:
           WHERE
             bridge IS NULL
             AND tunnel IS NULL
-            AND highway IN ('path', 'cycleway', 'ski', 'steps', 'bridleway')
+            AND highway IN ('path', 'cycleway', 'ski', 'steps', 'bridleway', 'footway')
             AND z(!scale_denominator!) >= 15
             AND way && !bbox!
         UNION ALL
