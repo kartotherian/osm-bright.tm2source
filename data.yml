@@ -1,13 +1,17 @@
 _prefs: 
-  disabled: []
+  disabled: 
+    - place_label
+    - country_label
+    - admin
+    - bridge
   inspector: false
   mapid: ''
   rev: ''
   saveCenter: true
 attribution: ''
 center: 
-  - -122.4069
-  - 37.803
+  - -122.3821
+  - 37.6215
   - 16
 description: ''
 Layer: 
@@ -27,8 +31,22 @@ Layer:
         SELECT osm_id, way, landuse AS class, z_order
           FROM planet_osm_polygon
           WHERE
-            (landuse = 'cemetery' OR amenity = 'hospital')
+            landuse IN ('cemetery', 'industrial')
             AND z(!scale_denominator!) >= 10
+            AND way && !bbox!
+        UNION ALL
+        SELECT osm_id, way, 'industrial' AS class, z_order
+          FROM planet_osm_polygon
+          WHERE
+            aeroway IS NOT NULL
+            AND z(!scale_denominator!) >= 10
+            AND way && !bbox!
+        UNION ALL
+        SELECT osm_id, way, 'hospital' AS class, z_order
+          FROM planet_osm_polygon
+          WHERE
+            amenity = 'hospital'
+            AND z(!scale_denominator!) >= 12
             AND way && !bbox!
         UNION ALL
         SELECT osm_id, way, 'park' AS class, z_order
@@ -143,6 +161,43 @@ Layer:
     description: ''
     fields: 
       osm_id: Number
+    properties: 
+      "buffer-size": 8
+    srs: +proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over
+  - id: aeroway
+    Datasource: 
+      dbname: gis
+      extent: -20037508.34,-20037508.34,20037508.34,20037508.34
+      geometry_field: ''
+      geometry_table: ''
+      host: ''
+      key_field: ''
+      max_size: 512
+      password: ''
+      port: ''
+      table: |-
+        (
+        SELECT osm_id, way, aeroway AS type
+          FROM planet_osm_polygon
+          WHERE
+            aeroway IS NOT NULL
+            AND aeroway <> 'aerodrome'
+            AND z(!scale_denominator!) >= 12
+            AND way && !bbox!
+        UNION ALL
+        SELECT osm_id, way, aeroway AS type
+          FROM planet_osm_line
+          WHERE
+            aeroway IS NOT NULL
+            AND z(!scale_denominator!) >= 12
+            AND way && !bbox!
+        ) aeroway
+      type: postgis
+      user: ''
+    description: ''
+    fields: 
+      osm_id: Number
+      type: String
     properties: 
       "buffer-size": 8
     srs: +proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over

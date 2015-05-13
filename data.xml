@@ -3,9 +3,9 @@
 <Map srs="+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over">
 
 <Parameters>
-  <Parameter name="center">-122.4069,37.803,16</Parameter>
+  <Parameter name="center">-122.3821,37.6215,16</Parameter>
   <Parameter name="format">pbf</Parameter>
-  <Parameter name="json"><![CDATA[{"vector_layers":[{"id":"landuse","description":"","fields":{"osm_id":"Number","class":"String","z_order":"Number"}},{"id":"waterway","description":"","fields":{"osm_id":"Number","class":"String"}},{"id":"water","description":"","fields":{"osm_id":"Number"}},{"id":"tunnel","description":"","fields":{"osm_id":"Number","class":"String"}},{"id":"road","description":"","fields":{"osm_id":"Number","class":"String"}},{"id":"bridge","description":"","fields":{"osm_id":"Number","class":"String"}},{"id":"admin","description":"","fields":{"osm_id":"Number","admin_level":"String","maritime":"Number"}},{"id":"country_label","description":"","fields":{"osm_id":"Number","name_en":"String","scalerank":"Number"}},{"id":"place_label","description":"","fields":{"osm_id":"Number","name_en":"String","type":"String","ldir":"String","localrank":"Number"}},{"id":"road_label","description":"","fields":{"osm_id":"Number","name_en":"String","ref":"String","reflen":"Number","len":"Number","class":"String"}}]}]]></Parameter>
+  <Parameter name="json"><![CDATA[{"vector_layers":[{"id":"landuse","description":"","fields":{"osm_id":"Number","class":"String","z_order":"Number"}},{"id":"waterway","description":"","fields":{"osm_id":"Number","class":"String"}},{"id":"water","description":"","fields":{"osm_id":"Number"}},{"id":"aeroway","description":"","fields":{"osm_id":"Number","type":"String"}},{"id":"tunnel","description":"","fields":{"osm_id":"Number","class":"String"}},{"id":"road","description":"","fields":{"osm_id":"Number","class":"String"}},{"id":"bridge","description":"","fields":{"osm_id":"Number","class":"String"}},{"id":"admin","description":"","fields":{"osm_id":"Number","admin_level":"String","maritime":"Number"}},{"id":"country_label","description":"","fields":{"osm_id":"Number","name_en":"String","scalerank":"Number"}},{"id":"place_label","description":"","fields":{"osm_id":"Number","name_en":"String","type":"String","ldir":"String","localrank":"Number"}},{"id":"road_label","description":"","fields":{"osm_id":"Number","name_en":"String","ref":"String","reflen":"Number","len":"Number","class":"String"}}]}]]></Parameter>
   <Parameter name="maxzoom">16</Parameter>
   <Parameter name="minzoom">0</Parameter>
   <Parameter name="name"><![CDATA[osm2pgsql-osm-bright]]></Parameter>
@@ -30,8 +30,22 @@
 SELECT osm_id, way, landuse AS class, z_order
   FROM planet_osm_polygon
   WHERE
-    (landuse = 'cemetery' OR amenity = 'hospital')
+    landuse IN ('cemetery', 'industrial')
     AND z(!scale_denominator!) >= 10
+    AND way && !bbox!
+UNION ALL
+SELECT osm_id, way, 'industrial' AS class, z_order
+  FROM planet_osm_polygon
+  WHERE
+    aeroway IS NOT NULL
+    AND z(!scale_denominator!) >= 10
+    AND way && !bbox!
+UNION ALL
+SELECT osm_id, way, 'hospital' AS class, z_order
+  FROM planet_osm_polygon
+  WHERE
+    amenity = 'hospital'
+    AND z(!scale_denominator!) >= 12
     AND way && !bbox!
 UNION ALL
 SELECT osm_id, way, 'park' AS class, z_order
@@ -136,6 +150,41 @@ SELECT osm_id, way
     )
     AND way && !bbox!
 ) water]]></Parameter>
+       <Parameter name="type"><![CDATA[postgis]]></Parameter>
+       <Parameter name="user"><![CDATA[]]></Parameter>
+    </Datasource>
+  </Layer>
+
+<Layer name="aeroway"
+  buffer-size="8"
+  srs="+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over">
+    
+    <Datasource>
+       <Parameter name="dbname"><![CDATA[gis]]></Parameter>
+       <Parameter name="extent"><![CDATA[-20037508.34,-20037508.34,20037508.34,20037508.34]]></Parameter>
+       <Parameter name="geometry_field"><![CDATA[]]></Parameter>
+       <Parameter name="geometry_table"><![CDATA[]]></Parameter>
+       <Parameter name="host"><![CDATA[]]></Parameter>
+       <Parameter name="key_field"><![CDATA[]]></Parameter>
+       <Parameter name="max_size"><![CDATA[512]]></Parameter>
+       <Parameter name="password"><![CDATA[]]></Parameter>
+       <Parameter name="port"><![CDATA[]]></Parameter>
+       <Parameter name="table"><![CDATA[(
+SELECT osm_id, way, aeroway AS type
+  FROM planet_osm_polygon
+  WHERE
+    aeroway IS NOT NULL
+    AND aeroway <> 'aerodrome'
+    AND z(!scale_denominator!) >= 12
+    AND way && !bbox!
+UNION ALL
+SELECT osm_id, way, aeroway AS type
+  FROM planet_osm_line
+  WHERE
+    aeroway IS NOT NULL
+    AND z(!scale_denominator!) >= 12
+    AND way && !bbox!
+) aeroway]]></Parameter>
        <Parameter name="type"><![CDATA[postgis]]></Parameter>
        <Parameter name="user"><![CDATA[]]></Parameter>
     </Datasource>
