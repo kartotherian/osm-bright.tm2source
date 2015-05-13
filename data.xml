@@ -99,12 +99,6 @@ SELECT osm_id, way, waterway AS class
   WHERE waterway IN ('stream', 'stream_intermittent')
   AND z(!scale_denominator!) >= 13
   AND way && !bbox!
-UNION ALL
-SELECT osm_id, way, waterway AS class
-  FROM planet_osm_line
-  WHERE waterway IN ('drain', 'ditch')
-  AND z(!scale_denominator!) >= 15
-  AND way && !bbox!
 ) waterway]]></Parameter>
        <Parameter name="type"><![CDATA[postgis]]></Parameter>
        <Parameter name="user"><![CDATA[]]></Parameter>
