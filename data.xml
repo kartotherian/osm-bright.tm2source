@@ -3,11 +3,11 @@
 <Map srs="+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over">
 
 <Parameters>
-  <Parameter name="center">6.1304,49.8056,10</Parameter>
+  <Parameter name="center">-122.408,37.775,15</Parameter>
   <Parameter name="format">pbf</Parameter>
-  <Parameter name="json"><![CDATA[{"vector_layers":[{"id":"landuse","description":"","fields":{"class":"String","z_order":"Number"}},{"id":"waterway","description":"","fields":{"class":"String"}},{"id":"water","description":"","fields":{}},{"id":"tunnel","description":"","fields":{"class":"String"}},{"id":"road","description":"","fields":{"class":"String"}},{"id":"bridge","description":"","fields":{"class":"String"}},{"id":"admin","description":"","fields":{"admin_level":"String","maritime":"Number"}},{"id":"country_label","description":"","fields":{"name_en":"String","scalerank":"Number"}},{"id":"place_label","description":"","fields":{"name_en":"String","type":"String","ldir":"String","localrank":"Number"}},{"id":"road_label","description":"","fields":{"name_en":"String","ref":"String","reflen":"Number","len":"Number","class":"String"}}]}]]></Parameter>
-  <Parameter name="maxzoom">13</Parameter>
-  <Parameter name="minzoom">4</Parameter>
+  <Parameter name="json"><![CDATA[{"vector_layers":[{"id":"landuse","description":"","fields":{"osm_id":"Number","class":"String","z_order":"Number"}},{"id":"waterway","description":"","fields":{"osm_id":"Number","class":"String"}},{"id":"water","description":"","fields":{"osm_id":"Number"}},{"id":"tunnel","description":"","fields":{"osm_id":"Number","class":"String"}},{"id":"road","description":"","fields":{"osm_id":"Number","class":"String"}},{"id":"bridge","description":"","fields":{"osm_id":"Number","class":"String"}},{"id":"admin","description":"","fields":{"osm_id":"Number","admin_level":"String","maritime":"Number"}},{"id":"country_label","description":"","fields":{"osm_id":"Number","name_en":"String","scalerank":"Number"}},{"id":"place_label","description":"","fields":{"osm_id":"Number","name_en":"String","type":"String","ldir":"String","localrank":"Number"}},{"id":"road_label","description":"","fields":{"osm_id":"Number","name_en":"String","ref":"String","reflen":"Number","len":"Number","class":"String"}}]}]]></Parameter>
+  <Parameter name="maxzoom">16</Parameter>
+  <Parameter name="minzoom">0</Parameter>
   <Parameter name="name"><![CDATA[osm2pgsql-osm-bright]]></Parameter>
 </Parameters>
 
@@ -27,14 +27,14 @@
        <Parameter name="password"><![CDATA[]]></Parameter>
        <Parameter name="port"><![CDATA[]]></Parameter>
        <Parameter name="table"><![CDATA[(
-SELECT landuse AS class, z_order, way
+SELECT osm_id, way, landuse AS class, z_order
   FROM planet_osm_polygon
   WHERE
     (landuse = 'cemetery' OR amenity = 'hospital')
     AND z(!scale_denominator!) >= 10
     AND way && !bbox!
 UNION ALL
-SELECT 'park' AS class, z_order, way
+SELECT osm_id, way, 'park' AS class, z_order
   FROM planet_osm_polygon
   WHERE
     (
@@ -54,14 +54,14 @@ SELECT 'park' AS class, z_order, way
     )
     AND way && !bbox!
 UNION ALL
-SELECT 'school' AS class, z_order, way
+SELECT osm_id, way, 'school' AS class, z_order
   FROM planet_osm_polygon
   WHERE
     amenity IN ('school', 'university')
     AND z(!scale_denominator!) >= 10
     AND way && !bbox!
 UNION ALL
-SELECT 'wood' AS class, z_order, way
+SELECT osm_id, way, 'wood' AS class, z_order
   FROM planet_osm_polygon
   WHERE
     landuse IN ('wood', 'forest')
@@ -88,19 +88,19 @@ SELECT 'wood' AS class, z_order, way
        <Parameter name="password"><![CDATA[]]></Parameter>
        <Parameter name="port"><![CDATA[]]></Parameter>
        <Parameter name="table"><![CDATA[(
-SELECT way, waterway AS class
+SELECT osm_id, way, waterway AS class
   FROM planet_osm_line
   WHERE waterway IN ('river', 'canal')
   AND z(!scale_denominator!) >= 8
   AND way && !bbox!
 UNION ALL
-SELECT way, waterway AS class
+SELECT osm_id, way, waterway AS class
   FROM planet_osm_line
   WHERE waterway IN ('stream', 'stream_intermittent')
   AND z(!scale_denominator!) >= 13
   AND way && !bbox!
 UNION ALL
-SELECT way, waterway AS class
+SELECT osm_id, way, waterway AS class
   FROM planet_osm_line
   WHERE waterway IN ('drain', 'ditch')
   AND z(!scale_denominator!) >= 15
@@ -126,7 +126,7 @@ SELECT way, waterway AS class
        <Parameter name="password"><![CDATA[]]></Parameter>
        <Parameter name="port"><![CDATA[]]></Parameter>
        <Parameter name="table"><![CDATA[(
-SELECT way
+SELECT osm_id, way
   FROM planet_osm_polygon
   WHERE
     (
@@ -162,7 +162,7 @@ SELECT way
        <Parameter name="password"><![CDATA[]]></Parameter>
        <Parameter name="port"><![CDATA[]]></Parameter>
        <Parameter name="table"><![CDATA[(
-SELECT way, 'motorway' AS class
+SELECT osm_id, way, 'motorway' AS class
   FROM  planet_osm_line
   WHERE
     tunnel = 'yes'
@@ -170,7 +170,7 @@ SELECT way, 'motorway' AS class
     AND z(!scale_denominator!) >= 5
     AND way && !bbox!
 UNION ALL
-SELECT way, 'motorway_link' AS class
+SELECT osm_id, way, 'motorway_link' AS class
   FROM  planet_osm_line
   WHERE
     tunnel = 'yes'
@@ -178,7 +178,7 @@ SELECT way, 'motorway_link' AS class
     AND z(!scale_denominator!) >= 13
     AND way && !bbox!
 UNION ALL
-SELECT way, 'main' AS class
+SELECT osm_id, way, 'main' AS class
   FROM  planet_osm_line
   WHERE
     tunnel = 'yes'
@@ -186,7 +186,7 @@ SELECT way, 'main' AS class
     AND z(!scale_denominator!) >= 5
     AND way && !bbox!
 UNION ALL
-SELECT way, 'main' AS class
+SELECT osm_id, way, 'main' AS class
   FROM  planet_osm_line
   WHERE
     tunnel = 'yes'
@@ -194,7 +194,7 @@ SELECT way, 'main' AS class
     AND z(!scale_denominator!) >= 9
     AND way && !bbox!
 UNION ALL
-SELECT way, 'main' AS class
+SELECT osm_id, way, 'main' AS class
   FROM  planet_osm_line
   WHERE
     tunnel = 'yes'
@@ -202,7 +202,7 @@ SELECT way, 'main' AS class
     AND z(!scale_denominator!) >= 12
     AND way && !bbox!
 UNION ALL
-SELECT way, 'street' AS class
+SELECT osm_id, way, 'street' AS class
   FROM  planet_osm_line
   WHERE
     tunnel = 'yes'
@@ -210,7 +210,7 @@ SELECT way, 'street' AS class
     AND z(!scale_denominator!) >= 12
     AND way && !bbox!
 UNION ALL
-SELECT way, 'street_limited' AS class
+SELECT osm_id, way, 'street_limited' AS class
   FROM  planet_osm_line
   WHERE
     tunnel = 'yes'
@@ -218,7 +218,7 @@ SELECT way, 'street_limited' AS class
     AND z(!scale_denominator!) >= 12
     AND way && !bbox!
 UNION ALL
-SELECT way, 'service' AS class
+SELECT osm_id, way, 'service' AS class
   FROM  planet_osm_line
   WHERE
     tunnel = 'yes'
@@ -226,7 +226,7 @@ SELECT way, 'service' AS class
     AND z(!scale_denominator!) >= 15
     AND way && !bbox!
 UNION ALL
-SELECT way, 'driveway' AS class
+SELECT osm_id, way, 'driveway' AS class
   FROM  planet_osm_line
   WHERE
     tunnel = 'yes'
@@ -234,7 +234,7 @@ SELECT way, 'driveway' AS class
     AND z(!scale_denominator!) >= 15
     AND way && !bbox!
 UNION ALL
-SELECT way, 'path' AS class
+SELECT osm_id, way, 'path' AS class
   FROM  planet_osm_line
   WHERE
     tunnel = 'yes'
@@ -242,7 +242,7 @@ SELECT way, 'path' AS class
     AND z(!scale_denominator!) >= 15
     AND way && !bbox!
 UNION ALL
-SELECT way, 'major_rail' AS class
+SELECT osm_id, way, 'major_rail' AS class
   FROM  planet_osm_line
   WHERE
     tunnel = 'yes'
@@ -250,7 +250,7 @@ SELECT way, 'major_rail' AS class
     AND z(!scale_denominator!) >= 12
     AND way && !bbox!
 UNION ALL
-SELECT way, 'minor_rail' AS class
+SELECT osm_id, way, 'minor_rail' AS class
   FROM  planet_osm_line
   WHERE
     tunnel = 'yes'
@@ -278,7 +278,7 @@ SELECT way, 'minor_rail' AS class
        <Parameter name="password"><![CDATA[]]></Parameter>
        <Parameter name="port"><![CDATA[]]></Parameter>
        <Parameter name="table"><![CDATA[(
-SELECT way, 'motorway' AS class
+SELECT osm_id, way, 'motorway' AS class
   FROM  planet_osm_line
   WHERE
     bridge IS NULL
@@ -287,7 +287,7 @@ SELECT way, 'motorway' AS class
     AND z(!scale_denominator!) >= 5
     AND way && !bbox!
 UNION ALL
-SELECT way, 'motorway_link' AS class
+SELECT osm_id, way, 'motorway_link' AS class
   FROM  planet_osm_line
   WHERE
     bridge IS NULL
@@ -296,7 +296,7 @@ SELECT way, 'motorway_link' AS class
     AND z(!scale_denominator!) >= 13
     AND way && !bbox!
 UNION ALL
-SELECT way, 'main' AS class
+SELECT osm_id, way, 'main' AS class
   FROM  planet_osm_line
   WHERE
     bridge IS NULL
@@ -305,7 +305,7 @@ SELECT way, 'main' AS class
     AND z(!scale_denominator!) >= 5
     AND way && !bbox!
 UNION ALL
-SELECT way, 'main' AS class
+SELECT osm_id, way, 'main' AS class
   FROM  planet_osm_line
   WHERE
     bridge IS NULL
@@ -314,7 +314,7 @@ SELECT way, 'main' AS class
     AND z(!scale_denominator!) >= 9
     AND way && !bbox!
 UNION ALL
-SELECT way, 'main' AS class
+SELECT osm_id, way, 'main' AS class
   FROM  planet_osm_line
   WHERE
     bridge IS NULL
@@ -323,7 +323,7 @@ SELECT way, 'main' AS class
     AND z(!scale_denominator!) >= 12
     AND way && !bbox!
 UNION ALL
-SELECT way, 'street' AS class
+SELECT osm_id, way, 'street' AS class
   FROM  planet_osm_line
   WHERE
     bridge IS NULL
@@ -332,7 +332,7 @@ SELECT way, 'street' AS class
     AND z(!scale_denominator!) >= 12
     AND way && !bbox!
 UNION ALL
-SELECT way, 'street' AS class
+SELECT osm_id, way, 'street' AS class
   FROM  planet_osm_line
   WHERE
     bridge IS NULL
@@ -341,7 +341,7 @@ SELECT way, 'street' AS class
     AND z(!scale_denominator!) >= 12
     AND way && !bbox!
 UNION ALL
-SELECT way, 'street_limited' AS class
+SELECT osm_id, way, 'street_limited' AS class
   FROM  planet_osm_line
   WHERE
     bridge IS NULL
@@ -350,7 +350,7 @@ SELECT way, 'street_limited' AS class
     AND z(!scale_denominator!) >= 12
     AND way && !bbox!
 UNION ALL
-SELECT way, 'service' AS class
+SELECT osm_id, way, 'service' AS class
   FROM  planet_osm_line
   WHERE
     bridge IS NULL
@@ -359,7 +359,7 @@ SELECT way, 'service' AS class
     AND z(!scale_denominator!) >= 15
     AND way && !bbox!
 UNION ALL
-SELECT way, 'driveway' AS class
+SELECT osm_id, way, 'driveway' AS class
   FROM  planet_osm_line
   WHERE
     bridge IS NULL
@@ -368,7 +368,7 @@ SELECT way, 'driveway' AS class
     AND z(!scale_denominator!) >= 15
     AND way && !bbox!
 UNION ALL
-SELECT way, 'path' AS class
+SELECT osm_id, way, 'path' AS class
   FROM  planet_osm_line
   WHERE
     bridge IS NULL
@@ -377,7 +377,7 @@ SELECT way, 'path' AS class
     AND z(!scale_denominator!) >= 15
     AND way && !bbox!
 UNION ALL
-SELECT way, 'major_rail' AS class
+SELECT osm_id, way, 'major_rail' AS class
   FROM  planet_osm_line
   WHERE
     bridge IS NULL
@@ -386,7 +386,7 @@ SELECT way, 'major_rail' AS class
     AND z(!scale_denominator!) >= 12
     AND way && !bbox!
 UNION ALL
-SELECT way, 'minor_rail' AS class
+SELECT osm_id, way, 'minor_rail' AS class
   FROM  planet_osm_line
   WHERE
     bridge IS NULL
@@ -416,7 +416,7 @@ SELECT way, 'minor_rail' AS class
        <Parameter name="password"><![CDATA[]]></Parameter>
        <Parameter name="port"><![CDATA[]]></Parameter>
        <Parameter name="table"><![CDATA[(
-SELECT way, 'motorway' AS class
+SELECT osm_id, way, 'motorway' AS class
   FROM  planet_osm_line
   WHERE
     bridge = 'yes'
@@ -424,7 +424,7 @@ SELECT way, 'motorway' AS class
     AND z(!scale_denominator!) >= 5
     AND way && !bbox!
 UNION ALL
-SELECT way, 'motorway_link' AS class
+SELECT osm_id, way, 'motorway_link' AS class
   FROM  planet_osm_line
   WHERE
     bridge = 'yes'
@@ -432,7 +432,7 @@ SELECT way, 'motorway_link' AS class
     AND z(!scale_denominator!) >= 13
     AND way && !bbox!
 UNION ALL
-SELECT way, 'main' AS class
+SELECT osm_id, way, 'main' AS class
   FROM  planet_osm_line
   WHERE
     bridge = 'yes'
@@ -440,7 +440,7 @@ SELECT way, 'main' AS class
     AND z(!scale_denominator!) >= 5
     AND way && !bbox!
 UNION ALL
-SELECT way, 'main' AS class
+SELECT osm_id, way, 'main' AS class
   FROM  planet_osm_line
   WHERE
     bridge = 'yes'
@@ -448,7 +448,7 @@ SELECT way, 'main' AS class
     AND z(!scale_denominator!) >= 9
     AND way && !bbox!
 UNION ALL
-SELECT way, 'main' AS class
+SELECT osm_id, way, 'main' AS class
   FROM  planet_osm_line
   WHERE
     bridge = 'yes'
@@ -456,7 +456,7 @@ SELECT way, 'main' AS class
     AND z(!scale_denominator!) >= 12
     AND way && !bbox!
 UNION ALL
-SELECT way, 'street' AS class
+SELECT osm_id, way, 'street' AS class
   FROM  planet_osm_line
   WHERE
     bridge = 'yes'
@@ -464,7 +464,7 @@ SELECT way, 'street' AS class
     AND z(!scale_denominator!) >= 12
     AND way && !bbox!
 UNION ALL
-SELECT way, 'street_limited' AS class
+SELECT osm_id, way, 'street_limited' AS class
   FROM  planet_osm_line
   WHERE
     bridge = 'yes'
@@ -472,7 +472,7 @@ SELECT way, 'street_limited' AS class
     AND z(!scale_denominator!) >= 12
     AND way && !bbox!
 UNION ALL
-SELECT way, 'service' AS class
+SELECT osm_id, way, 'service' AS class
   FROM  planet_osm_line
   WHERE
     bridge = 'yes'
@@ -480,7 +480,7 @@ SELECT way, 'service' AS class
     AND z(!scale_denominator!) >= 15
     AND way && !bbox!
 UNION ALL
-SELECT way, 'driveway' AS class
+SELECT osm_id, way, 'driveway' AS class
   FROM  planet_osm_line
   WHERE
     bridge = 'yes'
@@ -488,7 +488,7 @@ SELECT way, 'driveway' AS class
     AND z(!scale_denominator!) >= 15
     AND way && !bbox!
 UNION ALL
-SELECT way, 'path' AS class
+SELECT osm_id, way, 'path' AS class
   FROM  planet_osm_line
   WHERE
     bridge = 'yes'
@@ -496,7 +496,7 @@ SELECT way, 'path' AS class
     AND z(!scale_denominator!) >= 15
     AND way && !bbox!
 UNION ALL
-SELECT way, 'major_rail' AS class
+SELECT osm_id, way, 'major_rail' AS class
   FROM  planet_osm_line
   WHERE
     bridge = 'yes'
@@ -504,7 +504,7 @@ SELECT way, 'major_rail' AS class
     AND z(!scale_denominator!) >= 12
     AND way && !bbox!
 UNION ALL
-SELECT way, 'minor_rail' AS class
+SELECT osm_id, way, 'minor_rail' AS class
   FROM  planet_osm_line
   WHERE
     bridge = 'yes'
@@ -532,7 +532,7 @@ SELECT way, 'minor_rail' AS class
        <Parameter name="password"><![CDATA[]]></Parameter>
        <Parameter name="port"><![CDATA[]]></Parameter>
        <Parameter name="table"><![CDATA[(
-SELECT admin_level, way, 0 AS maritime
+SELECT osm_id, way, admin_level, 0 AS maritime /* TODO */
   FROM planet_osm_polygon
   WHERE
     boundary = 'administrative'
@@ -562,7 +562,7 @@ SELECT admin_level, way, 0 AS maritime
        <Parameter name="password"><![CDATA[]]></Parameter>
        <Parameter name="port"><![CDATA[]]></Parameter>
        <Parameter name="table"><![CDATA[(
-SELECT way, name AS name_en, CASE
+SELECT osm_id, way, name AS name_en, CASE
       WHEN CAST(population AS int) >= 250000000 THEN 1
       WHEN CAST(population AS int) >= 100000000 AND CAST(population AS int) < 250000000 THEN 2
       WHEN CAST(population AS int) >= 50000000 AND CAST(population AS int) < 100000000 THEN 3
@@ -581,7 +581,7 @@ SELECT way, name AS name_en, CASE
   </Layer>
 
 <Layer name="place_label"
-  buffer-size="64"
+  buffer-size="8"
   srs="+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over">
     
     <Datasource>
@@ -597,14 +597,14 @@ SELECT way, name AS name_en, CASE
        <Parameter name="table"><![CDATA[(
 SELECT DISTINCT ON(labelgrid(way, 64, 1)) * FROM(
 /* TODO calculate real ranks and ldir */
-SELECT way, name AS name_en, place AS "type",
+SELECT osm_id, way, name AS name_en, place AS "type",
     'SE' AS ldir, 1 AS localrank
   FROM planet_osm_point
   WHERE
     place = 'city'
     AND way && !bbox!
 UNION ALL
-SELECT way, name AS name_en, place AS "type",
+SELECT osm_id, way, name AS name_en, place AS "type",
     'SE' AS ldir, 1 AS localrank
   FROM planet_osm_point
   WHERE
@@ -612,7 +612,7 @@ SELECT way, name AS name_en, place AS "type",
     AND z(!scale_denominator!) >= 7
     AND way && !bbox!
 UNION ALL
-SELECT way, name AS name_en, place AS "type",
+SELECT osm_id, way, name AS name_en, place AS "type",
     'SE' AS ldir, 1 AS localrank
   FROM planet_osm_point
   WHERE
@@ -620,7 +620,7 @@ SELECT way, name AS name_en, place AS "type",
     AND z(!scale_denominator!) >= 11
     AND way && !bbox!
 UNION ALL
-SELECT way, name AS name_en, place AS "type",
+SELECT osm_id, way, name AS name_en, place AS "type",
     'SE' AS ldir, 1 AS localrank
   FROM planet_osm_point
   WHERE
@@ -649,7 +649,7 @@ SELECT way, name AS name_en, place AS "type",
        <Parameter name="password"><![CDATA[]]></Parameter>
        <Parameter name="port"><![CDATA[]]></Parameter>
        <Parameter name="table"><![CDATA[(
-SELECT way, name AS name_en, ref, char_length(ref) AS reflen,
+SELECT osm_id, way, name AS name_en, ref, char_length(ref) AS reflen,
   ROUND(merc_length(way)) AS len, 'motorway' AS class
   FROM planet_osm_roads
   WHERE
@@ -658,7 +658,7 @@ SELECT way, name AS name_en, ref, char_length(ref) AS reflen,
     AND linelabel(z(!scale_denominator!), name, way)
     AND way && !bbox!
 UNION ALL
-SELECT way, name AS name_en, ref, char_length(ref) AS reflen,
+SELECT osm_id, way, name AS name_en, ref, char_length(ref) AS reflen,
   ROUND(merc_length(way)) AS len, 'motorway_link' AS class
   FROM planet_osm_roads
   WHERE
@@ -667,7 +667,7 @@ SELECT way, name AS name_en, ref, char_length(ref) AS reflen,
     AND linelabel(z(!scale_denominator!), name, way)
     AND way && !bbox!
 UNION ALL
-SELECT way, name AS name_en, ref, char_length(ref) AS reflen,
+SELECT osm_id, way, name AS name_en, ref, char_length(ref) AS reflen,
   ROUND(merc_length(way)) AS len, 'main' AS class
   FROM planet_osm_roads
   WHERE
@@ -677,7 +677,7 @@ SELECT way, name AS name_en, ref, char_length(ref) AS reflen,
     AND linelabel(z(!scale_denominator!), name, way)
     AND way && !bbox!
 UNION ALL
-SELECT way, name AS name_en, ref, char_length(ref) AS reflen,
+SELECT osm_id, way, name AS name_en, ref, char_length(ref) AS reflen,
   ROUND(merc_length(way)) AS len, 'main' AS class
   FROM planet_osm_roads
   WHERE
@@ -687,7 +687,7 @@ SELECT way, name AS name_en, ref, char_length(ref) AS reflen,
     AND linelabel(z(!scale_denominator!), name, way)
     AND way && !bbox!
 UNION ALL
-SELECT way, name AS name_en, ref, char_length(ref) AS reflen,
+SELECT osm_id, way, name AS name_en, ref, char_length(ref) AS reflen,
   ROUND(merc_length(way)) AS len, 'main' AS class
   FROM planet_osm_roads
   WHERE
@@ -697,7 +697,7 @@ SELECT way, name AS name_en, ref, char_length(ref) AS reflen,
     AND linelabel(z(!scale_denominator!), name, way)
     AND way && !bbox!
 UNION ALL
-SELECT way, name AS name_en, ref, char_length(ref) AS reflen,
+SELECT osm_id, way, name AS name_en, ref, char_length(ref) AS reflen,
   ROUND(merc_length(way)) AS len, 'street' AS class
   FROM planet_osm_roads
   WHERE
@@ -707,7 +707,7 @@ SELECT way, name AS name_en, ref, char_length(ref) AS reflen,
     AND linelabel(z(!scale_denominator!), name, way)
     AND way && !bbox!
 UNION ALL
-SELECT way, name AS name_en, ref, char_length(ref) AS reflen,
+SELECT osm_id, way, name AS name_en, ref, char_length(ref) AS reflen,
   ROUND(merc_length(way)) AS len, 'street_limited' AS class
   FROM planet_osm_roads
   WHERE
@@ -717,7 +717,7 @@ SELECT way, name AS name_en, ref, char_length(ref) AS reflen,
     AND linelabel(z(!scale_denominator!), name, way)
     AND way && !bbox!
 UNION ALL
-SELECT way, name AS name_en, ref, char_length(ref) AS reflen,
+SELECT osm_id, way, name AS name_en, ref, char_length(ref) AS reflen,
   ROUND(merc_length(way)) AS len, 'service' AS class
   FROM planet_osm_roads
   WHERE
@@ -727,7 +727,7 @@ SELECT way, name AS name_en, ref, char_length(ref) AS reflen,
     AND linelabel(z(!scale_denominator!), name, way)
     AND way && !bbox!
 UNION ALL
-SELECT way, name AS name_en, ref, char_length(ref) AS reflen,
+SELECT osm_id, way, name AS name_en, ref, char_length(ref) AS reflen,
   ROUND(merc_length(way)) AS len, 'driveway' AS class
   FROM planet_osm_roads
   WHERE
@@ -736,7 +736,7 @@ SELECT way, name AS name_en, ref, char_length(ref) AS reflen,
     AND linelabel(z(!scale_denominator!), name, way)
     AND way && !bbox!
 UNION ALL
-SELECT way, name AS name_en, ref, char_length(ref) AS reflen,
+SELECT osm_id, way, name AS name_en, ref, char_length(ref) AS reflen,
   ROUND(merc_length(way)) AS len, 'path' AS class
   FROM planet_osm_roads
   WHERE
