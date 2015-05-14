@@ -723,7 +723,7 @@ Layer:
           WHERE
             bridge IS NULL AND tunnel IS NULL AND highway IN ('motorway')
             AND z(!scale_denominator!) >= 5
-            AND linelabel(z(!scale_denominator!), name, way)
+            --AND linelabel(z(!scale_denominator!), name, way)
             AND way && !bbox!
         UNION ALL
         SELECT osm_id, way, name AS name_en, ref, char_length(ref) AS reflen,
@@ -732,7 +732,7 @@ Layer:
           WHERE
             bridge IS NULL AND tunnel IS NULL AND highway IN ('motorway_link')
             AND z(!scale_denominator!) >= 13
-            AND linelabel(z(!scale_denominator!), name, way)
+            --AND linelabel(z(!scale_denominator!), name, way)
             AND way && !bbox!
         UNION ALL
         SELECT osm_id, way, name AS name_en, ref, char_length(ref) AS reflen,
@@ -742,7 +742,7 @@ Layer:
             bridge IS NULL AND tunnel IS NULL AND highway IN ('primary',
           'primary_link', 'trunk', 'trunk_link')
             AND z(!scale_denominator!) >= 5
-            AND linelabel(z(!scale_denominator!), name, way)
+            --AND linelabel(z(!scale_denominator!), name, way)
             AND way && !bbox!
         UNION ALL
         SELECT osm_id, way, name AS name_en, ref, char_length(ref) AS reflen,
@@ -752,7 +752,7 @@ Layer:
             bridge IS NULL AND tunnel IS NULL AND highway IN ('secondary',
           'secondary_link')
             AND z(!scale_denominator!) >= 9
-            AND linelabel(z(!scale_denominator!), name, way)
+            --AND linelabel(z(!scale_denominator!), name, way)
             AND way && !bbox!
         UNION ALL
         SELECT osm_id, way, name AS name_en, ref, char_length(ref) AS reflen,
@@ -762,7 +762,7 @@ Layer:
             bridge IS NULL AND tunnel IS NULL AND highway IN ('tertiary',
           'tertiary_link')
             AND z(!scale_denominator!) >= 12
-            AND linelabel(z(!scale_denominator!), name, way)
+            --AND linelabel(z(!scale_denominator!), name, way)
             AND way && !bbox!
         UNION ALL
         SELECT osm_id, way, name AS name_en, ref, char_length(ref) AS reflen,
@@ -772,7 +772,7 @@ Layer:
             bridge IS NULL AND tunnel IS NULL AND highway IN ('residential',
           'unclassified', 'living_street')
             AND z(!scale_denominator!) >= 12
-            AND linelabel(z(!scale_denominator!), name, way)
+            --AND linelabel(z(!scale_denominator!), name, way)
             AND way && !bbox!
         UNION ALL
         SELECT osm_id, way, name AS name_en, ref, char_length(ref) AS reflen,
@@ -782,7 +782,7 @@ Layer:
             bridge IS NULL AND tunnel IS NULL AND (highway IN ('pedestrian',
           'construction') OR access = 'private')
             AND z(!scale_denominator!) >= 12
-            AND linelabel(z(!scale_denominator!), name, way)
+            --AND linelabel(z(!scale_denominator!), name, way)
             AND way && !bbox!
         UNION ALL
         SELECT osm_id, way, name AS name_en, ref, char_length(ref) AS reflen,
@@ -792,7 +792,7 @@ Layer:
             bridge IS NULL AND tunnel IS NULL AND highway IN ('service',
           'track')
             AND z(!scale_denominator!) >= 15
-            AND linelabel(z(!scale_denominator!), name, way)
+            --AND linelabel(z(!scale_denominator!), name, way)
             AND way && !bbox!
         UNION ALL
         SELECT osm_id, way, name AS name_en, ref, char_length(ref) AS reflen,
@@ -801,7 +801,7 @@ Layer:
           WHERE
             bridge IS NULL AND tunnel IS NULL AND highway IN ('driveway')
             AND z(!scale_denominator!) >= 15
-            AND linelabel(z(!scale_denominator!), name, way)
+            --AND linelabel(z(!scale_denominator!), name, way)
             AND way && !bbox!
         UNION ALL
         SELECT osm_id, way, name AS name_en, ref, char_length(ref) AS reflen,
@@ -811,7 +811,7 @@ Layer:
             bridge IS NULL AND tunnel IS NULL AND highway IN ('path',
           'cycleway', 'ski', 'steps', 'bridleway')
             AND z(!scale_denominator!) >= 15
-            AND linelabel(z(!scale_denominator!), name, way)
+            --AND linelabel(z(!scale_denominator!), name, way)
             AND way && !bbox!
         ) AS road_label
       type: postgis
