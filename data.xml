@@ -616,6 +616,7 @@ SELECT osm_id, way, name AS name_en, CASE
   FROM planet_osm_point
   WHERE
     place = 'country'
+    AND z(!scale_denominator!) < 12
     AND way && !bbox!
 ) country_label]]></Parameter>
        <Parameter name="type"><![CDATA[postgis]]></Parameter>

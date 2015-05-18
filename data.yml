@@ -633,6 +633,7 @@ Layer:
           FROM planet_osm_point
           WHERE
             place = 'country'
+            AND z(!scale_denominator!) < 12
             AND way && !bbox!
         ) country_label
       type: postgis
