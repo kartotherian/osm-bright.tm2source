@@ -3,7 +3,7 @@
 <Map srs="+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over">
 
 <Parameters>
-  <Parameter name="center">-122.3835,37.6147,15</Parameter>
+  <Parameter name="center">-122.3769,37.6179,15</Parameter>
   <Parameter name="format">pbf</Parameter>
   <Parameter name="json"><![CDATA[{"vector_layers":[{"id":"landuse","description":"","fields":{"osm_id":"Number","class":"String","z_order":"Number"}},{"id":"waterway","description":"","fields":{"osm_id":"Number","class":"String"}},{"id":"water","description":"","fields":{"osm_id":"Number"}},{"id":"aeroway","description":"","fields":{"osm_id":"Number","type":"String"}},{"id":"tunnel","description":"","fields":{"osm_id":"Number","class":"String"}},{"id":"road","description":"","fields":{"osm_id":"Number","class":"String"}},{"id":"bridge","description":"","fields":{"osm_id":"Number","class":"String"}},{"id":"admin","description":"","fields":{"osm_id":"Number","admin_level":"String","maritime":"Number"}},{"id":"country_label","description":"","fields":{"osm_id":"Number","name_en":"String","scalerank":"Number"}},{"id":"place_label","description":"","fields":{"osm_id":"Number","name_en":"String","type":"String","ldir":"String","localrank":"Number"}},{"id":"road_label","description":"","fields":{"osm_id":"Number","shield":"String","name_en":"String","ref":"String","reflen":"Number","len":"Number","class":"String"}}]}]]></Parameter>
   <Parameter name="maxzoom">16</Parameter>
@@ -48,24 +48,33 @@ SELECT osm_id, way, 'hospital' AS class, z_order
     AND z(!scale_denominator!) >= 12
     AND way && !bbox!
 UNION ALL
+-- TODO: conservation???
 SELECT osm_id, way, 'park' AS class, z_order
   FROM planet_osm_polygon
   WHERE
-    (
-      (
-        landuse = 'village_green'
-        OR leisure IN ('park', 'playground')
-      )
-      AND z(!scale_denominator!) >= 10
-    ) OR (
-      (
-        leisure IN ('national_reserve', 'nature_reserve', 'golf_course')
-        OR boundary = 'national_park'
-      )
-      -- TODO:
-      --landuse IN ('conservation')
-      AND z(!scale_denominator!) >= 7
-    )
+    landuse = 'village_green'
+    AND z(!scale_denominator!) >= 10
+    AND way && !bbox!
+UNION ALL
+SELECT osm_id, way, 'park' AS class, z_order
+  FROM planet_osm_polygon
+  WHERE
+    leisure IN ('park', 'playground')
+    AND z(!scale_denominator!) >= 10
+    AND way && !bbox!
+UNION ALL
+SELECT osm_id, way, 'park' AS class, z_order
+  FROM planet_osm_polygon
+  WHERE
+    leisure IN ('national_reserve', 'nature_reserve', 'golf_course')
+    AND z(!scale_denominator!) >= 7
+    AND way && !bbox!
+UNION ALL
+SELECT osm_id, way, 'park' AS class, z_order
+  FROM planet_osm_polygon
+  WHERE
+    boundary = 'national_park'
+    AND z(!scale_denominator!) >= 7
     AND way && !bbox!
 UNION ALL
 SELECT osm_id, way, 'school' AS class, z_order
