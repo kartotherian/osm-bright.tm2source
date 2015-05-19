@@ -10,8 +10,8 @@ _prefs:
   saveCenter: true
 attribution: ''
 center: 
-  - -122.3769
-  - 37.6179
+  - -122.3869
+  - 37.6153
   - 15
 description: ''
 Layer: 
@@ -136,21 +136,11 @@ Layer:
     properties: 
       "buffer-size": 8
     srs: +proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over
-  - id: watershp
-    Datasource: 
-      file: ../water-polygons-split-3857/water_polygons.shp
-      type: shape
-    description: ''
-    fields: 
-      FID: Number
-    properties: 
-      "buffer-size": 8
-    srs: +proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over
   - id: water
     Datasource: 
       dbname: gis
       extent: -20037508.34,-20037508.34,20037508.34,20037508.34
-      geometry_field: ''
+      geometry_field: way
       geometry_table: ''
       host: ''
       key_field: ''
@@ -174,6 +164,18 @@ Layer:
               OR way_area >= 5000000000 / 2.3^z(!scale_denominator!)
             )
             AND way && !bbox!
+        UNION ALL
+        SELECT 0 AS osm_id, geom AS way
+          FROM water_polygons_low
+          WHERE
+            z(!scale_denominator!) < 10
+            AND geom && !bbox!
+        UNION ALL
+        SELECT 0 AS osm_id, geom AS way
+          FROM water_polygons
+          WHERE
+            z(!scale_denominator!) >= 10
+            AND geom && !bbox!
         ) water
       type: postgis
       user: ''
