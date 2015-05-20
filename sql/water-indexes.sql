@@ -7,9 +7,10 @@ CREATE INDEX water_polygons_index
   (geom)
   WITH (FILLFACTOR=100);
 
-CREATE INDEX water_polygons_low_index
+/*CREATE INDEX water_polygons_low_index
   ON water_polygons_low
   USING gist
   (geom)
   WITH (FILLFACTOR=100);
+*/
 
