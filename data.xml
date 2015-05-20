@@ -229,7 +229,8 @@ SELECT osm_id, way, aeroway AS type
 SELECT osm_id, way, 'motorway' AS class
   FROM  planet_osm_line
   WHERE
-    tunnel = 'yes'
+    tunnel IS NOT NULL
+    AND tunnel <> 'no'
     AND highway IN ('motorway')
     AND z(!scale_denominator!) >= 5
     AND way && !bbox!
@@ -237,7 +238,8 @@ UNION ALL
 SELECT osm_id, way, 'motorway_link' AS class
   FROM  planet_osm_line
   WHERE
-    tunnel = 'yes'
+    tunnel IS NOT NULL
+    AND tunnel <> 'no'
     AND highway IN ('motorway_link')
     AND z(!scale_denominator!) >= 13
     AND way && !bbox!
@@ -245,7 +247,8 @@ UNION ALL
 SELECT osm_id, way, 'main' AS class
   FROM  planet_osm_line
   WHERE
-    tunnel = 'yes'
+    tunnel IS NOT NULL
+    AND tunnel <> 'no'
     AND highway IN ('primary', 'primary_link', 'trunk', 'trunk_link')
     AND z(!scale_denominator!) >= 5
     AND way && !bbox!
@@ -253,7 +256,8 @@ UNION ALL
 SELECT osm_id, way, 'main' AS class
   FROM  planet_osm_line
   WHERE
-    tunnel = 'yes'
+    tunnel IS NOT NULL
+    AND tunnel <> 'no'
     AND highway IN ('secondary', 'secondary_link')
     AND z(!scale_denominator!) >= 9
     AND way && !bbox!
@@ -261,7 +265,8 @@ UNION ALL
 SELECT osm_id, way, 'main' AS class
   FROM  planet_osm_line
   WHERE
-    tunnel = 'yes'
+    tunnel IS NOT NULL
+    AND tunnel <> 'no'
     AND highway IN ('tertiary', 'tertiary_link')
     AND z(!scale_denominator!) >= 12
     AND way && !bbox!
@@ -269,7 +274,8 @@ UNION ALL
 SELECT osm_id, way, 'street' AS class
   FROM  planet_osm_line
   WHERE
-    tunnel = 'yes'
+    tunnel IS NOT NULL
+    AND tunnel <> 'no'
     AND highway IN ('residential', 'unclassified', 'living_street')
     AND z(!scale_denominator!) >= 12
     AND way && !bbox!
@@ -277,7 +283,8 @@ UNION ALL
 SELECT osm_id, way, 'street_limited' AS class
   FROM  planet_osm_line
   WHERE
-    tunnel = 'yes'
+    tunnel IS NOT NULL
+    AND tunnel <> 'no'
     AND (highway IN ('pedestrian', 'construction') or access = 'private')
     AND z(!scale_denominator!) >= 12
     AND way && !bbox!
@@ -285,7 +292,8 @@ UNION ALL
 SELECT osm_id, way, 'service' AS class
   FROM  planet_osm_line
   WHERE
-    tunnel = 'yes'
+    tunnel IS NOT NULL
+    AND tunnel <> 'no'
     AND highway IN ('service', 'track')
     AND z(!scale_denominator!) >= 15
     AND way && !bbox!
@@ -293,7 +301,8 @@ UNION ALL
 SELECT osm_id, way, 'driveway' AS class
   FROM  planet_osm_line
   WHERE
-    tunnel = 'yes'
+    tunnel IS NOT NULL
+    AND tunnel <> 'no'
     AND highway IN ('driveway')
     AND z(!scale_denominator!) >= 15
     AND way && !bbox!
@@ -301,7 +310,8 @@ UNION ALL
 SELECT osm_id, way, 'path' AS class
   FROM  planet_osm_line
   WHERE
-    tunnel = 'yes'
+    tunnel IS NOT NULL
+    AND tunnel <> 'no'
     AND highway IN ('path', 'cycleway', 'ski', 'steps', 'bridleway')
     AND z(!scale_denominator!) >= 15
     AND way && !bbox!
@@ -309,7 +319,8 @@ UNION ALL
 SELECT osm_id, way, 'major_rail' AS class
   FROM  planet_osm_line
   WHERE
-    tunnel = 'yes'
+    tunnel IS NOT NULL
+    AND tunnel <> 'no'
     AND highway IN ('rail', 'monorail', 'narrow_gauge', 'subway', 'tram')
     AND z(!scale_denominator!) >= 12
     AND way && !bbox!
@@ -317,7 +328,8 @@ UNION ALL
 SELECT osm_id, way, 'minor_rail' AS class
   FROM  planet_osm_line
   WHERE
-    tunnel = 'yes'
+    tunnel IS NOT NULL
+    AND tunnel <> 'no'
     AND highway IN ('funicular', 'light_rail', 'preserved')
     AND z(!scale_denominator!) >= 15
     AND way && !bbox!
@@ -345,8 +357,8 @@ SELECT osm_id, way, 'minor_rail' AS class
 SELECT osm_id, way, 'motorway' AS class
   FROM  planet_osm_line
   WHERE
-    bridge IS NULL
-    AND tunnel IS NULL
+    (bridge IS NULL OR bridge = 'no')
+    AND (tunnel IS NULL OR tunnel = 'no')
     AND highway IN ('motorway')
     AND z(!scale_denominator!) >= 5
     AND way && !bbox!
@@ -354,8 +366,8 @@ UNION ALL
 SELECT osm_id, way, 'motorway_link' AS class
   FROM  planet_osm_line
   WHERE
-    bridge IS NULL
-    AND tunnel IS NULL
+    (bridge IS NULL OR bridge = 'no')
+    AND (tunnel IS NULL OR tunnel = 'no')
     AND highway IN ('motorway_link')
     AND z(!scale_denominator!) >= 13
     AND way && !bbox!
@@ -363,8 +375,8 @@ UNION ALL
 SELECT osm_id, way, 'main' AS class
   FROM  planet_osm_line
   WHERE
-    bridge IS NULL
-    AND tunnel IS NULL
+    (bridge IS NULL OR bridge = 'no')
+    AND (tunnel IS NULL OR tunnel = 'no')
     AND highway IN ('primary', 'primary_link', 'trunk', 'trunk_link')
     AND z(!scale_denominator!) >= 5
     AND way && !bbox!
@@ -372,8 +384,8 @@ UNION ALL
 SELECT osm_id, way, 'main' AS class
   FROM  planet_osm_line
   WHERE
-    bridge IS NULL
-    AND tunnel IS NULL
+    (bridge IS NULL OR bridge = 'no')
+    AND (tunnel IS NULL OR tunnel = 'no')
     AND highway IN ('secondary', 'secondary_link')
     AND z(!scale_denominator!) >= 9
     AND way && !bbox!
@@ -381,8 +393,8 @@ UNION ALL
 SELECT osm_id, way, 'main' AS class
   FROM  planet_osm_line
   WHERE
-    bridge IS NULL
-    AND tunnel IS NULL
+    (bridge IS NULL OR bridge = 'no')
+    AND (tunnel IS NULL OR tunnel = 'no')
     AND highway IN ('tertiary', 'tertiary_link')
     AND z(!scale_denominator!) >= 12
     AND way && !bbox!
@@ -390,8 +402,8 @@ UNION ALL
 SELECT osm_id, way, 'street' AS class
   FROM  planet_osm_line
   WHERE
-    bridge IS NULL
-    AND tunnel IS NULL
+    (bridge IS NULL OR bridge = 'no')
+    AND (tunnel IS NULL OR tunnel = 'no')
     AND highway IN ('residential', 'unclassified', 'living_street')
     AND z(!scale_denominator!) >= 12
     AND way && !bbox!
@@ -399,8 +411,8 @@ UNION ALL
 SELECT osm_id, way, 'street' AS class
   FROM  planet_osm_line
   WHERE
-    bridge IS NULL
-    AND tunnel IS NULL
+    (bridge IS NULL OR bridge = 'no')
+    AND (tunnel IS NULL OR tunnel = 'no')
     AND highway IN ('residential', 'unclassified', 'living_street')
     AND z(!scale_denominator!) >= 12
     AND way && !bbox!
@@ -408,8 +420,8 @@ UNION ALL
 SELECT osm_id, way, 'street_limited' AS class
   FROM  planet_osm_line
   WHERE
-    bridge IS NULL
-    AND tunnel IS NULL
+    (bridge IS NULL OR bridge = 'no')
+    AND (tunnel IS NULL OR tunnel = 'no')
     AND (highway IN ('pedestrian', 'construction') or access = 'private')
     AND z(!scale_denominator!) >= 12
     AND way && !bbox!
@@ -417,8 +429,8 @@ UNION ALL
 SELECT osm_id, way, 'service' AS class
   FROM  planet_osm_line
   WHERE
-    bridge IS NULL
-    AND tunnel IS NULL
+    (bridge IS NULL OR bridge = 'no')
+    AND (tunnel IS NULL OR tunnel = 'no')
     AND highway IN ('service', 'track')
     AND z(!scale_denominator!) >= 15
     AND way && !bbox!
@@ -426,8 +438,8 @@ UNION ALL
 SELECT osm_id, way, 'driveway' AS class
   FROM  planet_osm_line
   WHERE
-    bridge IS NULL
-    AND tunnel IS NULL
+    (bridge IS NULL OR bridge = 'no')
+    AND (tunnel IS NULL OR tunnel = 'no')
     AND highway IN ('driveway')
     AND z(!scale_denominator!) >= 15
     AND way && !bbox!
@@ -435,8 +447,8 @@ UNION ALL
 SELECT osm_id, way, 'path' AS class
   FROM  planet_osm_line
   WHERE
-    bridge IS NULL
-    AND tunnel IS NULL
+    (bridge IS NULL OR bridge = 'no')
+    AND (tunnel IS NULL OR tunnel = 'no')
     AND highway IN ('path', 'cycleway', 'ski', 'steps', 'bridleway', 'footway')
     AND z(!scale_denominator!) >= 15
     AND way && !bbox!
@@ -444,8 +456,8 @@ UNION ALL
 SELECT osm_id, way, 'major_rail' AS class
   FROM  planet_osm_line
   WHERE
-    bridge IS NULL
-    AND tunnel IS NULL
+    (bridge IS NULL OR bridge = 'no')
+    AND (tunnel IS NULL OR tunnel = 'no')
     AND railway IN ('rail', 'monorail', 'narrow_gauge', 'subway', 'tram')
     AND z(!scale_denominator!) >= 12
     AND way && !bbox!
@@ -453,8 +465,8 @@ UNION ALL
 SELECT osm_id, way, 'minor_rail' AS class
   FROM  planet_osm_line
   WHERE
-    bridge IS NULL
-    AND tunnel IS NULL
+    (bridge IS NULL OR bridge = 'no')
+    AND (tunnel IS NULL OR tunnel = 'no')
     AND railway IN ('funicular', 'light_rail', 'preserved')
     AND z(!scale_denominator!) >= 15
     AND way && !bbox!
@@ -483,7 +495,8 @@ SELECT osm_id, way, 'minor_rail' AS class
 SELECT osm_id, way, 'motorway' AS class
   FROM  planet_osm_line
   WHERE
-    bridge = 'yes'
+    bridge IS NOT NULL
+    AND bridge <> 'no'
     AND highway IN ('motorway')
     AND z(!scale_denominator!) >= 5
     AND way && !bbox!
@@ -491,7 +504,8 @@ UNION ALL
 SELECT osm_id, way, 'motorway_link' AS class
   FROM  planet_osm_line
   WHERE
-    bridge = 'yes'
+    bridge IS NOT NULL
+    AND bridge <> 'no'
     AND highway IN ('motorway_link')
     AND z(!scale_denominator!) >= 13
     AND way && !bbox!
@@ -499,7 +513,8 @@ UNION ALL
 SELECT osm_id, way, 'main' AS class
   FROM  planet_osm_line
   WHERE
-    bridge = 'yes'
+    bridge IS NOT NULL
+    AND bridge <> 'no'
     AND highway IN ('primary', 'primary_link', 'trunk', 'trunk_link')
     AND z(!scale_denominator!) >= 5
     AND way && !bbox!
@@ -507,7 +522,8 @@ UNION ALL
 SELECT osm_id, way, 'main' AS class
   FROM  planet_osm_line
   WHERE
-    bridge = 'yes'
+    bridge IS NOT NULL
+    AND bridge <> 'no'
     AND highway IN ('secondary', 'secondary_link')
     AND z(!scale_denominator!) >= 9
     AND way && !bbox!
@@ -515,7 +531,8 @@ UNION ALL
 SELECT osm_id, way, 'main' AS class
   FROM  planet_osm_line
   WHERE
-    bridge = 'yes'
+    bridge IS NOT NULL
+    AND bridge <> 'no'
     AND highway IN ('tertiary', 'tertiary_link')
     AND z(!scale_denominator!) >= 12
     AND way && !bbox!
@@ -523,7 +540,8 @@ UNION ALL
 SELECT osm_id, way, 'street' AS class
   FROM  planet_osm_line
   WHERE
-    bridge = 'yes'
+    bridge IS NOT NULL
+    AND bridge <> 'no'
     AND highway IN ('residential', 'unclassified', 'living_street')
     AND z(!scale_denominator!) >= 12
     AND way && !bbox!
@@ -531,7 +549,8 @@ UNION ALL
 SELECT osm_id, way, 'street_limited' AS class
   FROM  planet_osm_line
   WHERE
-    bridge = 'yes'
+    bridge IS NOT NULL
+    AND bridge <> 'no'
     AND (highway IN ('pedestrian', 'construction') or access = 'private')
     AND z(!scale_denominator!) >= 12
     AND way && !bbox!
@@ -539,7 +558,8 @@ UNION ALL
 SELECT osm_id, way, 'service' AS class
   FROM  planet_osm_line
   WHERE
-    bridge = 'yes'
+    bridge IS NOT NULL
+    AND bridge <> 'no'
     AND highway IN ('service', 'track')
     AND z(!scale_denominator!) >= 15
     AND way && !bbox!
@@ -547,7 +567,8 @@ UNION ALL
 SELECT osm_id, way, 'driveway' AS class
   FROM  planet_osm_line
   WHERE
-    bridge = 'yes'
+    bridge IS NOT NULL
+    AND bridge <> 'no'
     AND highway IN ('driveway')
     AND z(!scale_denominator!) >= 15
     AND way && !bbox!
@@ -555,7 +576,8 @@ UNION ALL
 SELECT osm_id, way, 'path' AS class
   FROM  planet_osm_line
   WHERE
-    bridge = 'yes'
+    bridge IS NOT NULL
+    AND bridge <> 'no'
     AND highway IN ('path', 'cycleway', 'ski', 'steps', 'bridleway')
     AND z(!scale_denominator!) >= 15
     AND way && !bbox!
@@ -563,7 +585,8 @@ UNION ALL
 SELECT osm_id, way, 'major_rail' AS class
   FROM  planet_osm_line
   WHERE
-    bridge = 'yes'
+    bridge IS NOT NULL
+    AND bridge <> 'no'
     AND highway IN ('rail', 'monorail', 'narrow_gauge', 'subway', 'tram')
     AND z(!scale_denominator!) >= 12
     AND way && !bbox!
@@ -571,7 +594,8 @@ UNION ALL
 SELECT osm_id, way, 'minor_rail' AS class
   FROM  planet_osm_line
   WHERE
-    bridge = 'yes'
+    bridge IS NOT NULL
+    AND bridge <> 'no'
     AND highway IN ('funicular', 'light_rail', 'preserved')
     AND z(!scale_denominator!) >= 15
     AND way && !bbox!
