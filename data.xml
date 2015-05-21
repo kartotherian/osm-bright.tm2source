@@ -158,12 +158,6 @@ SELECT osm_id, way
       OR way_area >= 5000000000 / 2.3^z(!scale_denominator!)
     )
     AND way && !bbox!
--- UNION ALL
--- SELECT 0 AS osm_id, geom AS way
---   FROM water_polygons_low
---   WHERE
---     z(!scale_denominator!) < 10
---     AND geom && !bbox!
 UNION ALL
 SELECT 0 AS osm_id, geom AS way
   FROM water_polygons
