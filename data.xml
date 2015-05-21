@@ -159,10 +159,10 @@ SELECT osm_id, way
     )
     AND way && !bbox!
 UNION ALL
-SELECT 0 AS osm_id, geom AS way
+SELECT 0 AS osm_id, way
   FROM water_polygons
   WHERE
-    geom && !bbox!
+    way && !bbox!
 ) water]]></Parameter>
        <Parameter name="type"><![CDATA[postgis]]></Parameter>
        <Parameter name="user"><![CDATA[]]></Parameter>
