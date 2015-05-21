@@ -162,8 +162,7 @@ UNION ALL
 SELECT 0 AS osm_id, geom AS way
   FROM water_polygons
   WHERE
-    z(!scale_denominator!) >= 10
-    AND geom && !bbox!
+    geom && !bbox!
 ) water]]></Parameter>
        <Parameter name="type"><![CDATA[postgis]]></Parameter>
        <Parameter name="user"><![CDATA[]]></Parameter>
