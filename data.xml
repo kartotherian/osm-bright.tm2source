@@ -155,7 +155,7 @@ SELECT osm_id, way
     AND
     (
       mb_z(!scale_denominator!) >= 14
-      OR way_area >= 5000000000 / 2.3^z(!scale_denominator!)
+      OR way_area >= 5000000000 / 2.3^mb_z(!scale_denominator!)
     )
     AND way && !bbox!
 UNION ALL
