@@ -10,9 +10,9 @@ _prefs:
   saveCenter: true
 attribution: ''
 center: 
-  - -122.3869
-  - 37.6153
-  - 15
+  - 5
+  - 45
+  - 10
 description: ''
 Layer: 
   - id: landuse
@@ -32,21 +32,21 @@ Layer:
           FROM planet_osm_polygon
           WHERE
             landuse IN ('cemetery', 'industrial')
-            AND z(!scale_denominator!) >= 10
+            AND mb_z(!scale_denominator!) >= 10
             AND way && !bbox!
         UNION ALL
         SELECT osm_id, way, 'industrial' AS class, z_order
           FROM planet_osm_polygon
           WHERE
             aeroway IS NOT NULL
-            AND z(!scale_denominator!) >= 10
+            AND mb_z(!scale_denominator!) >= 10
             AND way && !bbox!
         UNION ALL
         SELECT osm_id, way, 'hospital' AS class, z_order
           FROM planet_osm_polygon
           WHERE
             amenity = 'hospital'
-            AND z(!scale_denominator!) >= 12
+            AND mb_z(!scale_denominator!) >= 12
             AND way && !bbox!
         UNION ALL
         -- TODO: conservation???
@@ -54,42 +54,42 @@ Layer:
           FROM planet_osm_polygon
           WHERE
             landuse = 'village_green'
-            AND z(!scale_denominator!) >= 10
+            AND mb_z(!scale_denominator!) >= 10
             AND way && !bbox!
         UNION ALL
         SELECT osm_id, way, 'park' AS class, z_order
           FROM planet_osm_polygon
           WHERE
             leisure IN ('park', 'playground')
-            AND z(!scale_denominator!) >= 10
+            AND mb_z(!scale_denominator!) >= 10
             AND way && !bbox!
         UNION ALL
         SELECT osm_id, way, 'park' AS class, z_order
           FROM planet_osm_polygon
           WHERE
             leisure IN ('national_reserve', 'nature_reserve', 'golf_course')
-            AND z(!scale_denominator!) >= 7
+            AND mb_z(!scale_denominator!) >= 7
             AND way && !bbox!
         UNION ALL
         SELECT osm_id, way, 'park' AS class, z_order
           FROM planet_osm_polygon
           WHERE
             boundary = 'national_park'
-            AND z(!scale_denominator!) >= 7
+            AND mb_z(!scale_denominator!) >= 7
             AND way && !bbox!
         UNION ALL
         SELECT osm_id, way, 'school' AS class, z_order
           FROM planet_osm_polygon
           WHERE
             amenity IN ('school', 'university')
-            AND z(!scale_denominator!) >= 10
+            AND mb_z(!scale_denominator!) >= 10
             AND way && !bbox!
         UNION ALL
         SELECT osm_id, way, 'wood' AS class, z_order
           FROM planet_osm_polygon
           WHERE
             landuse IN ('wood', 'forest')
-            AND z(!scale_denominator!) >= 7
+            AND mb_z(!scale_denominator!) >= 7
             AND way && !bbox!
         ) landuse
       type: postgis
@@ -118,13 +118,13 @@ Layer:
         SELECT osm_id, way, waterway AS class
           FROM planet_osm_line
           WHERE waterway IN ('river', 'canal')
-          AND z(!scale_denominator!) >= 8
+          AND mb_z(!scale_denominator!) >= 8
           AND way && !bbox!
         UNION ALL
         SELECT osm_id, way, waterway AS class
           FROM planet_osm_line
           WHERE waterway IN ('stream', 'stream_intermittent')
-          AND z(!scale_denominator!) >= 13
+          AND mb_z(!scale_denominator!) >= 13
           AND way && !bbox!
         ) waterway
       type: postgis
@@ -160,7 +160,7 @@ Layer:
             )
             AND
             (
-              z(!scale_denominator!) >= 14
+              mb_z(!scale_denominator!) >= 14
               OR way_area >= 5000000000 / 2.3^z(!scale_denominator!)
             )
             AND way && !bbox!
@@ -196,14 +196,14 @@ Layer:
           WHERE
             aeroway IS NOT NULL
             AND aeroway <> 'aerodrome'
-            AND z(!scale_denominator!) >= 12
+            AND mb_z(!scale_denominator!) >= 12
             AND way && !bbox!
         UNION ALL
         SELECT osm_id, way, aeroway AS type
           FROM planet_osm_line
           WHERE
             aeroway IS NOT NULL
-            AND z(!scale_denominator!) >= 12
+            AND mb_z(!scale_denominator!) >= 12
             AND way && !bbox!
         ) aeroway
       type: postgis
@@ -234,7 +234,7 @@ Layer:
             tunnel IS NOT NULL
             AND tunnel <> 'no'
             AND highway IN ('motorway')
-            AND z(!scale_denominator!) >= 5
+            AND mb_z(!scale_denominator!) >= 5
             AND way && !bbox!
         UNION ALL
         SELECT osm_id, way, 'motorway_link' AS class
@@ -243,7 +243,7 @@ Layer:
             tunnel IS NOT NULL
             AND tunnel <> 'no'
             AND highway IN ('motorway_link')
-            AND z(!scale_denominator!) >= 13
+            AND mb_z(!scale_denominator!) >= 13
             AND way && !bbox!
         UNION ALL
         SELECT osm_id, way, 'main' AS class
@@ -252,7 +252,7 @@ Layer:
             tunnel IS NOT NULL
             AND tunnel <> 'no'
             AND highway IN ('primary', 'primary_link', 'trunk', 'trunk_link')
-            AND z(!scale_denominator!) >= 5
+            AND mb_z(!scale_denominator!) >= 5
             AND way && !bbox!
         UNION ALL
         SELECT osm_id, way, 'main' AS class
@@ -261,7 +261,7 @@ Layer:
             tunnel IS NOT NULL
             AND tunnel <> 'no'
             AND highway IN ('secondary', 'secondary_link')
-            AND z(!scale_denominator!) >= 9
+            AND mb_z(!scale_denominator!) >= 9
             AND way && !bbox!
         UNION ALL
         SELECT osm_id, way, 'main' AS class
@@ -270,7 +270,7 @@ Layer:
             tunnel IS NOT NULL
             AND tunnel <> 'no'
             AND highway IN ('tertiary', 'tertiary_link')
-            AND z(!scale_denominator!) >= 12
+            AND mb_z(!scale_denominator!) >= 12
             AND way && !bbox!
         UNION ALL
         SELECT osm_id, way, 'street' AS class
@@ -279,7 +279,7 @@ Layer:
             tunnel IS NOT NULL
             AND tunnel <> 'no'
             AND highway IN ('residential', 'unclassified', 'living_street')
-            AND z(!scale_denominator!) >= 12
+            AND mb_z(!scale_denominator!) >= 12
             AND way && !bbox!
         UNION ALL
         SELECT osm_id, way, 'street_limited' AS class
@@ -288,7 +288,7 @@ Layer:
             tunnel IS NOT NULL
             AND tunnel <> 'no'
             AND (highway IN ('pedestrian', 'construction') or access = 'private')
-            AND z(!scale_denominator!) >= 12
+            AND mb_z(!scale_denominator!) >= 12
             AND way && !bbox!
         UNION ALL
         SELECT osm_id, way, 'service' AS class
@@ -297,7 +297,7 @@ Layer:
             tunnel IS NOT NULL
             AND tunnel <> 'no'
             AND highway IN ('service', 'track')
-            AND z(!scale_denominator!) >= 15
+            AND mb_z(!scale_denominator!) >= 15
             AND way && !bbox!
         UNION ALL
         SELECT osm_id, way, 'driveway' AS class
@@ -306,7 +306,7 @@ Layer:
             tunnel IS NOT NULL
             AND tunnel <> 'no'
             AND highway IN ('driveway')
-            AND z(!scale_denominator!) >= 15
+            AND mb_z(!scale_denominator!) >= 15
             AND way && !bbox!
         UNION ALL
         SELECT osm_id, way, 'path' AS class
@@ -315,7 +315,7 @@ Layer:
             tunnel IS NOT NULL
             AND tunnel <> 'no'
             AND highway IN ('path', 'cycleway', 'ski', 'steps', 'bridleway')
-            AND z(!scale_denominator!) >= 15
+            AND mb_z(!scale_denominator!) >= 15
             AND way && !bbox!
         UNION ALL
         SELECT osm_id, way, 'major_rail' AS class
@@ -324,7 +324,7 @@ Layer:
             tunnel IS NOT NULL
             AND tunnel <> 'no'
             AND highway IN ('rail', 'monorail', 'narrow_gauge', 'subway', 'tram')
-            AND z(!scale_denominator!) >= 12
+            AND mb_z(!scale_denominator!) >= 12
             AND way && !bbox!
         UNION ALL
         SELECT osm_id, way, 'minor_rail' AS class
@@ -333,7 +333,7 @@ Layer:
             tunnel IS NOT NULL
             AND tunnel <> 'no'
             AND highway IN ('funicular', 'light_rail', 'preserved')
-            AND z(!scale_denominator!) >= 15
+            AND mb_z(!scale_denominator!) >= 15
             AND way && !bbox!
         ) tunnel
       type: postgis
@@ -364,7 +364,7 @@ Layer:
             (bridge IS NULL OR bridge = 'no')
             AND (tunnel IS NULL OR tunnel = 'no')
             AND highway IN ('motorway')
-            AND z(!scale_denominator!) >= 5
+            AND mb_z(!scale_denominator!) >= 5
             AND way && !bbox!
         UNION ALL
         SELECT osm_id, way, 'motorway_link' AS class
@@ -373,7 +373,7 @@ Layer:
             (bridge IS NULL OR bridge = 'no')
             AND (tunnel IS NULL OR tunnel = 'no')
             AND highway IN ('motorway_link')
-            AND z(!scale_denominator!) >= 13
+            AND mb_z(!scale_denominator!) >= 13
             AND way && !bbox!
         UNION ALL
         SELECT osm_id, way, 'main' AS class
@@ -382,7 +382,7 @@ Layer:
             (bridge IS NULL OR bridge = 'no')
             AND (tunnel IS NULL OR tunnel = 'no')
             AND highway IN ('primary', 'primary_link', 'trunk', 'trunk_link')
-            AND z(!scale_denominator!) >= 5
+            AND mb_z(!scale_denominator!) >= 5
             AND way && !bbox!
         UNION ALL
         SELECT osm_id, way, 'main' AS class
@@ -391,7 +391,7 @@ Layer:
             (bridge IS NULL OR bridge = 'no')
             AND (tunnel IS NULL OR tunnel = 'no')
             AND highway IN ('secondary', 'secondary_link')
-            AND z(!scale_denominator!) >= 9
+            AND mb_z(!scale_denominator!) >= 9
             AND way && !bbox!
         UNION ALL
         SELECT osm_id, way, 'main' AS class
@@ -400,7 +400,7 @@ Layer:
             (bridge IS NULL OR bridge = 'no')
             AND (tunnel IS NULL OR tunnel = 'no')
             AND highway IN ('tertiary', 'tertiary_link')
-            AND z(!scale_denominator!) >= 12
+            AND mb_z(!scale_denominator!) >= 12
             AND way && !bbox!
         UNION ALL
         SELECT osm_id, way, 'street' AS class
@@ -409,7 +409,7 @@ Layer:
             (bridge IS NULL OR bridge = 'no')
             AND (tunnel IS NULL OR tunnel = 'no')
             AND highway IN ('residential', 'unclassified', 'living_street')
-            AND z(!scale_denominator!) >= 12
+            AND mb_z(!scale_denominator!) >= 12
             AND way && !bbox!
         UNION ALL
         SELECT osm_id, way, 'street' AS class
@@ -418,7 +418,7 @@ Layer:
             (bridge IS NULL OR bridge = 'no')
             AND (tunnel IS NULL OR tunnel = 'no')
             AND highway IN ('residential', 'unclassified', 'living_street')
-            AND z(!scale_denominator!) >= 12
+            AND mb_z(!scale_denominator!) >= 12
             AND way && !bbox!
         UNION ALL
         SELECT osm_id, way, 'street_limited' AS class
@@ -427,7 +427,7 @@ Layer:
             (bridge IS NULL OR bridge = 'no')
             AND (tunnel IS NULL OR tunnel = 'no')
             AND (highway IN ('pedestrian', 'construction') or access = 'private')
-            AND z(!scale_denominator!) >= 12
+            AND mb_z(!scale_denominator!) >= 12
             AND way && !bbox!
         UNION ALL
         SELECT osm_id, way, 'service' AS class
@@ -436,7 +436,7 @@ Layer:
             (bridge IS NULL OR bridge = 'no')
             AND (tunnel IS NULL OR tunnel = 'no')
             AND highway IN ('service', 'track')
-            AND z(!scale_denominator!) >= 15
+            AND mb_z(!scale_denominator!) >= 15
             AND way && !bbox!
         UNION ALL
         SELECT osm_id, way, 'driveway' AS class
@@ -445,7 +445,7 @@ Layer:
             (bridge IS NULL OR bridge = 'no')
             AND (tunnel IS NULL OR tunnel = 'no')
             AND highway IN ('driveway')
-            AND z(!scale_denominator!) >= 15
+            AND mb_z(!scale_denominator!) >= 15
             AND way && !bbox!
         UNION ALL
         SELECT osm_id, way, 'path' AS class
@@ -454,7 +454,7 @@ Layer:
             (bridge IS NULL OR bridge = 'no')
             AND (tunnel IS NULL OR tunnel = 'no')
             AND highway IN ('path', 'cycleway', 'ski', 'steps', 'bridleway', 'footway')
-            AND z(!scale_denominator!) >= 15
+            AND mb_z(!scale_denominator!) >= 15
             AND way && !bbox!
         UNION ALL
         SELECT osm_id, way, 'major_rail' AS class
@@ -463,7 +463,7 @@ Layer:
             (bridge IS NULL OR bridge = 'no')
             AND (tunnel IS NULL OR tunnel = 'no')
             AND railway IN ('rail', 'monorail', 'narrow_gauge', 'subway', 'tram')
-            AND z(!scale_denominator!) >= 12
+            AND mb_z(!scale_denominator!) >= 12
             AND way && !bbox!
         UNION ALL
         SELECT osm_id, way, 'minor_rail' AS class
@@ -472,7 +472,7 @@ Layer:
             (bridge IS NULL OR bridge = 'no')
             AND (tunnel IS NULL OR tunnel = 'no')
             AND railway IN ('funicular', 'light_rail', 'preserved')
-            AND z(!scale_denominator!) >= 15
+            AND mb_z(!scale_denominator!) >= 15
             AND way && !bbox!
         ) road
       type: postgis
@@ -503,7 +503,7 @@ Layer:
             bridge IS NOT NULL
             AND bridge <> 'no'
             AND highway IN ('motorway')
-            AND z(!scale_denominator!) >= 5
+            AND mb_z(!scale_denominator!) >= 5
             AND way && !bbox!
         UNION ALL
         SELECT osm_id, way, 'motorway_link' AS class
@@ -512,7 +512,7 @@ Layer:
             bridge IS NOT NULL
             AND bridge <> 'no'
             AND highway IN ('motorway_link')
-            AND z(!scale_denominator!) >= 13
+            AND mb_z(!scale_denominator!) >= 13
             AND way && !bbox!
         UNION ALL
         SELECT osm_id, way, 'main' AS class
@@ -521,7 +521,7 @@ Layer:
             bridge IS NOT NULL
             AND bridge <> 'no'
             AND highway IN ('primary', 'primary_link', 'trunk', 'trunk_link')
-            AND z(!scale_denominator!) >= 5
+            AND mb_z(!scale_denominator!) >= 5
             AND way && !bbox!
         UNION ALL
         SELECT osm_id, way, 'main' AS class
@@ -530,7 +530,7 @@ Layer:
             bridge IS NOT NULL
             AND bridge <> 'no'
             AND highway IN ('secondary', 'secondary_link')
-            AND z(!scale_denominator!) >= 9
+            AND mb_z(!scale_denominator!) >= 9
             AND way && !bbox!
         UNION ALL
         SELECT osm_id, way, 'main' AS class
@@ -539,7 +539,7 @@ Layer:
             bridge IS NOT NULL
             AND bridge <> 'no'
             AND highway IN ('tertiary', 'tertiary_link')
-            AND z(!scale_denominator!) >= 12
+            AND mb_z(!scale_denominator!) >= 12
             AND way && !bbox!
         UNION ALL
         SELECT osm_id, way, 'street' AS class
@@ -548,7 +548,7 @@ Layer:
             bridge IS NOT NULL
             AND bridge <> 'no'
             AND highway IN ('residential', 'unclassified', 'living_street')
-            AND z(!scale_denominator!) >= 12
+            AND mb_z(!scale_denominator!) >= 12
             AND way && !bbox!
         UNION ALL
         SELECT osm_id, way, 'street_limited' AS class
@@ -557,7 +557,7 @@ Layer:
             bridge IS NOT NULL
             AND bridge <> 'no'
             AND (highway IN ('pedestrian', 'construction') or access = 'private')
-            AND z(!scale_denominator!) >= 12
+            AND mb_z(!scale_denominator!) >= 12
             AND way && !bbox!
         UNION ALL
         SELECT osm_id, way, 'service' AS class
@@ -566,7 +566,7 @@ Layer:
             bridge IS NOT NULL
             AND bridge <> 'no'
             AND highway IN ('service', 'track')
-            AND z(!scale_denominator!) >= 15
+            AND mb_z(!scale_denominator!) >= 15
             AND way && !bbox!
         UNION ALL
         SELECT osm_id, way, 'driveway' AS class
@@ -575,7 +575,7 @@ Layer:
             bridge IS NOT NULL
             AND bridge <> 'no'
             AND highway IN ('driveway')
-            AND z(!scale_denominator!) >= 15
+            AND mb_z(!scale_denominator!) >= 15
             AND way && !bbox!
         UNION ALL
         SELECT osm_id, way, 'path' AS class
@@ -584,7 +584,7 @@ Layer:
             bridge IS NOT NULL
             AND bridge <> 'no'
             AND highway IN ('path', 'cycleway', 'ski', 'steps', 'bridleway')
-            AND z(!scale_denominator!) >= 15
+            AND mb_z(!scale_denominator!) >= 15
             AND way && !bbox!
         UNION ALL
         SELECT osm_id, way, 'major_rail' AS class
@@ -593,7 +593,7 @@ Layer:
             bridge IS NOT NULL
             AND bridge <> 'no'
             AND highway IN ('rail', 'monorail', 'narrow_gauge', 'subway', 'tram')
-            AND z(!scale_denominator!) >= 12
+            AND mb_z(!scale_denominator!) >= 12
             AND way && !bbox!
         UNION ALL
         SELECT osm_id, way, 'minor_rail' AS class
@@ -602,7 +602,7 @@ Layer:
             bridge IS NOT NULL
             AND bridge <> 'no'
             AND highway IN ('funicular', 'light_rail', 'preserved')
-            AND z(!scale_denominator!) >= 15
+            AND mb_z(!scale_denominator!) >= 15
             AND way && !bbox!
         ) bridge
       type: postgis
@@ -633,7 +633,7 @@ Layer:
             boundary = 'administrative'
             AND (
               admin_level = '2'
-              OR ( admin_level = '4' AND z(!scale_denominator!) >= 5 )
+              OR ( admin_level = '4' AND mb_z(!scale_denominator!) >= 5 )
             )
             AND way && !bbox!
         ) admin
@@ -671,7 +671,7 @@ Layer:
           FROM planet_osm_point
           WHERE
             place = 'country'
-            AND z(!scale_denominator!) < 12
+            AND mb_z(!scale_denominator!) < 12
             AND way && !bbox!
         ) country_label
       type: postgis
@@ -711,7 +711,7 @@ Layer:
           FROM planet_osm_point
           WHERE
             place = 'town'
-            AND z(!scale_denominator!) >= 7
+            AND mb_z(!scale_denominator!) >= 7
             AND way && !bbox!
         UNION ALL
         SELECT osm_id, way, name AS name_en, place AS "type",
@@ -719,7 +719,7 @@ Layer:
           FROM planet_osm_point
           WHERE
             place = 'village'
-            AND z(!scale_denominator!) >= 11
+            AND mb_z(!scale_denominator!) >= 11
             AND way && !bbox!
         UNION ALL
         SELECT osm_id, way, name AS name_en, place AS "type",
@@ -727,7 +727,7 @@ Layer:
           FROM planet_osm_point
           WHERE
             place IN ('hamlet', 'suburb','neighbourhood')
-            AND z(!scale_denominator!) >= 13
+            AND mb_z(!scale_denominator!) >= 13
             AND way && !bbox!
         ) data
         ) place_label
@@ -757,100 +757,100 @@ Layer:
       table: |-
         (
         SELECT osm_id, 'default' AS shield, way, name AS name_en, ref, char_length(ref) AS reflen,
-          ROUND(merc_length(way)) AS len, 'motorway' AS class
+          ROUND(mb_merc_length(way)) AS len, 'motorway' AS class
           FROM planet_osm_roads
           WHERE
             bridge IS NULL AND tunnel IS NULL AND highway IN ('motorway')
-            AND z(!scale_denominator!) >= 5
-            --AND linelabel(z(!scale_denominator!), name, way)
+            AND mb_z(!scale_denominator!) >= 5
+            --AND mb_linelabel(mb_z(!scale_denominator!), name, way)
             AND way && !bbox!
         UNION ALL
         SELECT osm_id, 'default' AS shield, way, name AS name_en, ref, char_length(ref) AS reflen,
-          ROUND(merc_length(way)) AS len, 'motorway_link' AS class
+          ROUND(mb_merc_length(way)) AS len, 'motorway_link' AS class
           FROM planet_osm_roads
           WHERE
             bridge IS NULL AND tunnel IS NULL AND highway IN ('motorway_link')
-            AND z(!scale_denominator!) >= 13
-            --AND linelabel(z(!scale_denominator!), name, way)
+            AND mb_z(!scale_denominator!) >= 13
+            --AND mb_linelabel(mb_z(!scale_denominator!), name, way)
             AND way && !bbox!
         UNION ALL
         SELECT osm_id, 'default' AS shield, way, name AS name_en, ref, char_length(ref) AS reflen,
-          ROUND(merc_length(way)) AS len, 'main' AS class
+          ROUND(mb_merc_length(way)) AS len, 'main' AS class
           FROM planet_osm_roads
           WHERE
             bridge IS NULL AND tunnel IS NULL AND highway IN ('primary',
           'primary_link', 'trunk', 'trunk_link')
-            AND z(!scale_denominator!) >= 5
-            --AND linelabel(z(!scale_denominator!), name, way)
+            AND mb_z(!scale_denominator!) >= 5
+            --AND mb_linelabel(mb_z(!scale_denominator!), name, way)
             AND way && !bbox!
         UNION ALL
         SELECT osm_id, 'default' AS shield, way, name AS name_en, ref, char_length(ref) AS reflen,
-          ROUND(merc_length(way)) AS len, 'main' AS class
+          ROUND(mb_merc_length(way)) AS len, 'main' AS class
           FROM planet_osm_roads
           WHERE
             bridge IS NULL AND tunnel IS NULL AND highway IN ('secondary',
           'secondary_link')
-            AND z(!scale_denominator!) >= 9
-            --AND linelabel(z(!scale_denominator!), name, way)
+            AND mb_z(!scale_denominator!) >= 9
+            --AND mb_linelabel(mb_z(!scale_denominator!), name, way)
             AND way && !bbox!
         UNION ALL
         SELECT osm_id, 'default' AS shield, way, name AS name_en, ref, char_length(ref) AS reflen,
-          ROUND(merc_length(way)) AS len, 'main' AS class
+          ROUND(mb_merc_length(way)) AS len, 'main' AS class
           FROM planet_osm_roads
           WHERE
             bridge IS NULL AND tunnel IS NULL AND highway IN ('tertiary',
           'tertiary_link')
-            AND z(!scale_denominator!) >= 12
-            --AND linelabel(z(!scale_denominator!), name, way)
+            AND mb_z(!scale_denominator!) >= 12
+            --AND mb_linelabel(mb_z(!scale_denominator!), name, way)
             AND way && !bbox!
         UNION ALL
         SELECT osm_id, 'default' AS shield, way, name AS name_en, ref, char_length(ref) AS reflen,
-          ROUND(merc_length(way)) AS len, 'street' AS class
+          ROUND(mb_merc_length(way)) AS len, 'street' AS class
           FROM planet_osm_roads
           WHERE
             bridge IS NULL AND tunnel IS NULL AND highway IN ('residential',
           'unclassified', 'living_street')
-            AND z(!scale_denominator!) >= 12
-            --AND linelabel(z(!scale_denominator!), name, way)
+            AND mb_z(!scale_denominator!) >= 12
+            --AND mb_linelabel(mb_z(!scale_denominator!), name, way)
             AND way && !bbox!
         UNION ALL
         SELECT osm_id, 'default' AS shield, way, name AS name_en, ref, char_length(ref) AS reflen,
-          ROUND(merc_length(way)) AS len, 'street_limited' AS class
+          ROUND(mb_merc_length(way)) AS len, 'street_limited' AS class
           FROM planet_osm_roads
           WHERE
             bridge IS NULL AND tunnel IS NULL AND (highway IN ('pedestrian',
           'construction') OR access = 'private')
-            AND z(!scale_denominator!) >= 12
-            --AND linelabel(z(!scale_denominator!), name, way)
+            AND mb_z(!scale_denominator!) >= 12
+            --AND mb_linelabel(mb_z(!scale_denominator!), name, way)
             AND way && !bbox!
         UNION ALL
         SELECT osm_id, 'default' AS shield, way, name AS name_en, ref, char_length(ref) AS reflen,
-          ROUND(merc_length(way)) AS len, 'service' AS class
+          ROUND(mb_merc_length(way)) AS len, 'service' AS class
           FROM planet_osm_roads
           WHERE
             bridge IS NULL AND tunnel IS NULL AND highway IN ('service',
           'track')
-            AND z(!scale_denominator!) >= 15
-            --AND linelabel(z(!scale_denominator!), name, way)
+            AND mb_z(!scale_denominator!) >= 15
+            --AND mb_linelabel(mb_z(!scale_denominator!), name, way)
             AND way && !bbox!
         UNION ALL
         SELECT osm_id, 'default' AS shield, way, name AS name_en, ref, char_length(ref) AS reflen,
-          ROUND(merc_length(way)) AS len, 'driveway' AS class
+          ROUND(mb_merc_length(way)) AS len, 'driveway' AS class
           FROM planet_osm_roads
           WHERE
             bridge IS NULL AND tunnel IS NULL AND highway IN ('driveway')
-            AND z(!scale_denominator!) >= 15
-            --AND linelabel(z(!scale_denominator!), name, way)
+            AND mb_z(!scale_denominator!) >= 15
+            --AND mb_linelabel(mb_z(!scale_denominator!), name, way)
             AND way && !bbox!
         UNION ALL
         SELECT osm_id, 'default' AS shield, way, name AS name_en, ref, char_length(ref) AS reflen,
-          ROUND(merc_length(way)) AS len, 'path' AS class
+          ROUND(mb_merc_length(way)) AS len, 'path' AS class
           FROM planet_osm_roads
           WHERE
             bridge IS NULL AND tunnel IS NULL AND highway IN ('path',
           'cycleway', 'ski', 'steps', 'bridleway')
-            AND z(!scale_denominator!) >= 15
-            --AND linelabel(z(!scale_denominator!), name, way)
+            AND mb_z(!scale_denominator!) >= 15
+            --AND mb_linelabel(mb_z(!scale_denominator!), name, way)
             AND way && !bbox!
         ) AS road_label
       type: postgis
