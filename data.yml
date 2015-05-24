@@ -697,7 +697,7 @@ Layer:
       port: ''
       table: |-
         (
-        SELECT DISTINCT ON(labelgrid(way, 64, 1)) * FROM(
+        SELECT DISTINCT ON(mb_labelgrid(way, 64, 1)) * FROM(
         /* TODO calculate real ranks and ldir */
         SELECT osm_id, way, name AS name_en, place AS "type",
             'SE' AS ldir, 1 AS localrank
