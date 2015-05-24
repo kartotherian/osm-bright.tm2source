@@ -1,5 +1,5 @@
-_prefs: 
-  disabled: 
+_prefs:
+  disabled:
     - place_label
     - country_label
     - admin
@@ -9,14 +9,14 @@ _prefs:
   rev: ''
   saveCenter: true
 attribution: ''
-center: 
+center:
   - 5
   - 45
   - 10
 description: ''
-Layer: 
+Layer:
   - id: landuse
-    Datasource: 
+    Datasource:
       dbname: gis
       extent: -20037508.34,-20037508.34,20037508.34,20037508.34
       geometry_field: ''
@@ -95,15 +95,15 @@ Layer:
       type: postgis
       user: ''
     description: ''
-    fields: 
+    fields:
       class: String
       osm_id: Number
       z_order: Number
-    properties: 
+    properties:
       "buffer-size": 8
     srs: +proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over
   - id: waterway
-    Datasource: 
+    Datasource:
       dbname: gis
       extent: -20037508.34,-20037508.34,20037508.34,20037508.34
       geometry_field: ''
@@ -130,14 +130,14 @@ Layer:
       type: postgis
       user: ''
     description: ''
-    fields: 
+    fields:
       class: String
       osm_id: Number
-    properties: 
+    properties:
       "buffer-size": 8
     srs: +proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over
   - id: water
-    Datasource: 
+    Datasource:
       dbname: gis
       extent: -20037508.34,-20037508.34,20037508.34,20037508.34
       geometry_field: way
@@ -161,7 +161,7 @@ Layer:
             AND
             (
               mb_z(!scale_denominator!) >= 14
-              OR way_area >= 5000000000 / 2.3^z(!scale_denominator!)
+              OR way_area >= 5000000000 / 2.3^mb_z(!scale_denominator!)
             )
             AND way && !bbox!
         UNION ALL
@@ -173,13 +173,13 @@ Layer:
       type: postgis
       user: ''
     description: ''
-    fields: 
+    fields:
       osm_id: Number
-    properties: 
+    properties:
       "buffer-size": 8
     srs: +proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over
   - id: aeroway
-    Datasource: 
+    Datasource:
       dbname: gis
       extent: -20037508.34,-20037508.34,20037508.34,20037508.34
       geometry_field: ''
@@ -209,14 +209,14 @@ Layer:
       type: postgis
       user: ''
     description: ''
-    fields: 
+    fields:
       osm_id: Number
       type: String
-    properties: 
+    properties:
       "buffer-size": 8
     srs: +proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over
   - id: tunnel
-    Datasource: 
+    Datasource:
       dbname: gis
       extent: -20037508.34,-20037508.34,20037508.34,20037508.34
       geometry_field: ''
@@ -339,14 +339,14 @@ Layer:
       type: postgis
       user: ''
     description: ''
-    fields: 
+    fields:
       class: String
       osm_id: Number
-    properties: 
+    properties:
       "buffer-size": 8
     srs: +proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over
   - id: road
-    Datasource: 
+    Datasource:
       dbname: gis
       extent: -20037508.34,-20037508.34,20037508.34,20037508.34
       geometry_field: way
@@ -478,14 +478,14 @@ Layer:
       type: postgis
       user: ''
     description: ''
-    fields: 
+    fields:
       class: String
       osm_id: Number
-    properties: 
+    properties:
       "buffer-size": 8
     srs: +proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over
   - id: bridge
-    Datasource: 
+    Datasource:
       dbname: gis
       extent: -20037508.34,-20037508.34,20037508.34,20037508.34
       geometry_field: ''
@@ -608,14 +608,14 @@ Layer:
       type: postgis
       user: ''
     description: ''
-    fields: 
+    fields:
       class: String
       osm_id: Number
-    properties: 
+    properties:
       "buffer-size": 8
     srs: +proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over
   - id: admin
-    Datasource: 
+    Datasource:
       dbname: gis
       extent: -20037508.34,-20037508.34,20037508.34,20037508.34
       geometry_field: ''
@@ -640,15 +640,15 @@ Layer:
       type: postgis
       user: ''
     description: ''
-    fields: 
+    fields:
       admin_level: String
       maritime: Number
       osm_id: Number
-    properties: 
+    properties:
       "buffer-size": 8
     srs: +proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over
   - id: country_label
-    Datasource: 
+    Datasource:
       dbname: gis
       extent: -20037508.34,-20037508.34,20037508.34,20037508.34
       geometry_field: ''
@@ -677,15 +677,15 @@ Layer:
       type: postgis
       user: ''
     description: ''
-    fields: 
+    fields:
       name_en: String
       osm_id: Number
       scalerank: Number
-    properties: 
+    properties:
       "buffer-size": 64
     srs: +proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over
   - id: place_label
-    Datasource: 
+    Datasource:
       dbname: gis
       extent: -20037508.34,-20037508.34,20037508.34,20037508.34
       geometry_field: ''
@@ -734,17 +734,17 @@ Layer:
       type: postgis
       user: ''
     description: ''
-    fields: 
+    fields:
       ldir: String
       localrank: Number
       name_en: String
       osm_id: Number
       type: String
-    properties: 
+    properties:
       "buffer-size": 64
     srs: +proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over
   - id: road_label
-    Datasource: 
+    Datasource:
       dbname: gis
       extent: -20037508.34,-20037508.34,20037508.34,20037508.34
       geometry_field: ''
@@ -856,7 +856,7 @@ Layer:
       type: postgis
       user: ''
     description: ''
-    fields: 
+    fields:
       class: String
       len: Number
       name_en: String
@@ -864,7 +864,7 @@ Layer:
       ref: String
       reflen: Number
       shield: String
-    properties: 
+    properties:
       "buffer-size": 64
     srs: +proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over
 maxzoom: 16
