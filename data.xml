@@ -5,7 +5,7 @@
 <Parameters>
   <Parameter name="center">5,45,10</Parameter>
   <Parameter name="format">pbf</Parameter>
-  <Parameter name="json"><![CDATA[{"vector_layers":[{"id":"landuse","description":"","fields":{"osm_id":"Number","class":"String","z_order":"Number"}},{"id":"waterway","description":"","fields":{"osm_id":"Number","class":"String"}},{"id":"water","description":"","fields":{"osm_id":"Number"}},{"id":"aeroway","description":"","fields":{"osm_id":"Number","type":"String"}},{"id":"tunnel","description":"","fields":{"osm_id":"Number","class":"String"}},{"id":"road","description":"","fields":{"osm_id":"Number","class":"String"}},{"id":"bridge","description":"","fields":{"osm_id":"Number","class":"String"}},{"id":"admin","description":"","fields":{"osm_id":"Number","admin_level":"String","maritime":"Number"}},{"id":"country_label","description":"","fields":{"osm_id":"Number","name_en":"String","scalerank":"Number"}},{"id":"place_label","description":"","fields":{"osm_id":"Number","name_en":"String","type":"String","ldir":"String","localrank":"Number"}},{"id":"road_label","description":"","fields":{"osm_id":"Number","shield":"String","name_en":"String","ref":"String","reflen":"Number","len":"Number","class":"String"}}]}]]></Parameter>
+  <Parameter name="json"><![CDATA[{"vector_layers":[{"id":"landuse","description":"","fields":{"osm_id":"Number","class":"String","z_order":"Number","way_area":"Number"}},{"id":"waterway","description":"","fields":{"osm_id":"Number","class":"String"}},{"id":"water","description":"","fields":{"osm_id":"Number"}},{"id":"aeroway","description":"","fields":{"osm_id":"Number","type":"String"}},{"id":"tunnel","description":"","fields":{"osm_id":"Number","class":"String"}},{"id":"road","description":"","fields":{"osm_id":"Number","class":"String"}},{"id":"bridge","description":"","fields":{"osm_id":"Number","class":"String"}},{"id":"admin","description":"","fields":{"osm_id":"Number","admin_level":"String","maritime":"Number"}},{"id":"country_label","description":"","fields":{"osm_id":"Number","name_en":"String","scalerank":"Number"}},{"id":"place_label","description":"","fields":{"osm_id":"Number","name_en":"String","type":"String","ldir":"String","localrank":"Number"}},{"id":"road_label","description":"","fields":{"osm_id":"Number","shield":"String","name_en":"String","ref":"String","reflen":"Number","len":"Number","class":"String"}}]}]]></Parameter>
   <Parameter name="maxzoom">16</Parameter>
   <Parameter name="minzoom">0</Parameter>
   <Parameter name="name"><![CDATA[osm2pgsql-osm-bright]]></Parameter>
@@ -27,21 +27,22 @@
        <Parameter name="password"><![CDATA[]]></Parameter>
        <Parameter name="port"><![CDATA[]]></Parameter>
        <Parameter name="table"><![CDATA[(
-SELECT osm_id, way, landuse AS class, z_order
+SELECT * FROM (
+SELECT osm_id, way, landuse AS class, z_order, way_area
   FROM planet_osm_polygon
   WHERE
     landuse IN ('cemetery', 'industrial')
     AND mb_z(!scale_denominator!) >= 10
     AND way && !bbox!
 UNION ALL
-SELECT osm_id, way, 'industrial' AS class, z_order
+SELECT osm_id, way, 'industrial' AS class, z_order, way_area
   FROM planet_osm_polygon
   WHERE
     aeroway IS NOT NULL
     AND mb_z(!scale_denominator!) >= 10
     AND way && !bbox!
 UNION ALL
-SELECT osm_id, way, 'hospital' AS class, z_order
+SELECT osm_id, way, 'hospital' AS class, z_order, way_area
   FROM planet_osm_polygon
   WHERE
     amenity = 'hospital'
@@ -49,47 +50,48 @@ SELECT osm_id, way, 'hospital' AS class, z_order
     AND way && !bbox!
 UNION ALL
 -- TODO: conservation???
-SELECT osm_id, way, 'park' AS class, z_order
+SELECT osm_id, way, 'park' AS class, z_order, way_area
   FROM planet_osm_polygon
   WHERE
     landuse = 'village_green'
     AND mb_z(!scale_denominator!) >= 10
     AND way && !bbox!
 UNION ALL
-SELECT osm_id, way, 'park' AS class, z_order
+SELECT osm_id, way, 'park' AS class, z_order, way_area
   FROM planet_osm_polygon
   WHERE
     leisure IN ('park', 'playground')
     AND mb_z(!scale_denominator!) >= 10
     AND way && !bbox!
 UNION ALL
-SELECT osm_id, way, 'park' AS class, z_order
+SELECT osm_id, way, 'park' AS class, z_order, way_area
   FROM planet_osm_polygon
   WHERE
     leisure IN ('national_reserve', 'nature_reserve', 'golf_course')
     AND mb_z(!scale_denominator!) >= 7
     AND way && !bbox!
 UNION ALL
-SELECT osm_id, way, 'park' AS class, z_order
+SELECT osm_id, way, 'park' AS class, z_order, way_area
   FROM planet_osm_polygon
   WHERE
     boundary = 'national_park'
     AND mb_z(!scale_denominator!) >= 7
     AND way && !bbox!
 UNION ALL
-SELECT osm_id, way, 'school' AS class, z_order
+SELECT osm_id, way, 'school' AS class, z_order, way_area
   FROM planet_osm_polygon
   WHERE
     amenity IN ('school', 'university')
     AND mb_z(!scale_denominator!) >= 10
     AND way && !bbox!
 UNION ALL
-SELECT osm_id, way, 'wood' AS class, z_order
+SELECT osm_id, way, 'wood' AS class, z_order, way_area
   FROM planet_osm_polygon
   WHERE
     landuse IN ('wood', 'forest')
     AND mb_z(!scale_denominator!) >= 7
     AND way && !bbox!
+) united_select ORDER BY z_order, way_area DESC
 ) landuse]]></Parameter>
        <Parameter name="type"><![CDATA[postgis]]></Parameter>
        <Parameter name="user"><![CDATA[]]></Parameter>
