@@ -1,3 +1,0 @@
-[submodule "sql/postgis-vt-util"]
-	path = sql/postgis-vt-util
-	url = https://github.com/nyurik/postgis-vt-util.git
