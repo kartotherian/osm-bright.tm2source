@@ -28,21 +28,22 @@ Layer:
       port: ''
       table: |-
         (
-        SELECT osm_id, way, landuse AS class, z_order
+        SELECT * FROM (
+        SELECT osm_id, way, landuse AS class, z_order, way_area
           FROM planet_osm_polygon
           WHERE
             landuse IN ('cemetery', 'industrial')
             AND mb_z(!scale_denominator!) >= 10
             AND way && !bbox!
         UNION ALL
-        SELECT osm_id, way, 'industrial' AS class, z_order
+        SELECT osm_id, way, 'industrial' AS class, z_order, way_area
           FROM planet_osm_polygon
           WHERE
             aeroway IS NOT NULL
             AND mb_z(!scale_denominator!) >= 10
             AND way && !bbox!
         UNION ALL
-        SELECT osm_id, way, 'hospital' AS class, z_order
+        SELECT osm_id, way, 'hospital' AS class, z_order, way_area
           FROM planet_osm_polygon
           WHERE
             amenity = 'hospital'
@@ -50,47 +51,48 @@ Layer:
             AND way && !bbox!
         UNION ALL
         -- TODO: conservation???
-        SELECT osm_id, way, 'park' AS class, z_order
+        SELECT osm_id, way, 'park' AS class, z_order, way_area
           FROM planet_osm_polygon
           WHERE
             landuse = 'village_green'
             AND mb_z(!scale_denominator!) >= 10
             AND way && !bbox!
         UNION ALL
-        SELECT osm_id, way, 'park' AS class, z_order
+        SELECT osm_id, way, 'park' AS class, z_order, way_area
           FROM planet_osm_polygon
           WHERE
             leisure IN ('park', 'playground')
             AND mb_z(!scale_denominator!) >= 10
             AND way && !bbox!
         UNION ALL
-        SELECT osm_id, way, 'park' AS class, z_order
+        SELECT osm_id, way, 'park' AS class, z_order, way_area
           FROM planet_osm_polygon
           WHERE
             leisure IN ('national_reserve', 'nature_reserve', 'golf_course')
             AND mb_z(!scale_denominator!) >= 7
             AND way && !bbox!
         UNION ALL
-        SELECT osm_id, way, 'park' AS class, z_order
+        SELECT osm_id, way, 'park' AS class, z_order, way_area
           FROM planet_osm_polygon
           WHERE
             boundary = 'national_park'
             AND mb_z(!scale_denominator!) >= 7
             AND way && !bbox!
         UNION ALL
-        SELECT osm_id, way, 'school' AS class, z_order
+        SELECT osm_id, way, 'school' AS class, z_order, way_area
           FROM planet_osm_polygon
           WHERE
             amenity IN ('school', 'university')
             AND mb_z(!scale_denominator!) >= 10
             AND way && !bbox!
         UNION ALL
-        SELECT osm_id, way, 'wood' AS class, z_order
+        SELECT osm_id, way, 'wood' AS class, z_order, way_area
           FROM planet_osm_polygon
           WHERE
             landuse IN ('wood', 'forest')
             AND mb_z(!scale_denominator!) >= 7
             AND way && !bbox!
+        ) united_select ORDER BY z_order, way_area DESC
         ) landuse
       type: postgis
       user: ''
@@ -98,6 +100,7 @@ Layer:
     fields: 
       class: String
       osm_id: Number
+      way_area: Number
       z_order: Number
     properties: 
       "buffer-size": 8
