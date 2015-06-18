@@ -10,9 +10,9 @@ _prefs:
   saveCenter: true
 attribution: ''
 center: 
-  - 5
-  - 45
-  - 10
+  - -122.4359
+  - 37.7924
+  - 16
 description: ''
 Layer: 
   - id: landuse
@@ -631,7 +631,7 @@ Layer:
       table: |-
         (
         SELECT osm_id, way, admin_level, 0 AS maritime /* TODO */
-          FROM planet_osm_polygon
+          FROM planet_osm_roads
           WHERE
             boundary = 'administrative'
             AND (
