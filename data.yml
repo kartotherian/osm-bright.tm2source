@@ -1,18 +1,14 @@
 _prefs: 
-  disabled: 
-    - place_label
-    - country_label
-    - admin
-    - bridge
+  disabled: []
   inspector: false
   mapid: ''
   rev: ''
   saveCenter: true
 attribution: ''
 center: 
-  - 5
-  - 45
-  - 10
+  - -122.4398
+  - 37.7978
+  - 15
 description: ''
 Layer: 
   - id: landuse
@@ -215,6 +211,35 @@ Layer:
     fields: 
       osm_id: Number
       type: String
+    properties: 
+      "buffer-size": 8
+    srs: +proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over
+  - id: building
+    Datasource: 
+      dbname: gis
+      extent: -20037508.34,-20037508.34,20037508.34,20037508.34
+      geometry_field: ''
+      geometry_table: ''
+      host: ''
+      key_field: ''
+      max_size: 512
+      password: ''
+      port: ''
+      table: |-
+        (
+          SELECT osm_id, way
+            FROM planet_osm_polygon
+            WHERE
+              mb_z(!scale_denominator!) >= 14
+              AND building IS NOT NULL
+              AND building <> 'no'
+              AND way && !bbox!
+        ) building
+      type: postgis
+      user: ''
+    description: ''
+    fields: 
+      osm_id: Number
     properties: 
       "buffer-size": 8
     srs: +proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over
@@ -631,7 +656,7 @@ Layer:
       table: |-
         (
         SELECT osm_id, way, admin_level, 0 AS maritime /* TODO */
-          FROM planet_osm_polygon
+          FROM planet_osm_roads
           WHERE
             boundary = 'administrative'
             AND (
