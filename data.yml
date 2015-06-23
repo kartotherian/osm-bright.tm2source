@@ -6,9 +6,9 @@ _prefs:
   saveCenter: true
 attribution: ''
 center: 
-  - -122.4202
-  - 37.7942
-  - 15
+  - -124.1125
+  - 42.0834
+  - 10
 description: ''
 Layer: 
   - id: landuse
@@ -655,7 +655,7 @@ Layer:
       port: ''
       table: |-
         (
-        SELECT osm_id, way, admin_level, 0 AS maritime /* TODO */
+        SELECT osm_id, way, CAST (admin_level AS SMALLINT), 0 AS maritime /* TODO */
           FROM planet_osm_roads
           WHERE
             boundary = 'administrative'
