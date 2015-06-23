@@ -6,8 +6,8 @@ _prefs:
   saveCenter: true
 attribution: ''
 center: 
-  - -122.4398
-  - 37.7978
+  - -122.4202
+  - 37.7942
   - 15
 description: ''
 Layer: 
@@ -660,8 +660,8 @@ Layer:
           WHERE
             boundary = 'administrative'
             AND (
-              admin_level = '2'
-              OR ( admin_level = '4' AND mb_z(!scale_denominator!) >= 5 )
+              ( admin_level = '2' AND mb_z(!scale_denominator!) >= 2 )
+              OR ( admin_level = '4' AND mb_z(!scale_denominator!) >= 3 )
             )
             AND way && !bbox!
         ) admin
