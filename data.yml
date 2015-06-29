@@ -789,101 +789,34 @@ Layer:
       max_size: 512
       password: ''
       port: ''
-      table: |-
+      table: |
         (
         SELECT osm_id, 'default' AS shield, way, name AS name_en, ref, char_length(ref) AS reflen,
-          ROUND(mb_merc_length(way)) AS len, 'motorway' AS class
+          ROUND(mb_merc_length(way)) AS len
           FROM planet_osm_roads
           WHERE
-            bridge IS NULL AND tunnel IS NULL AND highway IN ('motorway')
-            AND mb_z(!scale_denominator!) >= 5
+            highway IN ('motorway', 'primary', 'primary_link', 'trunk', 'trunk_link', 'secondary', 'secondary_link', 'tertiary', 'tertiary_link', 'residential', 'unclassified', 'living_street')
+            AND ( name IS NOT NULL OR ref IS NOT NULL)
+            AND mb_z(!scale_denominator!) >= 11
             --AND mb_linelabel(mb_z(!scale_denominator!), name, way)
             AND way && !bbox!
         UNION ALL
-        SELECT osm_id, 'default' AS shield, way, name AS name_en, ref, char_length(ref) AS reflen,
-          ROUND(mb_merc_length(way)) AS len, 'motorway_link' AS class
+        SELECT osm_id, 'default' AS shield, way, name AS name_en, '' AS ref, 0 AS reflen,
+          ROUND(mb_merc_length(way)) AS len
           FROM planet_osm_roads
           WHERE
-            bridge IS NULL AND tunnel IS NULL AND highway IN ('motorway_link')
+            highway IN ('motorway_link')
+            AND name IS NOT NULL
             AND mb_z(!scale_denominator!) >= 13
             --AND mb_linelabel(mb_z(!scale_denominator!), name, way)
             AND way && !bbox!
         UNION ALL
-        SELECT osm_id, 'default' AS shield, way, name AS name_en, ref, char_length(ref) AS reflen,
-          ROUND(mb_merc_length(way)) AS len, 'main' AS class
+        SELECT osm_id, 'default' AS shield, way, name AS name_en, '' AS ref, 0 AS reflen,
+          ROUND(mb_merc_length(way)) AS len
           FROM planet_osm_roads
           WHERE
-            bridge IS NULL AND tunnel IS NULL AND highway IN ('primary',
-          'primary_link', 'trunk', 'trunk_link')
-            AND mb_z(!scale_denominator!) >= 5
-            --AND mb_linelabel(mb_z(!scale_denominator!), name, way)
-            AND way && !bbox!
-        UNION ALL
-        SELECT osm_id, 'default' AS shield, way, name AS name_en, ref, char_length(ref) AS reflen,
-          ROUND(mb_merc_length(way)) AS len, 'main' AS class
-          FROM planet_osm_roads
-          WHERE
-            bridge IS NULL AND tunnel IS NULL AND highway IN ('secondary',
-          'secondary_link')
-            AND mb_z(!scale_denominator!) >= 9
-            --AND mb_linelabel(mb_z(!scale_denominator!), name, way)
-            AND way && !bbox!
-        UNION ALL
-        SELECT osm_id, 'default' AS shield, way, name AS name_en, ref, char_length(ref) AS reflen,
-          ROUND(mb_merc_length(way)) AS len, 'main' AS class
-          FROM planet_osm_roads
-          WHERE
-            bridge IS NULL AND tunnel IS NULL AND highway IN ('tertiary',
-          'tertiary_link')
-            AND mb_z(!scale_denominator!) >= 12
-            --AND mb_linelabel(mb_z(!scale_denominator!), name, way)
-            AND way && !bbox!
-        UNION ALL
-        SELECT osm_id, 'default' AS shield, way, name AS name_en, ref, char_length(ref) AS reflen,
-          ROUND(mb_merc_length(way)) AS len, 'street' AS class
-          FROM planet_osm_roads
-          WHERE
-            bridge IS NULL AND tunnel IS NULL AND highway IN ('residential',
-          'unclassified', 'living_street')
-            AND mb_z(!scale_denominator!) >= 12
-            --AND mb_linelabel(mb_z(!scale_denominator!), name, way)
-            AND way && !bbox!
-        UNION ALL
-        SELECT osm_id, 'default' AS shield, way, name AS name_en, ref, char_length(ref) AS reflen,
-          ROUND(mb_merc_length(way)) AS len, 'street_limited' AS class
-          FROM planet_osm_roads
-          WHERE
-            bridge IS NULL AND tunnel IS NULL AND (highway IN ('pedestrian',
-          'construction') OR access = 'private')
-            AND mb_z(!scale_denominator!) >= 12
-            --AND mb_linelabel(mb_z(!scale_denominator!), name, way)
-            AND way && !bbox!
-        UNION ALL
-        SELECT osm_id, 'default' AS shield, way, name AS name_en, ref, char_length(ref) AS reflen,
-          ROUND(mb_merc_length(way)) AS len, 'service' AS class
-          FROM planet_osm_roads
-          WHERE
-            bridge IS NULL AND tunnel IS NULL AND highway IN ('service',
-          'track')
-            AND mb_z(!scale_denominator!) >= 15
-            --AND mb_linelabel(mb_z(!scale_denominator!), name, way)
-            AND way && !bbox!
-        UNION ALL
-        SELECT osm_id, 'default' AS shield, way, name AS name_en, ref, char_length(ref) AS reflen,
-          ROUND(mb_merc_length(way)) AS len, 'driveway' AS class
-          FROM planet_osm_roads
-          WHERE
-            bridge IS NULL AND tunnel IS NULL AND highway IN ('driveway')
-            AND mb_z(!scale_denominator!) >= 15
-            --AND mb_linelabel(mb_z(!scale_denominator!), name, way)
-            AND way && !bbox!
-        UNION ALL
-        SELECT osm_id, 'default' AS shield, way, name AS name_en, ref, char_length(ref) AS reflen,
-          ROUND(mb_merc_length(way)) AS len, 'path' AS class
-          FROM planet_osm_roads
-          WHERE
-            bridge IS NULL AND tunnel IS NULL AND highway IN ('path',
-          'cycleway', 'ski', 'steps', 'bridleway')
+            highway IN ('service', 'track', 'driveway', 'path', 'cycleway', 'ski', 'steps', 'bridleway')
+            AND name IS NOT NULL
             AND mb_z(!scale_denominator!) >= 15
             --AND mb_linelabel(mb_z(!scale_denominator!), name, way)
             AND way && !bbox!
@@ -892,7 +825,6 @@ Layer:
       user: ''
     description: ''
     fields: 
-      class: String
       len: Number
       name_en: String
       osm_id: Number
