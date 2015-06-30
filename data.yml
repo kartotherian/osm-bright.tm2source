@@ -6,9 +6,9 @@ _prefs:
   saveCenter: true
 attribution: ''
 center: 
-  - -123.0242
-  - 37.7493
-  - 11
+  - -123.316
+  - 37.6371
+  - 9
 description: ''
 Layer: 
   - id: landuse
@@ -410,7 +410,7 @@ Layer:
             (bridge IS NULL OR bridge = 'no')
             AND (tunnel IS NULL OR tunnel = 'no')
             AND highway IN ('primary', 'primary_link', 'trunk', 'trunk_link')
-            AND mb_z(!scale_denominator!) >= 5
+            AND mb_z(!scale_denominator!) >= 7
             AND way && !bbox!
         UNION ALL
         SELECT osm_id, way, 'main' AS class
