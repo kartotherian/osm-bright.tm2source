@@ -741,9 +741,8 @@ Layer:
             AND mb_z(!scale_denominator!) >= 4
             AND way && !bbox!
             -- On zoom 4, display cities with 1M+ population. Decrease by 250k every level
-            AND ((CASE population WHEN NULL THEN 0 ELSE CAST (population AS int) END)
-              + mb_z(!scale_denominator!) * 250000 - 2000000) > 0
-          ORDER BY CAST(population AS int) DESC
+            AND (to_int(population) + mb_z(!scale_denominator!) * 250000 - 2000000) > 0
+          ORDER BY to_int(population) DESC
         )
         UNION ALL
         (SELECT osm_id, way, name AS name_en, place AS "type",
@@ -753,7 +752,7 @@ Layer:
             place = 'town'
             AND mb_z(!scale_denominator!) >= 9
             AND way && !bbox!
-          ORDER BY CAST(population AS int) DESC
+          ORDER BY to_int(population) DESC
         )
         UNION ALL
         (SELECT osm_id, way, name AS name_en, place AS "type",
@@ -763,7 +762,7 @@ Layer:
             place = 'village'
             AND mb_z(!scale_denominator!) >= 11
             AND way && !bbox!
-          ORDER BY CAST(population AS int) DESC
+          ORDER BY to_int(population) DESC
         )
         UNION ALL
         (SELECT osm_id, way, name AS name_en, place AS "type",
@@ -774,7 +773,7 @@ Layer:
             AND name IS NOT NULL
             AND mb_z(!scale_denominator!) >= 13
             AND way && !bbox!
-          ORDER BY CAST(population AS int) DESC
+          ORDER BY to_int(population) DESC
         )
         ) data
         ) place_label
