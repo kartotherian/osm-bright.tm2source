@@ -27,72 +27,48 @@
        <Parameter name="password"><![CDATA[]]></Parameter>
        <Parameter name="port"><![CDATA[]]></Parameter>
        <Parameter name="table"><![CDATA[(
-SELECT * FROM (
-SELECT osm_id, way, landuse AS class, z_order, way_area
+SELECT
+    osm_id,
+    way,
+    CASE
+      WHEN landuse IN ('wood', 'forest') THEN 'wood'
+      WHEN leisure IN ('national_reserve', 'nature_reserve', 'golf_course') OR boundary = 'national_park' THEN 'park'
+      WHEN landuse IN ('cemetery', 'industrial') THEN landuse
+      WHEN aeroway IS NOT NULL THEN 'industrial'
+      WHEN landuse = 'village_green' OR leisure IN ('park', 'playground') THEN 'park'
+      WHEN amenity IN ('school', 'university') THEN 'school'
+      WHEN amenity = 'hospital' THEN 'hospital'
+      ELSE NULL
+    END AS class,
+    z_order,
+    way_area
   FROM planet_osm_polygon
   WHERE
-    landuse IN ('cemetery', 'industrial')
-    AND mb_z(!scale_denominator!) >= 10
+    (
+        (
+            (
+              landuse IN ('wood', 'forest')
+              OR leisure IN ('national_reserve', 'nature_reserve', 'golf_course')
+              OR boundary = 'national_park'
+            )
+            AND mb_z(!scale_denominator!) >= 7
+        ) OR (
+            (
+              landuse IN ('cemetery', 'industrial', 'village_green')
+              OR aeroway IS NOT NULL
+              OR leisure IN ('park', 'playground')
+              OR amenity IN ('school', 'university')
+            )
+            AND mb_z(!scale_denominator!) >= 10
+        ) OR (
+            amenity = 'hospital'
+            AND mb_z(!scale_denominator!) >= 12
+        )
+    )
     AND way && !bbox!
-UNION ALL
-SELECT osm_id, way, 'industrial' AS class, z_order, way_area
-  FROM planet_osm_polygon
-  WHERE
-    aeroway IS NOT NULL
-    AND mb_z(!scale_denominator!) >= 10
-    AND way && !bbox!
-UNION ALL
-SELECT osm_id, way, 'hospital' AS class, z_order, way_area
-  FROM planet_osm_polygon
-  WHERE
-    amenity = 'hospital'
-    AND mb_z(!scale_denominator!) >= 12
-    AND way && !bbox!
-UNION ALL
--- TODO: conservation???
-SELECT osm_id, way, 'park' AS class, z_order, way_area
-  FROM planet_osm_polygon
-  WHERE
-    landuse = 'village_green'
-    AND mb_z(!scale_denominator!) >= 10
-    AND way && !bbox!
-UNION ALL
-SELECT osm_id, way, 'park' AS class, z_order, way_area
-  FROM planet_osm_polygon
-  WHERE
-    leisure IN ('park', 'playground')
-    AND mb_z(!scale_denominator!) >= 10
-    AND way && !bbox!
-UNION ALL
-SELECT osm_id, way, 'park' AS class, z_order, way_area
-  FROM planet_osm_polygon
-  WHERE
-    leisure IN ('national_reserve', 'nature_reserve', 'golf_course')
-    AND mb_z(!scale_denominator!) >= 7
-    AND way && !bbox!
-UNION ALL
-SELECT osm_id, way, 'park' AS class, z_order, way_area
-  FROM planet_osm_polygon
-  WHERE
-    boundary = 'national_park'
-    AND mb_z(!scale_denominator!) >= 7
-    AND way && !bbox!
-UNION ALL
-SELECT osm_id, way, 'school' AS class, z_order, way_area
-  FROM planet_osm_polygon
-  WHERE
-    amenity IN ('school', 'university')
-    AND mb_z(!scale_denominator!) >= 10
-    AND way && !bbox!
-UNION ALL
-SELECT osm_id, way, 'wood' AS class, z_order, way_area
-  FROM planet_osm_polygon
-  WHERE
-    landuse IN ('wood', 'forest')
-    AND mb_z(!scale_denominator!) >= 7
-    AND way && !bbox!
-) united_select ORDER BY z_order, way_area DESC
-) landuse]]></Parameter>
+    ORDER BY z_order, way_area DESC
+) landuse
+]]></Parameter>
        <Parameter name="type"><![CDATA[postgis]]></Parameter>
        <Parameter name="user"><![CDATA[]]></Parameter>
     </Datasource>
