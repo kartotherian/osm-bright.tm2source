@@ -5,3 +5,13 @@ BEGIN
     RETURN CASE WHEN s~E'^\\d+$' THEN s::INTEGER ELSE 0 END;
 END;
 $$ LANGUAGE plpgsql;
+
+-- Raise an error in contexts where a return is expected
+-- msg is a format string with param1..3 as optional parameters
+-- See http://www.postgresql.org/docs/9.4/static/functions-string.html#FUNCTIONS-STRING-FORMAT for details
+CREATE OR REPLACE FUNCTION bail_out(msg TEXT, param1 TEXT DEFAULT '', param2 TEXT DEFAULT '', param3 TEXT DEFAULT '') RETURNS TEXT
+AS $$
+BEGIN
+    RAISE '%', format(msg, param1, param2, param3);
+END;
+$$ LANGUAGE plpgsql;

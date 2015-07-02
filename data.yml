@@ -6,8 +6,8 @@ _prefs:
   saveCenter: true
 attribution: ''
 center: 
-  - -122.3911
-  - 37.7924
+  - -122.4358
+  - 37.7412
   - 13
 description: ''
 Layer: 
@@ -35,7 +35,7 @@ Layer:
               WHEN landuse = 'village_green' OR leisure IN ('park', 'playground') THEN 'park'
               WHEN amenity IN ('school', 'university') THEN 'school'
               WHEN amenity = 'hospital' THEN 'hospital'
-              ELSE NULL
+              ELSE bail_out('Unexpected landuse row with osm_id=%s', osm_id::TEXT)
             END AS class,
             z_order,
             way_area
