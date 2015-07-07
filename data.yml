@@ -6,9 +6,9 @@ _prefs:
   saveCenter: true
 attribution: ''
 center: 
-  - -122.4358
-  - 37.7412
-  - 13
+  - -122.4173
+  - 37.804
+  - 16
 description: ''
 Layer: 
   - id: landuse
@@ -28,7 +28,7 @@ Layer:
             osm_id,
             way,
             CASE
-              WHEN landuse IN ('wood', 'forest') THEN 'wood'
+              WHEN "natural" = 'wood' OR landuse IN ('wood', 'forest') THEN 'wood'
               WHEN leisure IN ('national_reserve', 'nature_reserve', 'golf_course') OR boundary = 'national_park' THEN 'park'
               WHEN landuse IN ('cemetery', 'industrial') THEN landuse
               WHEN aeroway IS NOT NULL THEN 'industrial'
@@ -44,7 +44,7 @@ Layer:
             (
                 (
                     (
-                      landuse IN ('wood', 'forest')
+                      "natural" = 'wood' OR landuse IN ('wood', 'forest')
                       OR leisure IN ('national_reserve', 'nature_reserve', 'golf_course')
                       OR boundary = 'national_park'
                     )
