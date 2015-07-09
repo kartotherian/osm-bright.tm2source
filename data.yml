@@ -6,8 +6,8 @@ _prefs:
   saveCenter: true
 attribution: ''
 center: 
-  - -122.4169
-  - 37.7944
+  - -122.397
+  - 37.7958
   - 15
 description: ''
 Layer: 
@@ -91,15 +91,19 @@ Layer:
         (
         SELECT osm_id, way, waterway AS class
           FROM planet_osm_line
-          WHERE waterway IN ('river', 'canal')
-          AND mb_z(!scale_denominator!) >= 8
-          AND way && !bbox!
-        UNION ALL
-        SELECT osm_id, way, waterway AS class
-          FROM planet_osm_line
-          WHERE waterway IN ('stream', 'stream_intermittent')
-          AND mb_z(!scale_denominator!) >= 13
-          AND way && !bbox!
+          WHERE
+            (
+              (
+                waterway IN ('river', 'canal')
+                AND mb_z(!scale_denominator!) >= 8
+              )
+              OR
+              (
+                waterway IN ('stream', 'stream_intermittent')
+                AND mb_z(!scale_denominator!) >= 13
+              )
+            )
+            AND way && !bbox!
         ) waterway
       type: postgis
       user: ''
