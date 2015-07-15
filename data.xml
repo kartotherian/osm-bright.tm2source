@@ -3,7 +3,7 @@
 <Map srs="+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over">
 
 <Parameters>
-  <Parameter name="center">-122.397,37.7958,15</Parameter>
+  <Parameter name="center">-122.4831,37.7538,16</Parameter>
   <Parameter name="format">pbf</Parameter>
   <Parameter name="json"><![CDATA[{"vector_layers":[{"id":"landuse","description":"","fields":{"osm_id":"Number","class":"String","z_order":"Number","way_area":"Number"}},{"id":"waterway","description":"","fields":{"osm_id":"Number","class":"String"}},{"id":"water","description":"","fields":{"osm_id":"Number"}},{"id":"aeroway","description":"","fields":{"osm_id":"Number","type":"String"}},{"id":"building","description":"","fields":{"osm_id":"Number"}},{"id":"tunnel","description":"","fields":{"osm_id":"Number","class":"String"}},{"id":"road","description":"","fields":{"osm_id":"Number","class":"String"}},{"id":"bridge","description":"","fields":{"osm_id":"Number","class":"String"}},{"id":"admin","description":"","fields":{"osm_id":"Number","admin_level":"String","maritime":"Number"}},{"id":"country_label","description":"","fields":{"osm_id":"Number","name_en":"String","scalerank":"Number"}},{"id":"place_label","description":"","fields":{"osm_id":"Number","name_en":"String","type":"String","ldir":"String","localrank":"Number"}},{"id":"road_label","description":"","fields":{"osm_id":"Number","shield":"String","name_en":"String","ref":"String","reflen":"Number","len":"Number"}}]}]]></Parameter>
   <Parameter name="maxzoom">16</Parameter>
@@ -357,124 +357,104 @@ SELECT osm_id, way, 'minor_rail' AS class
        <Parameter name="password"><![CDATA[]]></Parameter>
        <Parameter name="port"><![CDATA[]]></Parameter>
        <Parameter name="table"><![CDATA[(
-SELECT osm_id, way, 'motorway' AS class
-  FROM  planet_osm_line
+SELECT osm_id, way, class FROM (
+SELECT
+    osm_id,
+    way,
+    CASE
+      WHEN highway IN ('motorway', 'motorway_link', 'driveway') THEN highway
+      WHEN highway IN ('primary', 'primary_link', 'trunk', 'trunk_link', 'secondary', 'secondary_link', 'tertiary', 'tertiary_link') THEN 'main'
+      WHEN highway IN ('residential', 'unclassified', 'living_street') THEN 'street'
+      WHEN highway IN ('pedestrian', 'construction') OR access = 'private' THEN 'street_limited'
+      WHEN railway IN ('rail', 'monorail', 'narrow_gauge', 'subway', 'tram') THEN 'major_rail'
+      WHEN highway IN ('service', 'track') THEN 'service'
+      WHEN highway IN ('path', 'cycleway', 'ski', 'steps', 'bridleway', 'footway') THEN 'path'
+      WHEN railway IN ('funicular', 'light_rail', 'preserved') THEN 'minor_rail'
+      ELSE bail_out('Unexpected road row with osm_id=%s', osm_id::TEXT)
+    END AS class,
+    z_order
+  FROM planet_osm_line
   WHERE
     (bridge IS NULL OR bridge = 'no')
     AND (tunnel IS NULL OR tunnel = 'no')
-    AND highway IN ('motorway')
-    AND mb_z(!scale_denominator!) >= 5
+    AND
+      (
+        ( -- 'motorway'
+          highway IN ('motorway')
+          AND mb_z(!scale_denominator!) >= 5
+        )
+        OR
+        ( -- 'main'
+          highway IN ('primary', 'primary_link', 'trunk', 'trunk_link')
+          AND mb_z(!scale_denominator!) >= 7
+        )
+        OR
+        ( -- 'main'
+          highway IN ('secondary', 'secondary_link')
+          AND mb_z(!scale_denominator!) >= 9
+        )
+        OR
+        ( -- 'main'
+          highway IN ('tertiary', 'tertiary_link')
+          AND mb_z(!scale_denominator!) >= 12
+        )
+        OR
+        ( -- 'street'
+          highway IN ('residential', 'unclassified', 'living_street')
+          AND mb_z(!scale_denominator!) >= 12
+        )
+        OR
+        ( -- 'street_limited'
+          (highway IN ('pedestrian', 'construction') OR access = 'private')
+          AND mb_z(!scale_denominator!) >= 12
+        )
+        OR
+        ( -- 'major_rail'
+          railway IN ('rail', 'monorail', 'narrow_gauge', 'subway', 'tram')
+          AND mb_z(!scale_denominator!) >= 12
+        )
+        OR
+        ( -- 'motorway_link'
+          highway IN ('motorway_link')
+          AND mb_z(!scale_denominator!) >= 13
+        )
+        OR
+        ( -- 'service'
+          highway IN ('service', 'track')
+          AND mb_z(!scale_denominator!) >= 14
+        )
+        OR
+        ( -- 'driveway'
+          highway IN ('driveway')
+          AND mb_z(!scale_denominator!) >= 14
+        )
+        OR
+        ( -- 'path'
+          highway IN ('path', 'cycleway', 'ski', 'steps', 'bridleway', 'footway')
+          AND mb_z(!scale_denominator!) >= 14
+        )
+        OR
+        ( -- 'minor_rail'
+          railway IN ('funicular', 'light_rail', 'preserved')
+          AND mb_z(!scale_denominator!) >= 14
+        )
+      )
     AND way && !bbox!
-UNION ALL
-SELECT osm_id, way, 'motorway_link' AS class
-  FROM  planet_osm_line
-  WHERE
-    (bridge IS NULL OR bridge = 'no')
-    AND (tunnel IS NULL OR tunnel = 'no')
-    AND highway IN ('motorway_link')
-    AND mb_z(!scale_denominator!) >= 13
-    AND way && !bbox!
-UNION ALL
-SELECT osm_id, way, 'main' AS class
-  FROM  planet_osm_line
-  WHERE
-    (bridge IS NULL OR bridge = 'no')
-    AND (tunnel IS NULL OR tunnel = 'no')
-    AND highway IN ('primary', 'primary_link', 'trunk', 'trunk_link')
-    AND mb_z(!scale_denominator!) >= 7
-    AND way && !bbox!
-UNION ALL
-SELECT osm_id, way, 'main' AS class
-  FROM  planet_osm_line
-  WHERE
-    (bridge IS NULL OR bridge = 'no')
-    AND (tunnel IS NULL OR tunnel = 'no')
-    AND highway IN ('secondary', 'secondary_link')
-    AND mb_z(!scale_denominator!) >= 9
-    AND way && !bbox!
-UNION ALL
-SELECT osm_id, way, 'main' AS class
-  FROM  planet_osm_line
-  WHERE
-    (bridge IS NULL OR bridge = 'no')
-    AND (tunnel IS NULL OR tunnel = 'no')
-    AND highway IN ('tertiary', 'tertiary_link')
-    AND mb_z(!scale_denominator!) >= 12
-    AND way && !bbox!
-UNION ALL
-SELECT osm_id, way, 'street' AS class
-  FROM  planet_osm_line
-  WHERE
-    (bridge IS NULL OR bridge = 'no')
-    AND (tunnel IS NULL OR tunnel = 'no')
-    AND highway IN ('residential', 'unclassified', 'living_street')
-    AND mb_z(!scale_denominator!) >= 12
-    AND way && !bbox!
-UNION ALL
-SELECT osm_id, way, 'street' AS class
-  FROM  planet_osm_line
-  WHERE
-    (bridge IS NULL OR bridge = 'no')
-    AND (tunnel IS NULL OR tunnel = 'no')
-    AND highway IN ('residential', 'unclassified', 'living_street')
-    AND mb_z(!scale_denominator!) >= 12
-    AND way && !bbox!
-UNION ALL
-SELECT osm_id, way, 'street_limited' AS class
-  FROM  planet_osm_line
-  WHERE
-    (bridge IS NULL OR bridge = 'no')
-    AND (tunnel IS NULL OR tunnel = 'no')
-    AND (highway IN ('pedestrian', 'construction') or access = 'private')
-    AND mb_z(!scale_denominator!) >= 12
-    AND way && !bbox!
-UNION ALL
-SELECT osm_id, way, 'service' AS class
-  FROM  planet_osm_line
-  WHERE
-    (bridge IS NULL OR bridge = 'no')
-    AND (tunnel IS NULL OR tunnel = 'no')
-    AND highway IN ('service', 'track')
-    AND mb_z(!scale_denominator!) >= 15
-    AND way && !bbox!
-UNION ALL
-SELECT osm_id, way, 'driveway' AS class
-  FROM  planet_osm_line
-  WHERE
-    (bridge IS NULL OR bridge = 'no')
-    AND (tunnel IS NULL OR tunnel = 'no')
-    AND highway IN ('driveway')
-    AND mb_z(!scale_denominator!) >= 15
-    AND way && !bbox!
-UNION ALL
-SELECT osm_id, way, 'path' AS class
-  FROM  planet_osm_line
-  WHERE
-    (bridge IS NULL OR bridge = 'no')
-    AND (tunnel IS NULL OR tunnel = 'no')
-    AND highway IN ('path', 'cycleway', 'ski', 'steps', 'bridleway', 'footway')
-    AND mb_z(!scale_denominator!) >= 15
-    AND way && !bbox!
-UNION ALL
-SELECT osm_id, way, 'major_rail' AS class
-  FROM  planet_osm_line
-  WHERE
-    (bridge IS NULL OR bridge = 'no')
-    AND (tunnel IS NULL OR tunnel = 'no')
-    AND railway IN ('rail', 'monorail', 'narrow_gauge', 'subway', 'tram')
-    AND mb_z(!scale_denominator!) >= 12
-    AND way && !bbox!
-UNION ALL
-SELECT osm_id, way, 'minor_rail' AS class
-  FROM  planet_osm_line
-  WHERE
-    (bridge IS NULL OR bridge = 'no')
-    AND (tunnel IS NULL OR tunnel = 'no')
-    AND railway IN ('funicular', 'light_rail', 'preserved')
-    AND mb_z(!scale_denominator!) >= 15
-    AND way && !bbox!
-) road
-]]></Parameter>
+) data JOIN (
+  VALUES
+    ('motorway', 1000),
+    ('main', 900),
+    ('street', 800),
+    ('motorway_link', 700),
+    ('street_limited', 600),
+    ('driveway', 500),
+    ('major_rail', 400),
+    ('service', 300),
+    ('minor_rail', 200),
+    ('path', 100)
+) AS ordertable(feature, prio) ON class=feature
+  ORDER BY z_order + prio
+) road]]></Parameter>
        <Parameter name="type"><![CDATA[postgis]]></Parameter>
        <Parameter name="user"><![CDATA[]]></Parameter>
     </Datasource>
