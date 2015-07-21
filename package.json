@@ -1,5 +1,5 @@
 {
-    "name": "osm-bright.tm2source",
+    "name": "osm-bright-source",
     "version": "0.0.1",
     "description": "Mapbox studio source files for osm2pgsql imported database.",
     "main": "./package.json",
