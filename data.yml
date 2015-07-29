@@ -6,9 +6,9 @@ _prefs:
   saveCenter: true
 attribution: ''
 center: 
-  - -122.48
-  - 37.7534
-  - 16
+  - -122.9741
+  - 37.5059
+  - 10
 description: ''
 Layer: 
   - id: landuse
@@ -365,27 +365,30 @@ Layer:
       table: |-
         (
         SELECT
-            r.osm_id, r.way,
-            CAST (r.admin_level AS SMALLINT),
+            osm_id, way,
+            admin_level::SMALLINT,
+            1 AS maritime, -- HACK: until we have better maritime data
             CASE
-              WHEN r.tags->'maritime' = 'yes' THEN 1
-              ELSE
-                CASE WHEN w.way IS NULL THEN 0 ELSE 1 END
-            END AS maritime
-          FROM planet_osm_roads r LEFT JOIN water_polygons w ON r.way && w.way
+              WHEN tags->'disputed' = 'yes' THEN 1
+              ELSE 0
+            END AS disputed
+          FROM planet_osm_roads
           WHERE
             boundary = 'administrative'
             AND (
               ( admin_level = '2' AND mb_z(!scale_denominator!) >= 2 )
               OR ( admin_level = '4' AND mb_z(!scale_denominator!) >= 3 )
             )
-            AND r.way && !bbox!
+            AND COALESCE(tags->'left:country', '') <> 'Demarcation Zone'
+            AND COALESCE(tags->'right:country', '') <> 'Demarcation Zone'
+            AND way && !bbox!
         ) admin
       type: postgis
       user: ''
     description: ''
     fields: 
       admin_level: String
+      disputed: Number
       maritime: Number
       osm_id: Number
     properties: 

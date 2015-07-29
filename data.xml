@@ -3,9 +3,9 @@
 <Map srs="+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over">
 
 <Parameters>
-  <Parameter name="center">-122.48,37.7534,16</Parameter>
+  <Parameter name="center">-122.9741,37.5059,10</Parameter>
   <Parameter name="format">pbf</Parameter>
-  <Parameter name="json"><![CDATA[{"vector_layers":[{"id":"landuse","description":"","fields":{"osm_id":"Number","class":"String","z_order":"Number","way_area":"Number"}},{"id":"waterway","description":"","fields":{"osm_id":"Number","class":"String"}},{"id":"water","description":"","fields":{"osm_id":"Number"}},{"id":"aeroway","description":"","fields":{"osm_id":"Number","type":"String"}},{"id":"building","description":"","fields":{"osm_id":"Number"}},{"id":"road","description":"","fields":{"osm_id":"Number","class":"String","is":"String"}},{"id":"admin","description":"","fields":{"osm_id":"Number","admin_level":"String","maritime":"Number"}},{"id":"country_label","description":"","fields":{"osm_id":"Number","name_en":"String","scalerank":"Number"}},{"id":"place_label","description":"","fields":{"osm_id":"Number","name_en":"String","type":"String","ldir":"String","localrank":"Number"}},{"id":"road_label","description":"","fields":{"osm_id":"Number","shield":"String","name_en":"String","ref":"String","reflen":"Number","len":"Number"}}]}]]></Parameter>
+  <Parameter name="json"><![CDATA[{"vector_layers":[{"id":"landuse","description":"","fields":{"osm_id":"Number","class":"String","z_order":"Number","way_area":"Number"}},{"id":"waterway","description":"","fields":{"osm_id":"Number","class":"String"}},{"id":"water","description":"","fields":{"osm_id":"Number"}},{"id":"aeroway","description":"","fields":{"osm_id":"Number","type":"String"}},{"id":"building","description":"","fields":{"osm_id":"Number"}},{"id":"road","description":"","fields":{"osm_id":"Number","class":"String","is":"String"}},{"id":"admin","description":"","fields":{"osm_id":"Number","admin_level":"String","maritime":"Number","disputed":"Number"}},{"id":"country_label","description":"","fields":{"osm_id":"Number","name_en":"String","scalerank":"Number"}},{"id":"place_label","description":"","fields":{"osm_id":"Number","name_en":"String","type":"String","ldir":"String","localrank":"Number"}},{"id":"road_label","description":"","fields":{"osm_id":"Number","shield":"String","name_en":"String","ref":"String","reflen":"Number","len":"Number"}}]}]]></Parameter>
   <Parameter name="maxzoom">16</Parameter>
   <Parameter name="minzoom">0</Parameter>
   <Parameter name="name"><![CDATA[osm2pgsql-osm-bright]]></Parameter>
@@ -357,21 +357,23 @@ SELECT
        <Parameter name="port"><![CDATA[]]></Parameter>
        <Parameter name="table"><![CDATA[(
 SELECT
-    r.osm_id, r.way,
-    CAST (r.admin_level AS SMALLINT),
+    osm_id, way,
+    admin_level::SMALLINT,
+    1 AS maritime, -- HACK: until we have better maritime data
     CASE
-      WHEN r.tags->'maritime' = 'yes' THEN 1
-      ELSE
-        CASE WHEN w.way IS NULL THEN 0 ELSE 1 END
-    END AS maritime
-  FROM planet_osm_roads r LEFT JOIN water_polygons w ON r.way && w.way
+      WHEN tags->'disputed' = 'yes' THEN 1
+      ELSE 0
+    END AS disputed
+  FROM planet_osm_roads
   WHERE
     boundary = 'administrative'
     AND (
       ( admin_level = '2' AND mb_z(!scale_denominator!) >= 2 )
       OR ( admin_level = '4' AND mb_z(!scale_denominator!) >= 3 )
     )
-    AND r.way && !bbox!
+    AND COALESCE(tags->'left:country', '') <> 'Demarcation Zone'
+    AND COALESCE(tags->'right:country', '') <> 'Demarcation Zone'
+    AND way && !bbox!
 ) admin]]></Parameter>
        <Parameter name="type"><![CDATA[postgis]]></Parameter>
        <Parameter name="user"><![CDATA[]]></Parameter>
