@@ -1,7 +1,7 @@
 {
     "name": "osm-bright-source",
     "version": "0.0.1",
-    "description": "Mapbox studio source files for osm2pgsql imported database.",
+    "description": "Data source for Wikimedia fork of the OSM Bright skin",
     "main": "./package.json",
 	"repository": {
 	  "type": "git",
