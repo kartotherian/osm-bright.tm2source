@@ -3,8 +3,11 @@
     "version": "0.0.1",
     "description": "Data source for Wikimedia fork of the OSM Bright skin",
     "main": "./package.json",
-	"repository": {
-	  "type": "git",
-	  "url": "git://github.com/nyurik/osm-bright.tm2source.git"
-	}
+    "repository": {
+         "type": "git",
+	 "url": "git://github.com/nyurik/osm-bright.tm2source.git"
+    },
+    "dependencies": {
+    	"postgis-vt-util": "git+https://github.com/mapbox/postgis-vt-util.git"
+    }
 }

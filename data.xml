@@ -3,7 +3,7 @@
 <Map srs="+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over">
 
 <Parameters>
-  <Parameter name="center">-122.9741,37.5059,10</Parameter>
+  <Parameter name="center">-122.4069,37.7834,15</Parameter>
   <Parameter name="format">pbf</Parameter>
   <Parameter name="json"><![CDATA[{"vector_layers":[{"id":"landuse","description":"","fields":{"osm_id":"Number","class":"String","z_order":"Number","way_area":"Number"}},{"id":"waterway","description":"","fields":{"osm_id":"Number","class":"String"}},{"id":"water","description":"","fields":{"osm_id":"Number"}},{"id":"aeroway","description":"","fields":{"osm_id":"Number","type":"String"}},{"id":"building","description":"","fields":{"osm_id":"Number"}},{"id":"road","description":"","fields":{"osm_id":"Number","class":"String","is":"String"}},{"id":"admin","description":"","fields":{"osm_id":"Number","admin_level":"String","maritime":"Number","disputed":"Number"}},{"id":"country_label","description":"","fields":{"osm_id":"Number","name_en":"String","scalerank":"Number"}},{"id":"place_label","description":"","fields":{"osm_id":"Number","name_en":"String","type":"String","ldir":"String","localrank":"Number"}},{"id":"road_label","description":"","fields":{"osm_id":"Number","shield":"String","name_en":"String","ref":"String","reflen":"Number","len":"Number"}}]}]]></Parameter>
   <Parameter name="maxzoom">16</Parameter>
@@ -51,7 +51,7 @@ SELECT
               OR leisure IN ('national_reserve', 'nature_reserve', 'golf_course')
               OR boundary = 'national_park'
             )
-            AND mb_z(!scale_denominator!) >= 7
+            AND z(!scale_denominator!) >= 7
         ) OR (
             (
               landuse IN ('cemetery', 'industrial', 'village_green')
@@ -59,10 +59,10 @@ SELECT
               OR leisure IN ('park', 'playground')
               OR amenity IN ('school', 'university')
             )
-            AND mb_z(!scale_denominator!) >= 10
+            AND z(!scale_denominator!) >= 10
         ) OR (
             amenity = 'hospital'
-            AND mb_z(!scale_denominator!) >= 12
+            AND z(!scale_denominator!) >= 12
         )
     )
     AND way && !bbox!
@@ -95,12 +95,12 @@ SELECT osm_id, way, waterway AS class
     (
       (
         waterway IN ('river', 'canal')
-        AND mb_z(!scale_denominator!) >= 8
+        AND z(!scale_denominator!) >= 8
       )
       OR
       (
         waterway IN ('stream', 'stream_intermittent')
-        AND mb_z(!scale_denominator!) >= 13
+        AND z(!scale_denominator!) >= 13
       )
     )
     AND way && !bbox!
@@ -136,8 +136,8 @@ SELECT osm_id, way
     )
     AND
     (
-      mb_z(!scale_denominator!) >= 14
-      OR way_area >= 5000000000 / 2.3^mb_z(!scale_denominator!)
+      z(!scale_denominator!) >= 14
+      OR way_area >= 5000000000 / 2.3^z(!scale_denominator!)
     )
     AND way && !bbox!
 UNION ALL
@@ -171,14 +171,14 @@ SELECT osm_id, way, aeroway AS type
   WHERE
     aeroway IS NOT NULL
     AND aeroway <> 'aerodrome'
-    AND mb_z(!scale_denominator!) >= 12
+    AND z(!scale_denominator!) >= 12
     AND way && !bbox!
 UNION ALL
 SELECT osm_id, way, aeroway AS type
   FROM planet_osm_line
   WHERE
     aeroway IS NOT NULL
-    AND mb_z(!scale_denominator!) >= 12
+    AND z(!scale_denominator!) >= 12
     AND way && !bbox!
 ) aeroway]]></Parameter>
        <Parameter name="type"><![CDATA[postgis]]></Parameter>
@@ -204,7 +204,7 @@ SELECT osm_id, way, aeroway AS type
   SELECT osm_id, way
     FROM planet_osm_polygon
     WHERE
-      mb_z(!scale_denominator!) >= 14
+      z(!scale_denominator!) >= 14
       AND building IS NOT NULL
       AND building <> 'no'
       AND way && !bbox!
@@ -255,62 +255,62 @@ SELECT
     (
         ( -- 'motorway'
           highway IN ('motorway')
-          AND mb_z(!scale_denominator!) >= 5
+          AND z(!scale_denominator!) >= 5
         )
         OR
         ( -- 'main'
           highway IN ('primary', 'primary_link', 'trunk', 'trunk_link')
-          AND mb_z(!scale_denominator!) >= 7
+          AND z(!scale_denominator!) >= 7
         )
         OR
         ( -- 'main'
           highway IN ('secondary', 'secondary_link')
-          AND mb_z(!scale_denominator!) >= 9
+          AND z(!scale_denominator!) >= 9
         )
         OR
         ( -- 'main'
           highway IN ('tertiary', 'tertiary_link')
-          AND mb_z(!scale_denominator!) >= 12
+          AND z(!scale_denominator!) >= 12
         )
         OR
         ( -- 'street'
           highway IN ('residential', 'unclassified', 'living_street')
-          AND mb_z(!scale_denominator!) >= 12
+          AND z(!scale_denominator!) >= 12
         )
         OR
         ( -- 'street_limited'
           (highway IN ('pedestrian', 'construction') OR access = 'private')
-          AND mb_z(!scale_denominator!) >= 12
+          AND z(!scale_denominator!) >= 12
         )
         OR
         ( -- 'major_rail'
           railway IN ('rail', 'monorail', 'narrow_gauge', 'subway', 'tram')
-          AND mb_z(!scale_denominator!) >= 12
+          AND z(!scale_denominator!) >= 12
         )
         OR
         ( -- 'motorway_link'
           highway IN ('motorway_link')
-          AND mb_z(!scale_denominator!) >= 13
+          AND z(!scale_denominator!) >= 13
         )
         OR
         ( -- 'service'
           highway IN ('service', 'track')
-          AND mb_z(!scale_denominator!) >= 14
+          AND z(!scale_denominator!) >= 14
         )
         OR
         ( -- 'driveway'
           highway IN ('driveway')
-          AND mb_z(!scale_denominator!) >= 14
+          AND z(!scale_denominator!) >= 14
         )
         OR
         ( -- 'path'
           highway IN ('path', 'cycleway', 'ski', 'steps', 'bridleway', 'footway')
-          AND mb_z(!scale_denominator!) >= 14
+          AND z(!scale_denominator!) >= 14
         )
         OR
         ( -- 'minor_rail'
           railway IN ('funicular', 'light_rail', 'preserved')
-          AND mb_z(!scale_denominator!) >= 14
+          AND z(!scale_denominator!) >= 14
         )
       )
     AND way && !bbox!
@@ -368,8 +368,8 @@ SELECT
   WHERE
     boundary = 'administrative'
     AND (
-      ( admin_level = '2' AND mb_z(!scale_denominator!) >= 2 )
-      OR ( admin_level = '4' AND mb_z(!scale_denominator!) >= 3 )
+      ( admin_level = '2' AND z(!scale_denominator!) >= 2 )
+      OR ( admin_level = '4' AND z(!scale_denominator!) >= 3 )
     )
     AND COALESCE(tags->'left:country', '') <> 'Demarcation Zone'
     AND COALESCE(tags->'right:country', '') <> 'Demarcation Zone'
@@ -406,7 +406,7 @@ SELECT osm_id, way, name AS name_en, CASE
   FROM planet_osm_point
   WHERE
     place = 'country'
-    AND mb_z(!scale_denominator!) BETWEEN 3 AND 10
+    AND z(!scale_denominator!) BETWEEN 3 AND 10
     AND way && !bbox!
 ) country_label]]></Parameter>
        <Parameter name="type"><![CDATA[postgis]]></Parameter>
@@ -438,7 +438,7 @@ SELECT
     localrank
 FROM(
 SELECT
-  DISTINCT ON(mb_labelgrid(way, 64, !pixel_width!))
+  DISTINCT ON (labelgrid(way, 64, !pixel_width!))
     osm_id,
     way,
     name AS name_en,
@@ -456,29 +456,29 @@ SELECT
     (
       (
         place = 'city'
-        AND mb_z(!scale_denominator!) >= 4
+        AND z(!scale_denominator!) >= 4
         -- On zoom 4, display cities with 1M+ population. Decrease by 250k every level
-        AND (to_int(population) + mb_z(!scale_denominator!) * 250000 - 2000000) > 0
+        AND (to_int(population) + z(!scale_denominator!) * 250000 - 2000000) > 0
       )
       OR
       (
         place = 'town'
-        AND mb_z(!scale_denominator!) >= 9
+        AND z(!scale_denominator!) >= 9
       )
       OR
       (
         place = 'village'
-        AND mb_z(!scale_denominator!) >= 11
+        AND z(!scale_denominator!) >= 11
       )
       OR
       (
         place IN ('hamlet', 'suburb','neighbourhood')
-        AND mb_z(!scale_denominator!) >= 13
+        AND z(!scale_denominator!) >= 13
       )
     )
     AND name IS NOT NULL
     AND way && !bbox!
-  ORDER BY mb_labelgrid(way, 64, !pixel_width!), sort_order DESC
+  ORDER BY labelgrid(way, 64, !pixel_width!), sort_order DESC
 ) data ORDER BY sort_order DESC
 ) place_label
 ]]></Parameter>
@@ -526,7 +526,7 @@ SELECT
     END AS "is",
     ref,
     char_length(ref) AS reflen,
-    ROUND(mb_merc_length(way)) AS len
+    ROUND(merc_length(way)) AS len
   FROM planet_osm_line
   WHERE
     (
@@ -535,7 +535,7 @@ SELECT
               'trunk_link', 'secondary', 'secondary_link'
             )
           AND ( name IS NOT NULL OR ref IS NOT NULL)
-          AND mb_z(!scale_denominator!) >= 11
+          AND z(!scale_denominator!) >= 11
         )
         OR
         ( -- 'main'
@@ -544,7 +544,7 @@ SELECT
               'narrow_gauge', 'subway', 'tram'
             )
           AND name IS NOT NULL
-          AND mb_z(!scale_denominator!) >= 12
+          AND z(!scale_denominator!) >= 12
         )
         OR
         ( -- 'motorway_link'
@@ -553,10 +553,10 @@ SELECT
               'light_rail', 'preserved'
             )
           AND name IS NOT NULL
-          AND mb_z(!scale_denominator!) >= 14
+          AND z(!scale_denominator!) >= 14
         )
       )
-    --AND mb_linelabel(mb_z(!scale_denominator!), name, way)
+    --AND linelabel(z(!scale_denominator!), name, way)
     AND way && !bbox!
 ) data JOIN (
   VALUES
