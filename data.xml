@@ -396,12 +396,12 @@ SELECT
        <Parameter name="port"><![CDATA[]]></Parameter>
        <Parameter name="table"><![CDATA[(
 SELECT osm_id, way, name AS name_en, CASE
-      WHEN CAST(population AS int) >= 250000000 THEN 1
-      WHEN CAST(population AS int) >= 100000000 AND CAST(population AS int) < 250000000 THEN 2
-      WHEN CAST(population AS int) >= 50000000 AND CAST(population AS int) < 100000000 THEN 3
-      WHEN CAST(population AS int) >= 25000000 AND CAST(population AS int) < 50000000 THEN 4
-      WHEN CAST(population AS int) >= 10000000 AND CAST(population AS int) < 25000000 THEN 5
-      WHEN CAST(population AS int) < 10000000 THEN 6
+      WHEN to_int(population) >= 250000000 THEN 1
+      WHEN to_int(population) BETWEEN 100000000 AND  250000000 THEN 2
+      WHEN to_int(population) BETWEEN 50000000 AND 100000000 THEN 3
+      WHEN to_int(population) BETWEEN 25000000 AND 50000000 THEN 4
+      WHEN to_int(population) BETWEEN 10000000 AND 25000000 THEN 5
+      WHEN to_int(population) < 10000000 THEN 6
     END scalerank
   FROM planet_osm_point
   WHERE
