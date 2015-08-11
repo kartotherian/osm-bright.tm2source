@@ -477,7 +477,7 @@ SELECT
       )
     )
     AND name IS NOT NULL
-    AND way && !bbox!
+    AND way && ST_Expand(!bbox!, 64)
   ORDER BY labelgrid(way, 64, !pixel_width!), sort_order DESC
 ) data ORDER BY sort_order DESC
 ) place_label
