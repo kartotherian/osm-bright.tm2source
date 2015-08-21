@@ -414,7 +414,8 @@ Layer:
               WHEN to_int(population) BETWEEN 25000000 AND 50000000 THEN 4
               WHEN to_int(population) BETWEEN 10000000 AND 25000000 THEN 5
               WHEN to_int(population) < 10000000 THEN 6
-            END scalerank
+            END scalerank,
+            COALESCE(tags->'ISO3166-1', tags->'country_code_iso3166_1_alpha_2') code
           FROM planet_osm_point
           WHERE
             place = 'country'
@@ -425,6 +426,7 @@ Layer:
       user: ''
     description: ''
     fields: 
+      code: String
       name_en: String
       osm_id: Number
       scalerank: Number

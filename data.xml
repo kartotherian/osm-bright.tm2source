@@ -5,7 +5,7 @@
 <Parameters>
   <Parameter name="center">-122.4069,37.7834,15</Parameter>
   <Parameter name="format">pbf</Parameter>
-  <Parameter name="json"><![CDATA[{"vector_layers":[{"id":"landuse","description":"","fields":{"osm_id":"Number","class":"String","z_order":"Number","way_area":"Number"}},{"id":"waterway","description":"","fields":{"osm_id":"Number","class":"String"}},{"id":"water","description":"","fields":{"osm_id":"Number"}},{"id":"aeroway","description":"","fields":{"osm_id":"Number","type":"String"}},{"id":"building","description":"","fields":{"osm_id":"Number"}},{"id":"road","description":"","fields":{"osm_id":"Number","class":"String","is":"String"}},{"id":"admin","description":"","fields":{"osm_id":"Number","admin_level":"String","maritime":"Number","disputed":"Number"}},{"id":"country_label","description":"","fields":{"osm_id":"Number","name_en":"String","scalerank":"Number"}},{"id":"place_label","description":"","fields":{"osm_id":"Number","name_en":"String","type":"String","ldir":"String","localrank":"Number"}},{"id":"road_label","description":"","fields":{"osm_id":"Number","shield":"String","name_en":"String","ref":"String","reflen":"Number","len":"Number"}}]}]]></Parameter>
+  <Parameter name="json"><![CDATA[{"vector_layers":[{"id":"landuse","description":"","fields":{"osm_id":"Number","class":"String","z_order":"Number","way_area":"Number"}},{"id":"waterway","description":"","fields":{"osm_id":"Number","class":"String"}},{"id":"water","description":"","fields":{"osm_id":"Number"}},{"id":"aeroway","description":"","fields":{"osm_id":"Number","type":"String"}},{"id":"building","description":"","fields":{"osm_id":"Number"}},{"id":"road","description":"","fields":{"osm_id":"Number","class":"String","is":"String"}},{"id":"admin","description":"","fields":{"osm_id":"Number","admin_level":"String","maritime":"Number","disputed":"Number"}},{"id":"country_label","description":"","fields":{"osm_id":"Number","name_en":"String","scalerank":"Number","code":"String"}},{"id":"place_label","description":"","fields":{"osm_id":"Number","name_en":"String","type":"String","ldir":"String","localrank":"Number"}},{"id":"road_label","description":"","fields":{"osm_id":"Number","shield":"String","name_en":"String","ref":"String","reflen":"Number","len":"Number"}}]}]]></Parameter>
   <Parameter name="maxzoom">16</Parameter>
   <Parameter name="minzoom">0</Parameter>
   <Parameter name="name"><![CDATA[osm2pgsql-osm-bright]]></Parameter>
@@ -402,7 +402,8 @@ SELECT osm_id, way, name AS name_en, CASE
       WHEN to_int(population) BETWEEN 25000000 AND 50000000 THEN 4
       WHEN to_int(population) BETWEEN 10000000 AND 25000000 THEN 5
       WHEN to_int(population) < 10000000 THEN 6
-    END scalerank
+    END scalerank,
+    COALESCE(tags->'ISO3166-1', tags->'country_code_iso3166_1_alpha_2') code
   FROM planet_osm_point
   WHERE
     place = 'country'
