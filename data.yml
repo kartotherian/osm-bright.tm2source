@@ -453,7 +453,7 @@ Layer:
           DISTINCT ON (labelgrid(way, 64, !pixel_width!))
             osm_id,
             way,
-            name AS name_en,
+            get_label_name(name) AS name_en,
             place AS "type",
             'SE' AS ldir,
             1 AS localrank, -- TODO:
