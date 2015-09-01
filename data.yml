@@ -367,22 +367,17 @@ Layer:
         SELECT
             osm_id, way,
             admin_level::SMALLINT,
-            1 AS maritime, -- HACK: until we have better maritime data
+            (tags->'maritime')::INT AS maritime,
             CASE
               WHEN tags->'disputed' = 'yes' THEN 1
               ELSE 0
             END AS disputed
-          FROM planet_osm_roads
+          FROM admin
           WHERE
-            boundary = 'administrative'
-            AND (
-              ( admin_level = '2' AND z(!scale_denominator!) >= 2 )
-              OR ( admin_level = '4' AND z(!scale_denominator!) >= 3 )
-            )
-            AND COALESCE(tags->'left:country', '') <> 'Demarcation Zone'
+            COALESCE(tags->'left:country', '') <> 'Demarcation Zone'
             AND COALESCE(tags->'right:country', '') <> 'Demarcation Zone'
             AND way && !bbox!
-        ) admin
+        ) admin_
       type: postgis
       user: ''
     description: ''
