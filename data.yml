@@ -259,14 +259,11 @@ Layer:
           FROM planet_osm_line
           WHERE
             (
-                ( -- 'motorway'
-                  highway IN ('motorway')
-                  AND z(!scale_denominator!) >= 5
-                )
-                OR
-                ( -- 'main'
-                  highway IN ('primary', 'primary_link', 'trunk', 'trunk_link')
-                  AND z(!scale_denominator!) >= 7
+                (
+                  highway IN ('motorway', -- 'motorway'
+                    'primary', 'primary_link', 'trunk', 'trunk_link' -- 'main'
+                  )
+                  AND z(!scale_denominator!) >= 6
                 )
                 OR
                 ( -- 'main'
