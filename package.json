@@ -8,6 +8,6 @@
 	 "url": "git://github.com/nyurik/osm-bright.tm2source.git"
     },
     "dependencies": {
-    	"postgis-vt-util": "git+https://github.com/mapbox/postgis-vt-util.git"
+	"postgis-vt-util": "git+https://github.com/mapbox/postgis-vt-util.git#v0.3.0"
     }
 }
