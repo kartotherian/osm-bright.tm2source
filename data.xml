@@ -26,6 +26,7 @@
        <Parameter name="max_size"><![CDATA[512]]></Parameter>
        <Parameter name="password"><![CDATA[]]></Parameter>
        <Parameter name="port"><![CDATA[]]></Parameter>
+       <Parameter name="srid"><![CDATA[]]></Parameter>
        <Parameter name="table"><![CDATA[(
 SELECT
     osm_id,
@@ -88,6 +89,7 @@ SELECT
        <Parameter name="max_size"><![CDATA[512]]></Parameter>
        <Parameter name="password"><![CDATA[]]></Parameter>
        <Parameter name="port"><![CDATA[]]></Parameter>
+       <Parameter name="srid"><![CDATA[]]></Parameter>
        <Parameter name="table"><![CDATA[(
 SELECT osm_id, way, waterway AS class
   FROM planet_osm_line
@@ -124,6 +126,7 @@ SELECT osm_id, way, waterway AS class
        <Parameter name="max_size"><![CDATA[512]]></Parameter>
        <Parameter name="password"><![CDATA[]]></Parameter>
        <Parameter name="port"><![CDATA[]]></Parameter>
+       <Parameter name="srid"><![CDATA[]]></Parameter>
        <Parameter name="table"><![CDATA[(
 SELECT osm_id, way
   FROM planet_osm_polygon
@@ -165,6 +168,7 @@ SELECT 0 AS osm_id, way
        <Parameter name="max_size"><![CDATA[512]]></Parameter>
        <Parameter name="password"><![CDATA[]]></Parameter>
        <Parameter name="port"><![CDATA[]]></Parameter>
+       <Parameter name="srid"><![CDATA[]]></Parameter>
        <Parameter name="table"><![CDATA[(
 SELECT osm_id, way, aeroway AS type
   FROM planet_osm_polygon
@@ -200,6 +204,7 @@ SELECT osm_id, way, aeroway AS type
        <Parameter name="max_size"><![CDATA[512]]></Parameter>
        <Parameter name="password"><![CDATA[]]></Parameter>
        <Parameter name="port"><![CDATA[]]></Parameter>
+       <Parameter name="srid"><![CDATA[]]></Parameter>
        <Parameter name="table"><![CDATA[(
   SELECT osm_id, way
     FROM planet_osm_polygon
@@ -228,6 +233,7 @@ SELECT osm_id, way, aeroway AS type
        <Parameter name="max_size"><![CDATA[512]]></Parameter>
        <Parameter name="password"><![CDATA[]]></Parameter>
        <Parameter name="port"><![CDATA[]]></Parameter>
+       <Parameter name="srid"><![CDATA[]]></Parameter>
        <Parameter name="table"><![CDATA[(
 SELECT osm_id, way, class, "is" FROM (
 SELECT
@@ -352,6 +358,7 @@ SELECT
        <Parameter name="max_size"><![CDATA[512]]></Parameter>
        <Parameter name="password"><![CDATA[]]></Parameter>
        <Parameter name="port"><![CDATA[]]></Parameter>
+       <Parameter name="srid"><![CDATA[]]></Parameter>
        <Parameter name="table"><![CDATA[(
 SELECT
     osm_id, way,
@@ -363,7 +370,8 @@ SELECT
     END AS disputed
   FROM admin
   WHERE
-    COALESCE(tags->'left:country', '') <> 'Demarcation Zone'
+    COALESCE(tags->'maritime', '') <> '1'
+    AND COALESCE(tags->'left:country', '') <> 'Demarcation Zone'
     AND COALESCE(tags->'right:country', '') <> 'Demarcation Zone'
     AND way && !bbox!
 ) admin_]]></Parameter>
@@ -386,6 +394,7 @@ SELECT
        <Parameter name="max_size"><![CDATA[512]]></Parameter>
        <Parameter name="password"><![CDATA[]]></Parameter>
        <Parameter name="port"><![CDATA[]]></Parameter>
+       <Parameter name="srid"><![CDATA[]]></Parameter>
        <Parameter name="table"><![CDATA[(
 SELECT osm_id, way, name AS name_en, CASE
       WHEN to_int(population) >= 250000000 THEN 1
@@ -421,6 +430,7 @@ SELECT osm_id, way, name AS name_en, CASE
        <Parameter name="max_size"><![CDATA[512]]></Parameter>
        <Parameter name="password"><![CDATA[]]></Parameter>
        <Parameter name="port"><![CDATA[]]></Parameter>
+       <Parameter name="srid"><![CDATA[]]></Parameter>
        <Parameter name="table"><![CDATA[(
 SELECT
     osm_id,
@@ -494,6 +504,7 @@ SELECT
        <Parameter name="max_size"><![CDATA[512]]></Parameter>
        <Parameter name="password"><![CDATA[]]></Parameter>
        <Parameter name="port"><![CDATA[]]></Parameter>
+       <Parameter name="srid"><![CDATA[]]></Parameter>
        <Parameter name="table"><![CDATA[(
 SELECT osm_id, 'default' AS shield, way, name_en, ref, reflen, len FROM (
 SELECT

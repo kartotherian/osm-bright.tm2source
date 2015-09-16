@@ -22,6 +22,7 @@ Layer:
       max_size: 512
       password: ''
       port: ''
+      srid: ''
       table: |
         (
         SELECT
@@ -87,6 +88,7 @@ Layer:
       max_size: 512
       password: ''
       port: ''
+      srid: ''
       table: |-
         (
         SELECT osm_id, way, waterway AS class
@@ -125,6 +127,7 @@ Layer:
       max_size: 512
       password: ''
       port: ''
+      srid: ''
       table: |-
         (
         SELECT osm_id, way
@@ -167,6 +170,7 @@ Layer:
       max_size: 512
       password: ''
       port: ''
+      srid: ''
       table: |-
         (
         SELECT osm_id, way, aeroway AS type
@@ -204,6 +208,7 @@ Layer:
       max_size: 512
       password: ''
       port: ''
+      srid: ''
       table: |-
         (
           SELECT osm_id, way
@@ -233,6 +238,7 @@ Layer:
       max_size: 512
       password: ''
       port: ''
+      srid: ''
       table: |
         (
         SELECT osm_id, way, class, "is" FROM (
@@ -359,6 +365,7 @@ Layer:
       max_size: 512
       password: ''
       port: ''
+      srid: ''
       table: |-
         (
         SELECT
@@ -371,7 +378,8 @@ Layer:
             END AS disputed
           FROM admin
           WHERE
-            COALESCE(tags->'left:country', '') <> 'Demarcation Zone'
+            COALESCE(tags->'maritime', '') <> '1'
+            AND COALESCE(tags->'left:country', '') <> 'Demarcation Zone'
             AND COALESCE(tags->'right:country', '') <> 'Demarcation Zone'
             AND way && !bbox!
         ) admin_
@@ -397,6 +405,7 @@ Layer:
       max_size: 512
       password: ''
       port: ''
+      srid: ''
       table: |-
         (
         SELECT osm_id, way, name AS name_en, CASE
@@ -436,6 +445,7 @@ Layer:
       max_size: 512
       password: ''
       port: ''
+      srid: ''
       table: |
         (
         SELECT
@@ -513,6 +523,7 @@ Layer:
       max_size: 512
       password: ''
       port: ''
+      srid: ''
       table: |
         (
         SELECT osm_id, 'default' AS shield, way, name_en, ref, reflen, len FROM (
