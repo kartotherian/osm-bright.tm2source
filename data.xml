@@ -371,6 +371,10 @@ SELECT
   FROM admin
   WHERE
     COALESCE(tags->'maritime', '') <> '1'
+    AND (
+      ( admin_level = '2' AND z(!scale_denominator!) >= 2 )
+      OR ( admin_level = '4' AND z(!scale_denominator!) >= 3 )
+    )
     AND COALESCE(tags->'left:country', '') <> 'Demarcation Zone'
     AND COALESCE(tags->'right:country', '') <> 'Demarcation Zone'
     AND way && !bbox!
