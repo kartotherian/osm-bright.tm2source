@@ -6,8 +6,8 @@ _prefs:
   saveCenter: true
 attribution: ''
 center: 
-  - -122.4069
-  - 37.7834
+  - -122.4376
+  - 37.7769
   - 15
 description: ''
 Layer: 
@@ -373,7 +373,11 @@ Layer:
             admin_level::SMALLINT,
             (tags->'maritime')::INT AS maritime,
             CASE
-              WHEN tags->'disputed' = 'yes' THEN 1
+              WHEN
+                tags->'disputed' = 'yes'
+                OR tags->'dispute' = 'yes'
+                OR (tags->'disputed_by') IS NOT NULL
+              THEN 1
               ELSE 0
             END AS disputed
           FROM admin
