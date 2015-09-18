@@ -377,6 +377,7 @@ Layer:
                 tags->'disputed' = 'yes'
                 OR tags->'dispute' = 'yes'
                 OR (tags->'disputed_by') IS NOT NULL
+                OR tags->'status' = 'partially_recognized_state'
               THEN 1
               ELSE 0
             END AS disputed
