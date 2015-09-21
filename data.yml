@@ -6,8 +6,8 @@ _prefs:
   saveCenter: true
 attribution: ''
 center: 
-  - -122.4376
-  - 37.7769
+  - -122.4263
+  - 37.7809
   - 15
 description: ''
 Layer: 
@@ -177,7 +177,7 @@ Layer:
           FROM planet_osm_polygon
           WHERE
             aeroway IS NOT NULL
-            AND aeroway <> 'aerodrome'
+            AND aeroway IN ('apron', 'helipad', 'runway', 'taxiway')
             AND z(!scale_denominator!) >= 12
             AND way && !bbox!
         UNION ALL
