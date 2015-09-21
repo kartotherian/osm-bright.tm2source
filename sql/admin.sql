@@ -2,7 +2,7 @@
 -- precalculated maritime flag. Because admin lines aren't necessarily delimited on
 -- water boundaries, split them so that every piece is either only over water or land
 
-CREATE TABLE IF NOT EXISTS admin (LIKE planet_osm_roads);
+CREATE TABLE IF NOT EXISTS admin (LIKE planet_osm_roads INCLUDING ALL);
 
 --
 -- Populates admin table. Slow, so run only sparingly in a cronjob
