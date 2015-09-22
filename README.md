@@ -12,3 +12,14 @@ Fields in planet_osm_point only:
 
 Fields in planet_osm_line, planet_osm_polygon, planet_osm_roads, but not in ..._point:
   tracktype
+  
+# Editing
+To edit this data source, you need to have some OSM data on your local machine. Follow [data set up instructions](https://github.com/kartotherian/kartotherian/blob/master/README.md#in-depth-step-by-step) from [Kartotherian](https://github.com/kartotherian/kartotherian).
+* Install the latest [Mapbox Studio Classic](https://www.mapbox.com/mapbox-studio-classic/)
+* Clone [osm-bright.tm2source](https://github.com/kartotherian/osm-bright.tm2source) repository (this one)
+Open Mapbox Studio and open the data source. You should see your data as "x-ray" outlines
+
+To see the data in style
+* Clone [osm-bright.tm2](https://github.com/kartotherian/osm-bright.tm2) repository
+* Edit style's project.yml - change the `source:` to `"tmsource:///home/user/.../osm-bright.tm2source"` directory.
+Open it in the mapbox studio.
