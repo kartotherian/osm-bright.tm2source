@@ -6,8 +6,8 @@ _prefs:
   saveCenter: true
 attribution: ''
 center: 
-  - -122.4263
-  - 37.7809
+  - -122.4086
+  - 37.7868
   - 15
 description: ''
 Layer: 
@@ -505,7 +505,7 @@ Layer:
               )
             )
             AND name IS NOT NULL
-            AND way && ST_Expand(!bbox!, 32*!pixel_width!)
+            AND way && ST_Expand(!bbox!, 64*!pixel_width!)
           ORDER BY labelgrid(way, 64, !pixel_width!), sort_order DESC
         ) data ORDER BY sort_order DESC
         ) place_label

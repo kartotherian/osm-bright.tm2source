@@ -3,7 +3,7 @@
 <Map srs="+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over">
 
 <Parameters>
-  <Parameter name="center">-122.4263,37.7809,15</Parameter>
+  <Parameter name="center">-122.4086,37.7868,15</Parameter>
   <Parameter name="format">pbf</Parameter>
   <Parameter name="json"><![CDATA[{"vector_layers":[{"id":"landuse","description":"","fields":{"osm_id":"Number","class":"String","z_order":"Number","way_area":"Number"}},{"id":"waterway","description":"","fields":{"osm_id":"Number","class":"String"}},{"id":"water","description":"","fields":{"osm_id":"Number"}},{"id":"aeroway","description":"","fields":{"osm_id":"Number","type":"String"}},{"id":"building","description":"","fields":{"osm_id":"Number"}},{"id":"road","description":"","fields":{"osm_id":"Number","class":"String","is":"String"}},{"id":"admin","description":"","fields":{"osm_id":"Number","admin_level":"String","maritime":"Number","disputed":"Number"}},{"id":"country_label","description":"","fields":{"osm_id":"Number","name_en":"String","scalerank":"Number","code":"String"}},{"id":"place_label","description":"","fields":{"osm_id":"Number","name_en":"String","type":"String","ldir":"String","localrank":"Number"}},{"id":"road_label","description":"","fields":{"osm_id":"Number","shield":"String","name_en":"String","ref":"String","reflen":"Number","len":"Number"}}]}]]></Parameter>
   <Parameter name="maxzoom">16</Parameter>
@@ -489,7 +489,7 @@ SELECT
       )
     )
     AND name IS NOT NULL
-    AND way && ST_Expand(!bbox!, 32*!pixel_width!)
+    AND way && ST_Expand(!bbox!, 64*!pixel_width!)
   ORDER BY labelgrid(way, 64, !pixel_width!), sort_order DESC
 ) data ORDER BY sort_order DESC
 ) place_label
