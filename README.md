@@ -2,17 +2,17 @@
 Data source for [Kartotherian's fork  of OSM Bright](https://github.com/kartotherian/osm-bright.tm2)
 
 # Requirements
-See [Kartotherian documentation](https://github.com/kartotherian/kartotherian/blob/master/README.md) for details. **Be sure to import the OSM data with `--hstore` key**.
+See [Kartotherian documentation](https://github.com/kartotherian/kartotherian/blob/master/README.md) for details. **Be sure to import the OSM data with `--hstore` parameter**.
 
 # Layers
 The order of layers in this style matters because that's the order that they will be drawn on map. Note that the list of layers goes from bottom to top, opposite to the order in files.
 * `landuse` - various uses for land: wood, park, industrial zone, etc. Mostly corresponds to OSM's [`landuse` key](http://wiki.openstreetmap.org/wiki/Key:landuse).
-* `waterway` - water lines (streams, rivers on low zoom, etc).
+* `waterway` - [http://wiki.openstreetmap.org/wiki/Key:waterway](streams, rivers on low zoom, etc).
 * `water` - water bodies (oceans, lakes, rivers wide enough on a given zoom level to be represented by areas as opposed to lines).
-* `aeroway` - both areas and lines related to airports: tarmacs, taxiing lines, etc.
+* `aeroway` - both areas and lines related to airports: [http://wiki.openstreetmap.org/wiki/Key:aeroway](tarmacs, taxiing lines, etc).
 * `building` - buildings.
 * `road` - roads and other similar transport ways: streets, bridges and tunnels.
-* `admin` - administrative borders between countries and regions.
+* `admin` - [http://wiki.openstreetmap.org/wiki/Tag:boundary%3Dadministrative](administrative borders) between countries and regions.
 * `country_label` - country labels.
 * `place_label` - city/neighborhood/district labels.
 * `road_label` - road labels, including highway number shields.
