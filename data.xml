@@ -572,6 +572,7 @@ UNION ALL
   VALUES
     ('rail', 1),
     ('rail-metro', 1),
+    ('rail-light', 1),
     ('ferry', 1),
     ('bus', 3)
   ) AS ranks(class, rank) ON class=maki
