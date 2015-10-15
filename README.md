@@ -15,6 +15,7 @@ The order of layers in this style matters because that's the order that they wil
 * `admin` - [http://wiki.openstreetmap.org/wiki/Tag:boundary%3Dadministrative](administrative borders) between countries and regions.
 * `country_label` - country labels.
 * `place_label` - city/neighborhood/district labels.
+* `poi_label` - places of interest. Currently, only transport stations are implemented.
 * `road_label` - road labels, including highway number shields.
   
 # Editing
