@@ -598,7 +598,7 @@ Layer:
             ('ferry', 1),
             ('bus', 3)
           ) AS ranks(class, rank) ON class=maki
-          ORDER BY scalerank, maki DESC
+          ORDER BY scalerank, maki DESC, osm_id
         ) poi_label
       type: postgis
       user: ''
