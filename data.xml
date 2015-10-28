@@ -3,9 +3,9 @@
 <Map srs="+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over">
 
 <Parameters>
-  <Parameter name="center">-122.4086,37.7868,15</Parameter>
+  <Parameter name="center">-122.3906,37.7556,16</Parameter>
   <Parameter name="format">pbf</Parameter>
-  <Parameter name="json"><![CDATA[{"vector_layers":[{"id":"landuse","description":"","fields":{"osm_id":"Number","class":"String","z_order":"Number","way_area":"Number"}},{"id":"waterway","description":"","fields":{"osm_id":"Number","class":"String"}},{"id":"water","description":"","fields":{"osm_id":"Number"}},{"id":"aeroway","description":"","fields":{"osm_id":"Number","type":"String"}},{"id":"building","description":"","fields":{"osm_id":"Number"}},{"id":"road","description":"","fields":{"osm_id":"Number","class":"String","is":"String"}},{"id":"admin","description":"","fields":{"osm_id":"Number","admin_level":"String","maritime":"Number","disputed":"Number"}},{"id":"country_label","description":"","fields":{"osm_id":"Number","name_en":"String","scalerank":"Number","code":"String"}},{"id":"place_label","description":"","fields":{"osm_id":"Number","name_en":"String","type":"String","ldir":"String","localrank":"Number"}},{"id":"road_label","description":"","fields":{"osm_id":"Number","shield":"String","name_en":"String","ref":"String","reflen":"Number","len":"Number"}}]}]]></Parameter>
+  <Parameter name="json"><![CDATA[{"vector_layers":[{"id":"landuse","description":"","fields":{"osm_id":"Number","class":"String","z_order":"Number","way_area":"Number"}},{"id":"waterway","description":"","fields":{"osm_id":"Number","class":"String"}},{"id":"water","description":"","fields":{"osm_id":"Number"}},{"id":"aeroway","description":"","fields":{"osm_id":"Number","type":"String"}},{"id":"building","description":"","fields":{"osm_id":"Number"}},{"id":"road","description":"","fields":{"osm_id":"Number","class":"String","is":"String"}},{"id":"admin","description":"","fields":{"osm_id":"Number","admin_level":"String","maritime":"Number","disputed":"Number"}},{"id":"country_label","description":"","fields":{"osm_id":"Number","name_en":"String","scalerank":"Number","code":"String"}},{"id":"place_label","description":"","fields":{"osm_id":"Number","name_en":"String","type":"String","ldir":"String","localrank":"Number"}},{"id":"poi_label","description":"","fields":{"osm_id":"Number","name":"String","name_en":"String","scalerank":"Number","localrank":"Number","maki":"String"}},{"id":"road_label","description":"","fields":{"osm_id":"Number","shield":"String","name_en":"String","ref":"String","reflen":"Number","len":"Number"}}]}]]></Parameter>
   <Parameter name="maxzoom">16</Parameter>
   <Parameter name="minzoom">0</Parameter>
   <Parameter name="name"><![CDATA[osm2pgsql-osm-bright]]></Parameter>
@@ -494,6 +494,90 @@ SELECT
 ) data ORDER BY sort_order DESC
 ) place_label
 ]]></Parameter>
+       <Parameter name="type"><![CDATA[postgis]]></Parameter>
+       <Parameter name="user"><![CDATA[]]></Parameter>
+    </Datasource>
+  </Layer>
+
+<Layer name="poi_label"
+  buffer-size="64"
+  srs="+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over">
+    
+    <Datasource>
+       <Parameter name="dbname"><![CDATA[gis]]></Parameter>
+       <Parameter name="extent"><![CDATA[-20037508.34,-20037508.34,20037508.34,20037508.34]]></Parameter>
+       <Parameter name="geometry_field"><![CDATA[]]></Parameter>
+       <Parameter name="geometry_table"><![CDATA[]]></Parameter>
+       <Parameter name="host"><![CDATA[]]></Parameter>
+       <Parameter name="key_field"><![CDATA[]]></Parameter>
+       <Parameter name="max_size"><![CDATA[512]]></Parameter>
+       <Parameter name="password"><![CDATA[]]></Parameter>
+       <Parameter name="port"><![CDATA[]]></Parameter>
+       <Parameter name="srid"><![CDATA[]]></Parameter>
+       <Parameter name="table"><![CDATA[(
+SELECT osm_id, way1 AS way, name, name_en, rank AS scalerank, localrank, maki FROM
+(
+  SELECT
+    osm_id,
+    name,
+    name AS name_en,
+    CASE
+      WHEN railway='station' THEN 'rail'
+      WHEN (tags->'subway') IS NOT NULL THEN 'rail-metro'
+      WHEN highway='bus_stop' THEN 'bus'
+      WHEN railway='tram_stop' THEN 'rail-light'
+      WHEN amenity='ferry_terminal' THEN 'ferry'
+      ELSE bail_out('Cannot classify poi_label, osm_id=%s', osm_id::TEXT)
+    END AS maki,
+    1 AS localrank,
+    way AS way1
+  FROM planet_osm_point
+  WHERE
+    z(!scale_denominator!) >= 14
+    AND
+      (
+        (public_transport='stop_position' AND (tags->'subway') IS NOT NULL)
+        OR railway IN ('station', 'tram_stop')
+        OR highway='bus_stop'
+        OR amenity='ferry_terminal'
+      )
+    AND way && !bbox!
+UNION ALL
+  SELECT
+    osm_id,
+    name,
+    name AS name_en,
+    CASE
+      WHEN railway='station' THEN 'rail'
+      WHEN (tags->'subway') IS NOT NULL THEN 'rail-metro'
+      WHEN highway='bus_stop' THEN 'bus'
+      WHEN railway='tram_stop' THEN 'rail-light'
+      WHEN amenity='ferry_terminal' THEN 'ferry'
+      ELSE bail_out('Cannot classify poi_label, osm_id=%s', osm_id::TEXT)
+    END AS maki,
+    1 AS localrank,
+    ST_Centroid(way) AS way1
+  FROM planet_osm_polygon
+  WHERE
+    z(!scale_denominator!) >= 14
+    AND
+      (
+        (public_transport='stop_position' AND (tags->'subway') IS NOT NULL)
+        OR railway IN ('station', 'tram_stop')
+        OR highway='bus_stop'
+        OR amenity='ferry_terminal'
+      )
+    AND way && !bbox!
+) data JOIN (
+  VALUES
+    ('rail', 1),
+    ('rail-metro', 1),
+    ('rail-light', 1),
+    ('ferry', 1),
+    ('bus', 3)
+  ) AS ranks(class, rank) ON class=maki
+  ORDER BY scalerank, maki DESC, osm_id
+) poi_label]]></Parameter>
        <Parameter name="type"><![CDATA[postgis]]></Parameter>
        <Parameter name="user"><![CDATA[]]></Parameter>
     </Datasource>
