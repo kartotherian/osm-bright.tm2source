@@ -47,7 +47,7 @@ To see the data in style
 Open it in the Mapbox Studio.
 
 # Layers
-The order of layers in this style matters because that's the order that they will be drawn on map. Note that the list of layers goes from bottom to top, opposite to the order in files.
+The order of layers in this style matters because that's the default order that they will be drawn on map. Note that the list of layers goes from bottom to top, opposite to the order in files.
 * `landuse` - various uses for land: wood, park, industrial zone, etc. Mostly corresponds to OSM's [`landuse` key](http://wiki.openstreetmap.org/wiki/Key:landuse).
 * `waterway` - [http://wiki.openstreetmap.org/wiki/Key:waterway](streams, rivers on low zoom, etc).
 * `water` - water bodies (oceans, lakes, rivers wide enough on a given zoom level to be represented by areas as opposed to lines).
