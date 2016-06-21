@@ -1,13 +1,24 @@
 {
-    "name": "osm-bright-source",
-    "version": "0.0.1",
-    "description": "Data source for Wikimedia fork of the OSM Bright skin",
-    "main": "./package.json",
-    "repository": {
-         "type": "git",
-	 "url": "git://github.com/nyurik/osm-bright.tm2source.git"
-    },
-    "dependencies": {
-	"postgis-vt-util": "git+https://github.com/mapbox/postgis-vt-util.git#v0.3.0"
-    }
+  "name": "osm-bright-source",
+  "version": "0.0.2",
+  "description": "Data source for Wikimedia fork of the OSM Bright skin",
+  "main": "./package.json",
+  "repository": {
+     "type": "git",
+     "url": "git://github.com/kartotherian/osm-bright.tm2source.git"
+  },
+  "keywords": [
+    "kartotherian",
+    "tilelive"
+  ],
+  "author": "Max Semenik <msemenik@wikimedia.org>",
+  "contributors": [
+    "Yuri Astrakhan <yurik@wikimedia.org>",
+    "Paul Norman <penorman@mac.com>"
+  ],
+  "license": "GPL-2.0",
+  "bugs": "https://github.com/kartotherian/osm-bright.tm2source/issues",
+  "dependencies": {
+    "postgis-vt-util": "git+https://github.com/mapbox/postgis-vt-util.git#v0.3.0"
+  }
 }
