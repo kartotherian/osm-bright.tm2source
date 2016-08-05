@@ -8,10 +8,10 @@ _prefs:
   saveCenter: true
 attribution: ''
 center: 
-  - -122.3906
-  - 37.7556
+  - -122.4144
+  - 37.7907
   - 16
-description: ''
+description: Data source for Wikimedia's fork of osm-bright2
 Layer: 
   - id: landuse
     Datasource: 
@@ -468,7 +468,7 @@ Layer:
             localrank
         FROM(
         SELECT
-          DISTINCT ON (labelgrid(way, 64, !pixel_width!))
+          DISTINCT ON (labelgrid(way, 16, !pixel_width!))
             osm_id,
             way,
             get_label_name(name) AS name_en,
@@ -507,8 +507,12 @@ Layer:
               )
             )
             AND name IS NOT NULL
-            AND way && ST_Expand(!bbox!, 64*!pixel_width!)
-          ORDER BY labelgrid(way, 64, !pixel_width!), sort_order DESC
+            AND way && !bbox! --ST_Expand(!bbox!, 64*!pixel_width!)
+          ORDER BY
+            labelgrid(way, 16, !pixel_width!),
+            sort_order DESC,
+            length(name) DESC,
+            name
         ) data ORDER BY sort_order DESC
         ) place_label
       type: postgis
@@ -721,4 +725,4 @@ Layer:
     srs: +proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over
 maxzoom: 16
 minzoom: 0
-name: osm2pgsql-osm-bright
+name: osm-bright
