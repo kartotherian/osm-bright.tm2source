@@ -32,7 +32,7 @@ npm install
 psql -Xqd gis -f node_modules/postgis-vt-util/lib.sql
 psql -Xqd gis -f sql/admin.sql
 psql -Xqd gis -f sql/functions.sql
-psql -Xqd gis -f sql/water-indexes.sql
+psql -Xqd gis -f sql/create-indexes.sql
 psql -d gis -c 'select populate_admin();'
 ```
 

@@ -21,7 +21,3 @@ rm water-polygons-split-3857.zip
 echo 'Importing shapefiles'
 shp2pgsql -g way water-polygons-split-3857/water_polygons.shp | psql gis
 #shp2pgsql -g way simplified_land_polygons.shp water_polygons_low | psql gis
-
-echo 'Adding indexes to imported data'
-cat "$( dirname "${BASH_SOURCE[0]}" )"/../sql/water-indexes.sql | psql gis
-
