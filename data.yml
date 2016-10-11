@@ -21,6 +21,7 @@ Layer:
       geometry_table: ''
       host: ''
       key_field: ''
+      key_field_as_attribute: ''
       max_size: 512
       password: ''
       port: ''
@@ -87,6 +88,7 @@ Layer:
       geometry_table: ''
       host: ''
       key_field: ''
+      key_field_as_attribute: ''
       max_size: 512
       password: ''
       port: ''
@@ -126,6 +128,7 @@ Layer:
       geometry_table: ''
       host: ''
       key_field: ''
+      key_field_as_attribute: ''
       max_size: 512
       password: ''
       port: ''
@@ -169,6 +172,7 @@ Layer:
       geometry_table: ''
       host: ''
       key_field: ''
+      key_field_as_attribute: ''
       max_size: 512
       password: ''
       port: ''
@@ -207,6 +211,7 @@ Layer:
       geometry_table: ''
       host: ''
       key_field: ''
+      key_field_as_attribute: ''
       max_size: 512
       password: ''
       port: ''
@@ -237,6 +242,7 @@ Layer:
       geometry_table: ''
       host: ''
       key_field: ''
+      key_field_as_attribute: ''
       max_size: 512
       password: ''
       port: ''
@@ -364,6 +370,7 @@ Layer:
       geometry_table: ''
       host: ''
       key_field: ''
+      key_field_as_attribute: ''
       max_size: 512
       password: ''
       port: ''
@@ -413,6 +420,7 @@ Layer:
       geometry_table: ''
       host: ''
       key_field: ''
+      key_field_as_attribute: ''
       max_size: 512
       password: ''
       port: ''
@@ -453,6 +461,7 @@ Layer:
       geometry_table: ''
       host: ''
       key_field: ''
+      key_field_as_attribute: ''
       max_size: 512
       password: ''
       port: ''
@@ -531,6 +540,7 @@ Layer:
       geometry_table: ''
       host: ''
       key_field: ''
+      key_field_as_attribute: ''
       max_size: 512
       password: ''
       port: ''
@@ -621,6 +631,7 @@ Layer:
       geometry_table: ''
       host: ''
       key_field: ''
+      key_field_as_attribute: ''
       max_size: 512
       password: ''
       port: ''

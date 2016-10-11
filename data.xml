@@ -23,6 +23,7 @@
        <Parameter name="geometry_table"><![CDATA[]]></Parameter>
        <Parameter name="host"><![CDATA[]]></Parameter>
        <Parameter name="key_field"><![CDATA[]]></Parameter>
+       <Parameter name="key_field_as_attribute"><![CDATA[]]></Parameter>
        <Parameter name="max_size"><![CDATA[512]]></Parameter>
        <Parameter name="password"><![CDATA[]]></Parameter>
        <Parameter name="port"><![CDATA[]]></Parameter>
@@ -86,6 +87,7 @@ SELECT
        <Parameter name="geometry_table"><![CDATA[]]></Parameter>
        <Parameter name="host"><![CDATA[]]></Parameter>
        <Parameter name="key_field"><![CDATA[]]></Parameter>
+       <Parameter name="key_field_as_attribute"><![CDATA[]]></Parameter>
        <Parameter name="max_size"><![CDATA[512]]></Parameter>
        <Parameter name="password"><![CDATA[]]></Parameter>
        <Parameter name="port"><![CDATA[]]></Parameter>
@@ -123,6 +125,7 @@ SELECT osm_id, way, waterway AS class
        <Parameter name="geometry_table"><![CDATA[]]></Parameter>
        <Parameter name="host"><![CDATA[]]></Parameter>
        <Parameter name="key_field"><![CDATA[]]></Parameter>
+       <Parameter name="key_field_as_attribute"><![CDATA[]]></Parameter>
        <Parameter name="max_size"><![CDATA[512]]></Parameter>
        <Parameter name="password"><![CDATA[]]></Parameter>
        <Parameter name="port"><![CDATA[]]></Parameter>
@@ -165,6 +168,7 @@ SELECT 0 AS osm_id, way
        <Parameter name="geometry_table"><![CDATA[]]></Parameter>
        <Parameter name="host"><![CDATA[]]></Parameter>
        <Parameter name="key_field"><![CDATA[]]></Parameter>
+       <Parameter name="key_field_as_attribute"><![CDATA[]]></Parameter>
        <Parameter name="max_size"><![CDATA[512]]></Parameter>
        <Parameter name="password"><![CDATA[]]></Parameter>
        <Parameter name="port"><![CDATA[]]></Parameter>
@@ -201,6 +205,7 @@ SELECT osm_id, way, aeroway AS type
        <Parameter name="geometry_table"><![CDATA[]]></Parameter>
        <Parameter name="host"><![CDATA[]]></Parameter>
        <Parameter name="key_field"><![CDATA[]]></Parameter>
+       <Parameter name="key_field_as_attribute"><![CDATA[]]></Parameter>
        <Parameter name="max_size"><![CDATA[512]]></Parameter>
        <Parameter name="password"><![CDATA[]]></Parameter>
        <Parameter name="port"><![CDATA[]]></Parameter>
@@ -230,6 +235,7 @@ SELECT osm_id, way, aeroway AS type
        <Parameter name="geometry_table"><![CDATA[]]></Parameter>
        <Parameter name="host"><![CDATA[]]></Parameter>
        <Parameter name="key_field"><![CDATA[]]></Parameter>
+       <Parameter name="key_field_as_attribute"><![CDATA[]]></Parameter>
        <Parameter name="max_size"><![CDATA[512]]></Parameter>
        <Parameter name="password"><![CDATA[]]></Parameter>
        <Parameter name="port"><![CDATA[]]></Parameter>
@@ -355,6 +361,7 @@ SELECT
        <Parameter name="geometry_table"><![CDATA[]]></Parameter>
        <Parameter name="host"><![CDATA[]]></Parameter>
        <Parameter name="key_field"><![CDATA[]]></Parameter>
+       <Parameter name="key_field_as_attribute"><![CDATA[]]></Parameter>
        <Parameter name="max_size"><![CDATA[512]]></Parameter>
        <Parameter name="password"><![CDATA[]]></Parameter>
        <Parameter name="port"><![CDATA[]]></Parameter>
@@ -400,6 +407,7 @@ SELECT
        <Parameter name="geometry_table"><![CDATA[]]></Parameter>
        <Parameter name="host"><![CDATA[]]></Parameter>
        <Parameter name="key_field"><![CDATA[]]></Parameter>
+       <Parameter name="key_field_as_attribute"><![CDATA[]]></Parameter>
        <Parameter name="max_size"><![CDATA[512]]></Parameter>
        <Parameter name="password"><![CDATA[]]></Parameter>
        <Parameter name="port"><![CDATA[]]></Parameter>
@@ -436,6 +444,7 @@ SELECT osm_id, way, name AS name_en, CASE
        <Parameter name="geometry_table"><![CDATA[]]></Parameter>
        <Parameter name="host"><![CDATA[]]></Parameter>
        <Parameter name="key_field"><![CDATA[]]></Parameter>
+       <Parameter name="key_field_as_attribute"><![CDATA[]]></Parameter>
        <Parameter name="max_size"><![CDATA[512]]></Parameter>
        <Parameter name="password"><![CDATA[]]></Parameter>
        <Parameter name="port"><![CDATA[]]></Parameter>
@@ -510,6 +519,7 @@ SELECT
        <Parameter name="geometry_table"><![CDATA[]]></Parameter>
        <Parameter name="host"><![CDATA[]]></Parameter>
        <Parameter name="key_field"><![CDATA[]]></Parameter>
+       <Parameter name="key_field_as_attribute"><![CDATA[]]></Parameter>
        <Parameter name="max_size"><![CDATA[512]]></Parameter>
        <Parameter name="password"><![CDATA[]]></Parameter>
        <Parameter name="port"><![CDATA[]]></Parameter>
@@ -594,6 +604,7 @@ UNION ALL
        <Parameter name="geometry_table"><![CDATA[]]></Parameter>
        <Parameter name="host"><![CDATA[]]></Parameter>
        <Parameter name="key_field"><![CDATA[]]></Parameter>
+       <Parameter name="key_field_as_attribute"><![CDATA[]]></Parameter>
        <Parameter name="max_size"><![CDATA[512]]></Parameter>
        <Parameter name="password"><![CDATA[]]></Parameter>
        <Parameter name="port"><![CDATA[]]></Parameter>
