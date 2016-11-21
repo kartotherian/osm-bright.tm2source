@@ -33,7 +33,7 @@ Layer:
             way,
             CASE
               WHEN "natural" = 'wood' OR landuse IN ('wood', 'forest') THEN 'wood'
-              WHEN leisure IN ('national_reserve', 'nature_reserve', 'golf_course') OR boundary = 'national_park' THEN 'park'
+              WHEN leisure IN ('nature_reserve', 'golf_course') OR boundary = 'national_park' THEN 'park'
               WHEN landuse IN ('cemetery', 'industrial') THEN landuse
               WHEN aeroway IS NOT NULL THEN 'industrial'
               WHEN landuse = 'village_green' OR leisure IN ('park', 'playground') THEN 'park'
