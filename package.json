@@ -15,6 +15,9 @@
   ],
   "license": "GPL-2.0",
   "bugs": "https://github.com/kartotherian/osm-bright.tm2source/issues",
+  "publishConfig": {
+    "access": "public"
+  },
   "dependencies": {
     "postgis-vt-util": "git+https://github.com/mapbox/postgis-vt-util.git#v0.3.0"
   }
