@@ -1,19 +1,16 @@
 {
-  "name": "osm-bright-source",
+  "name": "@kartotherian/osm-bright-source",
   "version": "0.0.2",
   "description": "Data source for Wikimedia fork of the OSM Bright skin",
   "main": "./package.json",
-  "repository": {
-     "type": "git",
-     "url": "git://github.com/kartotherian/osm-bright.tm2source.git"
-  },
+  "repository": "kartotherian/osm-bright.tm2source",
   "keywords": [
     "kartotherian",
     "tilelive"
   ],
   "author": "Max Semenik <msemenik@wikimedia.org>",
   "contributors": [
-    "Yuri Astrakhan <yurik@wikimedia.org>",
+    "Yuri Astrakhan <YuriAstrakhan@gmail.com>",
     "Paul Norman <penorman@mac.com>"
   ],
   "license": "GPL-2.0",
