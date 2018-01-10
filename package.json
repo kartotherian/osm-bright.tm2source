@@ -19,6 +19,6 @@
     "access": "public"
   },
   "dependencies": {
-    "postgis-vt-util": "git+https://github.com/mapbox/postgis-vt-util.git#v0.3.0"
+    "postgis-vt-util": "0.3.0"
   }
 }
