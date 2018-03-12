@@ -558,6 +558,7 @@ Layer:
             osm_id,
             name,
             name AS name_en,
+            (hstore_to_json(extract_names(tags)))::text name_,
             CASE
               WHEN railway='station' THEN 'rail'
               WHEN (tags->'subway') IS NOT NULL THEN 'rail-metro'
@@ -584,6 +585,7 @@ Layer:
             osm_id,
             name,
             name AS name_en,
+            (hstore_to_json(extract_names(tags)))::text name_,
             CASE
               WHEN railway='station' THEN 'rail'
               WHEN (tags->'subway') IS NOT NULL THEN 'rail-metro'
@@ -643,11 +645,12 @@ Layer:
       srid: ''
       table: |
         (
-        SELECT osm_id, 'default' AS shield, way, name_en, ref, reflen, len FROM (
+        SELECT osm_id, 'default' AS shield, way, name_en, name_ ref, reflen, len FROM (
         SELECT
             osm_id,
             way,
             name AS name_en,
+            (hstore_to_json(extract_names(tags)))::text name_,
             CASE
               WHEN highway IN ('motorway', 'motorway_link', 'driveway') THEN highway
               WHEN highway IN ('primary', 'primary_link', 'trunk', 'trunk_link', 'secondary', 'secondary_link', 'tertiary', 'tertiary_link') THEN 'main'
