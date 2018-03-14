@@ -9,7 +9,7 @@ It's probably easiest to grab an PBF of OSM data from [Mapzen](https://mapzen.co
 ```sh
 createdb gis
 psql -d gis -c 'CREATE EXTENSION postgis; CREATE EXTENSION hstore;'
-osm2pgsql -d gis -E 900913 --hstore ~/path/to/data.osm.pbf
+osm2pgsql -d gis -E 3857 --hstore ~/path/to/data.osm.pbf
 ```
 
 You can find a more detailed guide to setting up a database and loading data with osm2pgsql at [switch2osm.org](http://switch2osm.org/loading-osm-data/).
@@ -21,7 +21,6 @@ curl -O http://data.openstreetmapdata.com/water-polygons-split-3857.zip
 unzip water-polygons-split-3857.zip && rm water-polygons-split-3857.zip
 cd water-polygons-split-3857
 shp2pgsql -I -s 3857 -g way water_polygons.shp water_polygons | psql -Xqd gis
-psql -Xqd gis -c "select UpdateGeometrySRID('', 'water_polygons', 'way', 900913);"
 ```
 
 Then some custom functions and indexes
