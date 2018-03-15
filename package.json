@@ -1,6 +1,6 @@
 {
   "name": "@kartotherian/osm-bright-source",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "Data source for Wikimedia fork of the OSM Bright skin",
   "main": "./package.json",
   "repository": "kartotherian/osm-bright.tm2source",
