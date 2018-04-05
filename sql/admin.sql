@@ -15,7 +15,6 @@ DECLARE
 	water geometry;
 	result geometry;
 	len int;
-
 BEGIN
 	TRUNCATE TABLE admin;
 
@@ -30,7 +29,6 @@ BEGIN
 		END IF;
 
 		result := ST_Intersection(way, water);
-		
 
 		IF ST_IsEmpty(result) THEN
 			PERFORM insert_admin_rows(row, way, FALSE);
@@ -78,7 +76,6 @@ CREATE OR REPLACE FUNCTION insert_admin_rows(theRow admin, geom geometry, mariti
 $$
 DECLARE
 	i int;
-
 BEGIN
 	theRow.tags := theRow.tags || (CASE WHEN maritime THEN '"maritime" => "1"' ELSE '"maritime" => "0"' END)::hstore;
 	IF GeometryType(geom) = 'LINESTRING' THEN -- Simple geometry
