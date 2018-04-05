@@ -56,9 +56,8 @@ CREATE OR REPLACE FUNCTION water_under(geom geometry) RETURNS geometry AS
 $$
 DECLARE
 	water geometry[];
-
 BEGIN
-	SELECT array_agg(way) INTO water FROM water_polygons WHERE way && geom AND way IS NOT NULL AND geom IS NOT NULL;
+	SELECT pg_catalog.array_agg(way) INTO water FROM water_polygons WHERE way && geom AND way IS NOT NULL AND geom IS NOT NULL;
 	RETURN ST_Union(water);
 END
 $$
