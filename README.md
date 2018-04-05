@@ -4,7 +4,7 @@ Data source for [Kartotherian's fork  of OSM Bright](https://github.com/kartothe
 # Install
 This style requires an osm2pgsql database with ocean data, custom indexes, and custom functions.
 
-It's probably easiest to grab an PBF of OSM data from [Mapzen](https://mapzen.com/metro-extracts/) or [geofabrik](http://download.geofabrik.de/). Once you've installed PostgreSQL and PostGIS, create a database and import with osm2pgsql:
+It's probably easiest to grab an PBF of OSM data from [geofabrik](http://download.geofabrik.de/). Once you've installed PostgreSQL and PostGIS, create a database and import with osm2pgsql:
 
 ```sh
 createdb gis
