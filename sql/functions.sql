@@ -16,7 +16,7 @@ $$ LANGUAGE plpgsql;
 CREATE OR REPLACE FUNCTION bail_out(msg TEXT, param1 TEXT DEFAULT '', param2 TEXT DEFAULT '', param3 TEXT DEFAULT '') RETURNS TEXT
 AS $$
 BEGIN
-    RAISE '%', format(msg, param1, param2, param3);
+    RAISE '%', pg_catalog.format(msg, param1, param2, param3);
 END;
 $$ LANGUAGE plpgsql;
 
@@ -26,6 +26,6 @@ $$ LANGUAGE plpgsql;
 CREATE OR REPLACE FUNCTION get_label_name(name TEXT) RETURNS TEXT
 AS $$
 BEGIN
-    RETURN regexp_replace(name, '\s*;.*$', '');
+    RETURN pg_catalog.regexp_replace(name, '\s*;.*$', '');
 END;
 $$ LANGUAGE plpgsql;
