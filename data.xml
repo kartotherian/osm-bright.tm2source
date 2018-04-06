@@ -6,7 +6,7 @@
   <Parameter name="center">-122.4144,37.7907,14</Parameter>
   <Parameter name="description"><![CDATA[Data source for Wikimedia's fork of osm-bright2]]></Parameter>
   <Parameter name="format">pbf</Parameter>
-  <Parameter name="json"><![CDATA[{"vector_layers":[{"id":"landuse","description":"","fields":{"osm_id":"Number","class":"String","z_order":"Number","way_area":"Number"}},{"id":"waterway","description":"","fields":{"osm_id":"Number","class":"String"}},{"id":"water","description":"","fields":{"osm_id":"Number"}},{"id":"aeroway","description":"","fields":{"osm_id":"Number","type":"String"}},{"id":"building","description":"","fields":{"osm_id":"Number"}},{"id":"road","description":"","fields":{"osm_id":"Number","class":"String","is":"String"}},{"id":"admin","description":"","fields":{"osm_id":"Number","admin_level":"String","maritime":"Number","disputed":"Number"}},{"id":"country_label","description":"","fields":{"osm_id":"Number","name_en":"String","scalerank":"Number","code":"String"}},{"id":"place_label","description":"","fields":{"osm_id":"Number","name_en":"String","type":"String","ldir":"String","localrank":"Number"}},{"id":"poi_label","description":"","fields":{"osm_id":"Number","name":"String","name_en":"String","scalerank":"Number","localrank":"Number","maki":"String"}},{"id":"road_label","description":"","fields":{"osm_id":"Number","shield":"String","name_en":"String","ref":"String","reflen":"Number","len":"Number"}}]}]]></Parameter>
+  <Parameter name="json"><![CDATA[{"vector_layers":[{"id":"landuse","description":"","fields":{"osm_id":"Number","class":"String","z_order":"Number","way_area":"Number"}},{"id":"waterway","description":"","fields":{"osm_id":"Number","class":"String"}},{"id":"water","description":"","fields":{"osm_id":"Number"}},{"id":"aeroway","description":"","fields":{"osm_id":"Number","type":"String"}},{"id":"building","description":"","fields":{"osm_id":"Number"}},{"id":"road","description":"","fields":{"osm_id":"Number","class":"String","is":"String"}},{"id":"admin","description":"","fields":{"osm_id":"Number","admin_level":"String","maritime":"Number","disputed":"Number"}},{"id":"country_label","description":"","fields":{"osm_id":"Number","name":"String","scalerank":"Number","code":"String"}},{"id":"place_label","description":"","fields":{"osm_id":"Number","name":"String","type":"String","ldir":"String","localrank":"Number"}},{"id":"poi_label","description":"","fields":{"osm_id":"Number","name":"String","scalerank":"Number","localrank":"Number","maki":"String"}},{"id":"road_label","description":"","fields":{"osm_id":"Number","shield":"String","name":"String","ref":"String","reflen":"Number","len":"Number"}}]}]]></Parameter>
   <Parameter name="maxzoom">14</Parameter>
   <Parameter name="minzoom">0</Parameter>
   <Parameter name="name"><![CDATA[osm-bright]]></Parameter>
@@ -414,7 +414,7 @@ SELECT
        <Parameter name="port"><![CDATA[]]></Parameter>
        <Parameter name="srid"><![CDATA[]]></Parameter>
        <Parameter name="table"><![CDATA[(
-SELECT osm_id, way, name AS name_en, (hstore_to_json(extract_names(tags)))::text name_, CASE
+SELECT osm_id, way, name, (hstore_to_json(extract_names(tags)))::text name_, CASE
       WHEN to_int(population) >= 250000000 THEN 1
       WHEN to_int(population) BETWEEN 100000000 AND  250000000 THEN 2
       WHEN to_int(population) BETWEEN 50000000 AND 100000000 THEN 3
@@ -455,7 +455,7 @@ SELECT osm_id, way, name AS name_en, (hstore_to_json(extract_names(tags)))::text
 SELECT
     osm_id,
     way,
-    name_en,
+    name,
     name_,
     "type",
     ldir,
@@ -465,7 +465,7 @@ SELECT
   DISTINCT ON (labelgrid(way, 16, !pixel_width!))
     osm_id,
     way,
-    get_label_name(name) AS name_en,
+    get_label_name(name) AS name,
     (hstore_to_json(extract_names(tags)))::text name_,
     place AS "type",
     'SE' AS ldir,
@@ -533,12 +533,11 @@ SELECT
        <Parameter name="port"><![CDATA[]]></Parameter>
        <Parameter name="srid"><![CDATA[]]></Parameter>
        <Parameter name="table"><![CDATA[(
-SELECT osm_id, way1 AS way, name, name_en, rank AS scalerank, localrank, maki FROM
+SELECT osm_id, way1 AS way, name, rank AS scalerank, localrank, maki FROM
 (
   SELECT
     osm_id,
     name,
-    name AS name_en,
     (hstore_to_json(extract_names(tags)))::text name_,
     CASE
       WHEN railway='station' THEN 'rail'
@@ -565,7 +564,6 @@ UNION ALL
   SELECT
     osm_id,
     name,
-    name AS name_en,
     (hstore_to_json(extract_names(tags)))::text name_,
     CASE
       WHEN railway='station' THEN 'rail'
@@ -620,11 +618,11 @@ UNION ALL
        <Parameter name="port"><![CDATA[]]></Parameter>
        <Parameter name="srid"><![CDATA[]]></Parameter>
        <Parameter name="table"><![CDATA[(
-SELECT osm_id, 'default' AS shield, way, name_en, name_, ref, reflen, len FROM (
+SELECT osm_id, 'default' AS shield, way, name, name_, ref, reflen, len FROM (
 SELECT
     osm_id,
     way,
-    name AS name_en,
+    name,
     (hstore_to_json(extract_names(tags)))::text name_,
     CASE
       WHEN highway IN ('motorway', 'motorway_link', 'driveway') THEN highway
