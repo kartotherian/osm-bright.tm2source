@@ -427,7 +427,7 @@ Layer:
       srid: ''
       table: |-
         (
-        SELECT osm_id, way, name AS name_en, (hstore_to_json(extract_names(tags)))::text name_, CASE
+        SELECT osm_id, way, name, (hstore_to_json(extract_names(tags)))::text name_, CASE
               WHEN to_int(population) >= 250000000 THEN 1
               WHEN to_int(population) BETWEEN 100000000 AND  250000000 THEN 2
               WHEN to_int(population) BETWEEN 50000000 AND 100000000 THEN 3
@@ -448,7 +448,7 @@ Layer:
     description: ''
     fields: 
       code: String
-      name_en: String
+      name: String
       osm_id: Number
       scalerank: Number
     properties: 
@@ -472,7 +472,7 @@ Layer:
         SELECT
             osm_id,
             way,
-            name_en,
+            name,
             name_,
             "type",
             ldir,
@@ -482,7 +482,7 @@ Layer:
           DISTINCT ON (labelgrid(way, 16, !pixel_width!))
             osm_id,
             way,
-            get_label_name(name) AS name_en,
+            get_label_name(name) AS name,
             (hstore_to_json(extract_names(tags)))::text name_,
             place AS "type",
             'SE' AS ldir,
@@ -533,7 +533,7 @@ Layer:
     fields: 
       ldir: String
       localrank: Number
-      name_en: String
+      name: String
       osm_id: Number
       type: String
     properties: 
@@ -554,12 +554,11 @@ Layer:
       srid: ''
       table: |-
         (
-        SELECT osm_id, way1 AS way, name, name_en, rank AS scalerank, localrank, maki FROM
+        SELECT osm_id, way1 AS way, name, rank AS scalerank, localrank, maki FROM
         (
           SELECT
             osm_id,
             name,
-            name AS name_en,
             (hstore_to_json(extract_names(tags)))::text name_,
             CASE
               WHEN railway='station' THEN 'rail'
@@ -586,7 +585,6 @@ Layer:
           SELECT
             osm_id,
             name,
-            name AS name_en,
             (hstore_to_json(extract_names(tags)))::text name_,
             CASE
               WHEN railway='station' THEN 'rail'
@@ -626,7 +624,6 @@ Layer:
       localrank: Number
       maki: String
       name: String
-      name_en: String
       osm_id: Number
       scalerank: Number
     properties: 
@@ -647,11 +644,11 @@ Layer:
       srid: ''
       table: |
         (
-        SELECT osm_id, 'default' AS shield, way, name_en, name_ ref, reflen, len FROM (
+        SELECT osm_id, 'default' AS shield, way, name, name_ ref, reflen, len FROM (
         SELECT
             osm_id,
             way,
-            name AS name_en,
+            name,
             (hstore_to_json(extract_names(tags)))::text name_,
             CASE
               WHEN highway IN ('motorway', 'motorway_link', 'driveway') THEN highway
@@ -732,7 +729,7 @@ Layer:
     description: ''
     fields: 
       len: Number
-      name_en: String
+      name: String
       osm_id: Number
       ref: String
       reflen: Number
