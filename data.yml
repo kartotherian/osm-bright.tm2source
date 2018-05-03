@@ -644,7 +644,7 @@ Layer:
       srid: ''
       table: |
         (
-        SELECT osm_id, 'default' AS shield, way, name, name_ ref, reflen, len FROM (
+        SELECT osm_id, 'default' AS shield, way, name, name_, ref, reflen, len FROM (
         SELECT
             osm_id,
             way,
