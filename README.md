@@ -49,12 +49,12 @@ Open it in the Mapbox Studio.
 # Layers
 The order of layers in this style matters because that's the default order that they will be drawn on map. Note that the list of layers goes from bottom to top, opposite to the order in files.
 * `landuse` - various uses for land: wood, park, industrial zone, etc. Mostly corresponds to OSM's [`landuse` key](http://wiki.openstreetmap.org/wiki/Key:landuse).
-* `waterway` - [http://wiki.openstreetmap.org/wiki/Key:waterway](streams, rivers on low zoom, etc).
+* `waterway` - [streams, rivers on low zoom, etc](http://wiki.openstreetmap.org/wiki/Key:waterway).
 * `water` - water bodies (oceans, lakes, rivers wide enough on a given zoom level to be represented by areas as opposed to lines).
-* `aeroway` - both areas and lines related to airports: [http://wiki.openstreetmap.org/wiki/Key:aeroway](tarmacs, taxiing lines, etc).
+* `aeroway` - both areas and lines related to airports: [tarmacs, taxiing lines, etc](http://wiki.openstreetmap.org/wiki/Key:aeroway).
 * `building` - buildings.
 * `road` - roads and other similar transport ways: streets, bridges and tunnels.
-* `admin` - [http://wiki.openstreetmap.org/wiki/Tag:boundary%3Dadministrative](administrative borders) between countries and regions.
+* `admin` - [administrative borders](http://wiki.openstreetmap.org/wiki/Tag:boundary%3Dadministrative) between countries and regions.
 * `country_label` - country labels.
 * `place_label` - city/neighborhood/district labels.
 * `poi_label` - places of interest. Currently, only transport stations are implemented.
