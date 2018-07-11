@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS admin (LIKE planet_osm_roads INCLUDING ALL);
 --
 -- Populates admin table. Slow, so run only sparingly in a cronjob
 --
-CREATE OR REPLACE FUNCTION populate_admin() RETURNS void AS
+CREATE OR REPLACE FUNCTION public.populate_admin() RETURNS void AS
 $$
 DECLARE
 	row admin%rowtype;
@@ -21,24 +21,24 @@ BEGIN
 	-- Let the datasource to perform precise filtering, but just don't pull all the crap here
 	FOR row IN SELECT * FROM planet_osm_roads WHERE boundary='administrative' AND admin_level IN ('2', '4') LOOP
 		way := row.way;
-		water := water_under(way);
+		water := public.water_under(way);
 
 		IF water IS NULL THEN
-			PERFORM insert_admin_rows(row, way, FALSE);
+			PERFORM public.insert_admin_rows(row, way, FALSE);
 			CONTINUE;
 		END IF;
 
-		result := ST_Intersection(way, water);
+		result := public.ST_Intersection(way, water);
 
-		IF ST_IsEmpty(result) THEN
-			PERFORM insert_admin_rows(row, way, FALSE);
+		IF public.ST_IsEmpty(result) THEN
+			PERFORM public.insert_admin_rows(row, way, FALSE);
 		ELSE
-			PERFORM insert_admin_rows(row, result, TRUE);
+			PERFORM public.insert_admin_rows(row, result, TRUE);
 
-			IF NOT ST_Equals(way, result) THEN
-				result := ST_Difference(way, water);
-				IF NOT ST_IsEmpty(result) THEN
-					PERFORM insert_admin_rows(row, result, FALSE);
+			IF NOT public.ST_Equals(way, result) THEN
+				result := public.ST_Difference(way, water);
+				IF NOT public.ST_IsEmpty(result) THEN
+					PERFORM public.insert_admin_rows(row, result, FALSE);
 				END IF;
 			END IF;
 		END IF;
@@ -52,13 +52,13 @@ LANGUAGE plpgsql;
 --
 -- @param geometry geom: Geometry to check under
 --
-CREATE OR REPLACE FUNCTION water_under(geom geometry) RETURNS geometry AS
+CREATE OR REPLACE FUNCTION public.water_under(geom geometry) RETURNS geometry AS
 $$
 DECLARE
 	water geometry[];
 BEGIN
 	SELECT pg_catalog.array_agg(way) INTO water FROM water_polygons WHERE way && geom AND way IS NOT NULL AND geom IS NOT NULL;
-	RETURN ST_Union(water);
+	RETURN public.ST_Union(water);
 END
 $$
 LANGUAGE plpgsql;
@@ -71,17 +71,17 @@ LANGUAGE plpgsql;
 -- @param LineString|MultiLineString geom: Geometry to set for this row
 -- @param bool maritime: Whether the border is maritime
 --
-CREATE OR REPLACE FUNCTION insert_admin_rows(theRow admin, geom geometry, maritime bool) RETURNS void AS
+CREATE OR REPLACE FUNCTION public.insert_admin_rows(theRow admin, geom geometry, maritime bool) RETURNS void AS
 $$
 DECLARE
 	i int;
 BEGIN
 	theRow.tags := theRow.tags || (CASE WHEN maritime THEN '"maritime" => "1"' ELSE '"maritime" => "0"' END)::hstore;
 	IF GeometryType(geom) = 'LINESTRING' THEN -- Simple geometry
-		PERFORM insert_admin_row(theRow, geom);
+		PERFORM public.insert_admin_row(theRow, geom);
 	ELSE
-		FOR i IN 1..ST_NumGeometries(geom) LOOP -- Composite geometry, insert one row per subgeometry
-			PERFORM insert_admin_row(theRow, ST_GeometryN(geom, i));
+		FOR i IN 1..public.ST_NumGeometries(geom) LOOP -- Composite geometry, insert one row per subgeometry
+			PERFORM public.insert_admin_row(theRow, public.ST_GeometryN(geom, i));
 		END LOOP;
 	END IF;
 END
@@ -94,7 +94,7 @@ LANGUAGE plpgsql;
 -- @param row theRow: Row to insert
 -- @param LineString geom: Geometry to set for this row
 --
-CREATE OR REPLACE FUNCTION insert_admin_row(theRow admin, geom geometry(LineString)) RETURNS void AS
+CREATE OR REPLACE FUNCTION public.insert_admin_row(theRow admin, geom geometry(LineString)) RETURNS void AS
 $$
 BEGIN
 	theRow.way := geom;

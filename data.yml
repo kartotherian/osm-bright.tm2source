@@ -39,7 +39,7 @@ Layer:
               WHEN landuse = 'village_green' OR leisure IN ('park', 'playground') THEN 'park'
               WHEN amenity IN ('school', 'university') THEN 'school'
               WHEN amenity = 'hospital' THEN 'hospital'
-              ELSE bail_out('Unexpected landuse row with osm_id=%s', osm_id::TEXT)
+              ELSE public.bail_out('Unexpected landuse row with osm_id=%s', osm_id::TEXT)
             END AS class,
             z_order,
             way_area
@@ -52,7 +52,7 @@ Layer:
                       OR leisure IN ('national_reserve', 'nature_reserve', 'golf_course')
                       OR boundary = 'national_park'
                     )
-                    AND z(!scale_denominator!) >= 7
+                    AND public.z(!scale_denominator!) >= 7
                 ) OR (
                     (
                       landuse IN ('cemetery', 'industrial', 'village_green')
@@ -60,10 +60,10 @@ Layer:
                       OR leisure IN ('park', 'playground')
                       OR amenity IN ('school', 'university')
                     )
-                    AND z(!scale_denominator!) >= 10
+                    AND public.z(!scale_denominator!) >= 10
                 ) OR (
                     amenity = 'hospital'
-                    AND z(!scale_denominator!) >= 12
+                    AND public.z(!scale_denominator!) >= 12
                 )
             )
             AND way && !bbox!
@@ -101,12 +101,12 @@ Layer:
             (
               (
                 waterway IN ('river', 'canal')
-                AND z(!scale_denominator!) >= 8
+                AND public.z(!scale_denominator!) >= 8
               )
               OR
               (
                 waterway IN ('stream', 'stream_intermittent')
-                AND z(!scale_denominator!) >= 13
+                AND public.z(!scale_denominator!) >= 13
               )
             )
             AND way && !bbox!
@@ -146,8 +146,8 @@ Layer:
             )
             AND
             (
-              z(!scale_denominator!) >= 14
-              OR way_area >= 5000000000 / 2.3^z(!scale_denominator!)
+              public.z(!scale_denominator!) >= 14
+              OR way_area >= 5000000000 / 2.3^public.z(!scale_denominator!)
             )
             AND way && !bbox!
         UNION ALL
@@ -184,14 +184,14 @@ Layer:
           WHERE
             aeroway IS NOT NULL
             AND aeroway IN ('apron', 'helipad', 'runway', 'taxiway')
-            AND z(!scale_denominator!) >= 12
+            AND public.z(!scale_denominator!) >= 12
             AND way && !bbox!
         UNION ALL
         SELECT osm_id, way, aeroway AS type
           FROM planet_osm_line
           WHERE
             aeroway IS NOT NULL
-            AND z(!scale_denominator!) >= 12
+            AND public.z(!scale_denominator!) >= 12
             AND way && !bbox!
         ) aeroway
       type: postgis
@@ -221,7 +221,7 @@ Layer:
           SELECT osm_id, way
             FROM planet_osm_polygon
             WHERE
-              z(!scale_denominator!) >= 14
+              public.z(!scale_denominator!) >= 14
               AND building IS NOT NULL
               AND building <> 'no'
               AND way && !bbox!
@@ -262,7 +262,7 @@ Layer:
               WHEN highway IN ('service', 'track') THEN 'service'
               WHEN highway IN ('path', 'cycleway', 'ski', 'steps', 'bridleway', 'footway') THEN 'path'
               WHEN railway IN ('funicular', 'light_rail', 'preserved') THEN 'minor_rail'
-              ELSE bail_out('Unexpected road row with osm_id=%s', osm_id::TEXT)
+              ELSE public.bail_out('Unexpected road row with osm_id=%s', osm_id::TEXT)
             END AS class,
             z_order,
             CASE
@@ -277,57 +277,57 @@ Layer:
                   highway IN ('motorway', -- 'motorway'
                     'primary', 'primary_link', 'trunk', 'trunk_link' -- 'main'
                   )
-                  AND z(!scale_denominator!) >= 6
+                  AND public.z(!scale_denominator!) >= 6
                 )
                 OR
                 ( -- 'main'
                   highway IN ('secondary', 'secondary_link')
-                  AND z(!scale_denominator!) >= 9
+                  AND public.z(!scale_denominator!) >= 9
                 )
                 OR
                 ( -- 'main'
                   highway IN ('tertiary', 'tertiary_link')
-                  AND z(!scale_denominator!) >= 12
+                  AND public.z(!scale_denominator!) >= 12
                 )
                 OR
                 ( -- 'street'
                   highway IN ('residential', 'unclassified', 'living_street')
-                  AND z(!scale_denominator!) >= 12
+                  AND public.z(!scale_denominator!) >= 12
                 )
                 OR
                 ( -- 'street_limited'
                   (highway IN ('pedestrian', 'construction') OR access = 'private')
-                  AND z(!scale_denominator!) >= 12
+                  AND public.z(!scale_denominator!) >= 12
                 )
                 OR
                 ( -- 'major_rail'
                   railway IN ('rail', 'monorail', 'narrow_gauge', 'subway', 'tram')
-                  AND z(!scale_denominator!) >= 12
+                  AND public.z(!scale_denominator!) >= 12
                 )
                 OR
                 ( -- 'motorway_link'
                   highway IN ('motorway_link')
-                  AND z(!scale_denominator!) >= 13
+                  AND public.z(!scale_denominator!) >= 13
                 )
                 OR
                 ( -- 'service'
                   highway IN ('service', 'track')
-                  AND z(!scale_denominator!) >= 14
+                  AND public.z(!scale_denominator!) >= 14
                 )
                 OR
                 ( -- 'driveway'
                   highway IN ('driveway')
-                  AND z(!scale_denominator!) >= 14
+                  AND public.z(!scale_denominator!) >= 14
                 )
                 OR
                 ( -- 'path'
                   highway IN ('path', 'cycleway', 'ski', 'steps', 'bridleway', 'footway')
-                  AND z(!scale_denominator!) >= 14
+                  AND public.z(!scale_denominator!) >= 14
                 )
                 OR
                 ( -- 'minor_rail'
                   railway IN ('funicular', 'light_rail', 'preserved')
-                  AND z(!scale_denominator!) >= 14
+                  AND public.z(!scale_denominator!) >= 14
                 )
               )
             AND way && !bbox!
@@ -349,7 +349,7 @@ Layer:
               WHEN 'tunnel' THEN -100000
               WHEN 'road' THEN 0
               WHEN 'bridge' THEN 100000
-              ELSE bail_out('Unexpected row with is=%s, osm_id=%s', "is", osm_id::TEXT)::INT
+              ELSE public.bail_out('Unexpected row with is=%s, osm_id=%s', "is", osm_id::TEXT)::INT
             END
         ) road
       type: postgis
@@ -394,8 +394,8 @@ Layer:
           WHERE
             COALESCE(tags->'maritime', '') <> '1'
             AND (
-              ( admin_level = '2' AND z(!scale_denominator!) >= 2 )
-              OR ( admin_level = '4' AND z(!scale_denominator!) >= 3 )
+              ( admin_level = '2' AND public.z(!scale_denominator!) >= 2 )
+              OR ( admin_level = '4' AND public.z(!scale_denominator!) >= 3 )
             )
             AND COALESCE(tags->'left:country', '') <> 'Demarcation Zone'
             AND COALESCE(tags->'right:country', '') <> 'Demarcation Zone'
@@ -427,21 +427,21 @@ Layer:
       srid: ''
       table: |-
         (
-        SELECT osm_id, way, name, (hstore_to_json(extract_names(tags)))::text name_, CASE
-              WHEN to_int(population) >= 250000000 THEN 1
-              WHEN to_int(population) BETWEEN 100000000 AND  250000000 THEN 2
-              WHEN to_int(population) BETWEEN 50000000 AND 100000000 THEN 3
-              WHEN to_int(population) BETWEEN 25000000 AND 50000000 THEN 4
-              WHEN to_int(population) BETWEEN 10000000 AND 25000000 THEN 5
-              WHEN to_int(population) < 10000000 THEN 6
+        SELECT osm_id, way, name, (public.hstore_to_json(public.extract_names(tags)))::text name_, CASE
+              WHEN public.to_int(population) >= 250000000 THEN 1
+              WHEN public.to_int(population) BETWEEN 100000000 AND  250000000 THEN 2
+              WHEN public.to_int(population) BETWEEN 50000000 AND 100000000 THEN 3
+              WHEN public.to_int(population) BETWEEN 25000000 AND 50000000 THEN 4
+              WHEN public.to_int(population) BETWEEN 10000000 AND 25000000 THEN 5
+              WHEN public.to_int(population) < 10000000 THEN 6
             END scalerank,
             COALESCE(tags->'ISO3166-1', tags->'country_code_iso3166_1_alpha_2') code
           FROM planet_osm_point
           WHERE
             place = 'country'
-            AND z(!scale_denominator!) BETWEEN 3 AND 10
+            AND public.z(!scale_denominator!) BETWEEN 3 AND 10
             AND way && !bbox!
-          ORDER BY to_int(population) DESC NULLS LAST
+          ORDER BY public.to_int(population) DESC NULLS LAST
         ) country_label
       type: postgis
       user: ''
@@ -479,51 +479,51 @@ Layer:
             localrank
         FROM(
         SELECT
-          DISTINCT ON (labelgrid(way, 16, !pixel_width!))
+          DISTINCT ON (public.labelgrid(way, 16, !pixel_width!))
             osm_id,
             way,
-            get_label_name(name) AS name,
-            (hstore_to_json(extract_names(tags)))::text name_,
+            public.get_label_name(name) AS name,
+            (public.hstore_to_json(public.extract_names(tags)))::text name_,
             place AS "type",
             'SE' AS ldir,
             1 AS localrank, -- TODO:
             CASE
-              WHEN place = 'city' THEN 5000000000 + to_int(population)
-              WHEN place = 'town' THEN 3000000000 + to_int(population)
-              WHEN place = 'village' THEN 1000000000 + to_int(population)
-              ELSE to_int(population)
+              WHEN place = 'city' THEN 5000000000 + public.to_int(population)
+              WHEN place = 'town' THEN 3000000000 + public.to_int(population)
+              WHEN place = 'village' THEN 1000000000 + public.to_int(population)
+              ELSE public.to_int(population)
             END AS sort_order
           FROM planet_osm_point
           WHERE
             (
               (
                 place = 'city'
-                AND z(!scale_denominator!) >= 4
+                AND public.z(!scale_denominator!) >= 4
                 -- On zoom 4, display cities with 1M+ population. Decrease by 250k every level
-                AND (to_int(population) + z(!scale_denominator!) * 250000 - 2000000) > 0
+                AND (public.to_int(population) + public.z(!scale_denominator!) * 250000 - 2000000) > 0
               )
               OR
               (
                 place = 'town'
-                AND z(!scale_denominator!) >= 9
+                AND public.z(!scale_denominator!) >= 9
               )
               OR
               (
                 place = 'village'
-                AND z(!scale_denominator!) >= 11
+                AND public.z(!scale_denominator!) >= 11
               )
               OR
               (
                 place IN ('hamlet', 'suburb','neighbourhood')
-                AND z(!scale_denominator!) >= 13
+                AND public.z(!scale_denominator!) >= 13
               )
             )
             AND name IS NOT NULL
-            AND way && !bbox! --ST_Expand(!bbox!, 64*!pixel_width!)
+            AND way && !bbox! --public.ST_Expand(!bbox!, 64*!pixel_width!)
           ORDER BY
-            labelgrid(way, 16, !pixel_width!),
+            public.labelgrid(way, 16, !pixel_width!),
             sort_order DESC,
-            length(name) DESC,
+            pg_catalog.length(name) DESC,
             name
         ) data ORDER BY sort_order DESC
         ) place_label
@@ -559,20 +559,20 @@ Layer:
           SELECT
             osm_id,
             name,
-            (hstore_to_json(extract_names(tags)))::text name_,
+            (public.hstore_to_json(public.extract_names(tags)))::text name_,
             CASE
               WHEN railway='station' THEN 'rail'
               WHEN (tags->'subway') IS NOT NULL THEN 'rail-metro'
               WHEN highway='bus_stop' THEN 'bus'
               WHEN railway='tram_stop' THEN 'rail-light'
               WHEN amenity='ferry_terminal' THEN 'ferry'
-              ELSE bail_out('Cannot classify poi_label, osm_id=%s', osm_id::TEXT)
+              ELSE public.bail_out('Cannot classify poi_label, osm_id=%s', osm_id::TEXT)
             END AS maki,
             1 AS localrank,
             way AS way1
           FROM planet_osm_point
           WHERE
-            z(!scale_denominator!) >= 14
+            public.z(!scale_denominator!) >= 14
             AND
               (
                 (public_transport='stop_position' AND (tags->'subway') IS NOT NULL)
@@ -585,20 +585,20 @@ Layer:
           SELECT
             osm_id,
             name,
-            (hstore_to_json(extract_names(tags)))::text name_,
+            (public.hstore_to_json(public.extract_names(tags)))::text name_,
             CASE
               WHEN railway='station' THEN 'rail'
               WHEN (tags->'subway') IS NOT NULL THEN 'rail-metro'
               WHEN highway='bus_stop' THEN 'bus'
               WHEN railway='tram_stop' THEN 'rail-light'
               WHEN amenity='ferry_terminal' THEN 'ferry'
-              ELSE bail_out('Cannot classify poi_label, osm_id=%s', osm_id::TEXT)
+              ELSE public.bail_out('Cannot classify poi_label, osm_id=%s', osm_id::TEXT)
             END AS maki,
             1 AS localrank,
-            ST_Centroid(way) AS way1
+            public.ST_Centroid(way) AS way1
           FROM planet_osm_polygon
           WHERE
-            z(!scale_denominator!) >= 14
+            public.z(!scale_denominator!) >= 14
             AND
               (
                 (public_transport='stop_position' AND (tags->'subway') IS NOT NULL)
@@ -649,7 +649,7 @@ Layer:
             osm_id,
             way,
             name,
-            (hstore_to_json(extract_names(tags)))::text name_,
+            (public.hstore_to_json(public.extract_names(tags)))::text name_,
             CASE
               WHEN highway IN ('motorway', 'motorway_link', 'driveway') THEN highway
               WHEN highway IN ('primary', 'primary_link', 'trunk', 'trunk_link', 'secondary', 'secondary_link', 'tertiary', 'tertiary_link') THEN 'main'
@@ -659,7 +659,7 @@ Layer:
               WHEN highway IN ('service', 'track') THEN 'service'
               WHEN highway IN ('path', 'cycleway', 'ski', 'steps', 'bridleway', 'footway') THEN 'path'
               WHEN railway IN ('funicular', 'light_rail', 'preserved') THEN 'minor_rail'
-              ELSE bail_out('Unexpected road row with osm_id=%s', osm_id::TEXT)
+              ELSE public.bail_out('Unexpected road row with osm_id=%s', osm_id::TEXT)
             END AS class,
             z_order,
             CASE
@@ -668,8 +668,8 @@ Layer:
               ELSE 'road'
             END AS "is",
             ref,
-            char_length(ref) AS reflen,
-            ROUND(merc_length(way)) AS len
+            pg_catalog.char_length(ref) AS reflen,
+            ROUND(public.merc_length(way)) AS len
           FROM planet_osm_line
           WHERE
             (
@@ -678,7 +678,7 @@ Layer:
                       'trunk_link', 'secondary', 'secondary_link'
                     )
                   AND ( name IS NOT NULL OR ref IS NOT NULL)
-                  AND z(!scale_denominator!) >= 11
+                  AND public.z(!scale_denominator!) >= 11
                 )
                 OR
                 ( -- 'main'
@@ -687,7 +687,7 @@ Layer:
                       'narrow_gauge', 'subway', 'tram'
                     )
                   AND name IS NOT NULL
-                  AND z(!scale_denominator!) >= 12
+                  AND public.z(!scale_denominator!) >= 12
                 )
                 OR
                 ( -- 'motorway_link'
@@ -696,10 +696,10 @@ Layer:
                       'light_rail', 'preserved'
                     )
                   AND name IS NOT NULL
-                  AND z(!scale_denominator!) >= 14
+                  AND public.z(!scale_denominator!) >= 14
                 )
               )
-            --AND linelabel(z(!scale_denominator!), name, way)
+            --AND pg_catalog.linelabel(public.z(!scale_denominator!), name, way)
             AND way && !bbox!
         ) data JOIN (
           VALUES
@@ -721,7 +721,7 @@ Layer:
               WHEN 'tunnel' THEN -100000
               WHEN 'road' THEN 0
               WHEN 'bridge' THEN 100000
-              ELSE bail_out('Unexpected row with is=%s, osm_id=%s', "is", osm_id::TEXT)::INT
+              ELSE public.bail_out('Unexpected row with is=%s, osm_id=%s', "is", osm_id::TEXT)::INT
             END
         ) AS road_label
       type: postgis
