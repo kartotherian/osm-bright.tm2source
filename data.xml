@@ -673,7 +673,7 @@ SELECT
           AND z(!scale_denominator!) >= 14
         )
       )
-    --AND pg_catalog.linelabel(z(!scale_denominator!), name, way)
+    --AND linelabel(z(!scale_denominator!), name, way)
     AND way && !bbox!
 ) data JOIN (
   VALUES
