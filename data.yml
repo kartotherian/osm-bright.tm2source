@@ -523,7 +523,7 @@ Layer:
           ORDER BY
             labelgrid(way, 16, !pixel_width!),
             sort_order DESC,
-            length(name) DESC,
+            pg_catalog.length(name) DESC,
             name
         ) data ORDER BY sort_order DESC
         ) place_label
@@ -668,7 +668,7 @@ Layer:
               ELSE 'road'
             END AS "is",
             ref,
-            char_length(ref) AS reflen,
+            pg_catalog.char_length(ref) AS reflen,
             ROUND(merc_length(way)) AS len
           FROM planet_osm_line
           WHERE
