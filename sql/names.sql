@@ -1,4 +1,4 @@
-CREATE OR REPLACE FUNCTION public.extract_names (tags hstore)
+CREATE OR REPLACE FUNCTION extract_names (tags hstore)
   RETURNS hstore
   AS
   $$
