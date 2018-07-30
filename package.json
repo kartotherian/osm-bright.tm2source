@@ -19,6 +19,6 @@
     "access": "public"
   },
   "dependencies": {
-    "postgis-vt-util": "0.3.0"
+    "@kartotherian/postgis-vt-util": "0.3.1"
   }
 }
