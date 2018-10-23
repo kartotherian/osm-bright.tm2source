@@ -5,7 +5,9 @@
 CREATE TABLE IF NOT EXISTS admin (LIKE planet_osm_roads INCLUDING ALL);
 
 --
--- Populates admin table. Slow, so run only sparingly in a cronjob
+-- Populates admin table. Slow, so run only sparingly in a cronjob. To avoid lock that will
+-- make tilerator crash (T204047), a second table is created to store new data and then it 
+-- replaces the old admin table
 --
 CREATE OR REPLACE FUNCTION populate_admin() RETURNS void AS
 $$
@@ -16,7 +18,7 @@ DECLARE
 	result geometry;
 	len int;
 BEGIN
-	TRUNCATE TABLE admin;
+	CREATE TABLE admin_new (LIKE admin INCLUDING ALL);
 
 	-- Let the datasource to perform precise filtering, but just don't pull all the crap here
 	FOR row IN SELECT * FROM planet_osm_roads WHERE boundary='administrative' AND admin_level IN ('2', '4') LOOP
@@ -43,6 +45,8 @@ BEGIN
 			END IF;
 		END IF;
 	END LOOP;
+	DROP TABLE admin;
+	ALTER TABLE admin_new RENAME TO admin;
 END
 $$
 LANGUAGE plpgsql;
@@ -65,7 +69,7 @@ LANGUAGE plpgsql;
 
 
 --
--- Inserts 1 row per sub-geometry into the admin table
+-- Inserts 1 row per sub-geometry into the new admin table
 --
 -- @param row admin: Row to insert
 -- @param LineString|MultiLineString geom: Geometry to set for this row
@@ -91,7 +95,7 @@ $$
 LANGUAGE plpgsql;
 
 --
--- Inserts one row into the admin table
+-- Inserts one row into the new admin table
 --
 -- @param row theRow: Row to insert
 -- @param LineString geom: Geometry to set for this row
@@ -100,7 +104,7 @@ CREATE OR REPLACE FUNCTION insert_admin_row(theRow admin, geom geometry(LineStri
 $$
 BEGIN
 	theRow.way := geom;
-	INSERT INTO admin VALUES(theRow.*);
+	INSERT INTO admin_new VALUES(theRow.*);
 END
 $$
 LANGUAGE plpgsql;
