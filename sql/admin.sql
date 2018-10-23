@@ -12,13 +12,13 @@ CREATE TABLE IF NOT EXISTS admin (LIKE planet_osm_roads INCLUDING ALL);
 CREATE OR REPLACE FUNCTION populate_admin() RETURNS void AS
 $$
 DECLARE
-	row admin%rowtype;
+	row planet_osm_roads%rowtype;
 	way geometry;
 	water geometry;
 	result geometry;
 	len int;
 BEGIN
-	CREATE TABLE admin_new (LIKE admin INCLUDING ALL);
+	CREATE TABLE admin_new (LIKE planet_osm_roads INCLUDING ALL);
 
 	-- Let the datasource to perform precise filtering, but just don't pull all the crap here
 	FOR row IN SELECT * FROM planet_osm_roads WHERE boundary='administrative' AND admin_level IN ('2', '4') LOOP
@@ -71,11 +71,11 @@ LANGUAGE plpgsql;
 --
 -- Inserts 1 row per sub-geometry into the new admin table
 --
--- @param row admin: Row to insert
+-- @param row planet_osm_roads: Row to insert
 -- @param LineString|MultiLineString geom: Geometry to set for this row
 -- @param bool maritime: Whether the border is maritime
 --
-CREATE OR REPLACE FUNCTION insert_admin_rows(theRow admin, geom geometry, maritime bool) RETURNS void AS
+CREATE OR REPLACE FUNCTION insert_admin_rows(theRow planet_osm_roads, geom geometry, maritime bool) RETURNS void AS
 $$
 DECLARE
 	i int;
@@ -98,7 +98,7 @@ LANGUAGE plpgsql;
 -- @param row theRow: Row to insert
 -- @param LineString geom: Geometry to set for this row
 --
-CREATE OR REPLACE FUNCTION insert_admin_row(theRow admin, geom geometry(LineString)) RETURNS void AS
+CREATE OR REPLACE FUNCTION insert_admin_row(theRow planet_osm_roads, geom geometry(LineString)) RETURNS void AS
 $$
 BEGIN
 	theRow.way := geom;
