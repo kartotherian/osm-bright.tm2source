@@ -136,7 +136,7 @@ SELECT osm_id, way
   FROM planet_osm_polygon
   WHERE
     (
-      "natural" IN ('water', 'bay')
+      "natural" = 'water'
       OR waterway IS NOT NULL
       OR landuse = 'reservoir'
       OR landuse = 'pond'
