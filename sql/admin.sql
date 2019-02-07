@@ -18,6 +18,7 @@ DECLARE
 	result geometry;
 	len int;
 BEGIN
+
 	CREATE TABLE admin_new (LIKE planet_osm_roads INCLUDING ALL);
 
 	-- Let the datasource to perform precise filtering, but just don't pull all the crap here
@@ -85,7 +86,9 @@ BEGIN
 		PERFORM insert_admin_row(theRow, geom);
 	ELSE
 		FOR i IN 1..ST_NumGeometries(geom) LOOP -- Composite geometry, insert one row per subgeometry
-			PERFORM insert_admin_row(theRow, ST_GeometryN(geom, i));
+			IF GeometryType(ST_GeometryN(geom, i)) = 'LINESTRING' THEN -- Ensure geometry has the type LINESTRING
+				PERFORM insert_admin_row(theRow, ST_GeometryN(geom, i));
+			END IF;
 		END LOOP;
 	END IF;
 END
