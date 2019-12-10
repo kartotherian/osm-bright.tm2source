@@ -61,9 +61,15 @@ CREATE OR REPLACE FUNCTION water_under(geom geometry) RETURNS geometry AS
 $$
 DECLARE
 	water geometry[];
+	result geometry;
 BEGIN
 	SELECT pg_catalog.array_agg(way) INTO water FROM water_polygons WHERE way && geom AND way IS NOT NULL AND geom IS NOT NULL;
-	RETURN ST_Union(water);
+	result := ST_Union(water);
+	IF GeometryType(result) = 'GEOMETRYCOLLECTION' THEN
+		RETURN ST_CollectionExtract(result, 2); -- Extract only linestrings from resulted GeometryCollection
+	ELSE
+		RETURN result;
+	END IF;
 END
 $$
 LANGUAGE plpgsql;
