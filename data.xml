@@ -2,34 +2,34 @@
 <!DOCTYPE Map[]>
 <Map srs="+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over">
 
-<Parameters>
-  <Parameter name="center">-122.4144,37.7907,14</Parameter>
-  <Parameter name="description"><![CDATA[Data source for Wikimedia's fork of osm-bright2]]></Parameter>
-  <Parameter name="format">pbf</Parameter>
-  <Parameter name="json"><![CDATA[{"vector_layers":[{"id":"landuse","description":"","fields":{"osm_id":"Number","class":"String","z_order":"Number","way_area":"Number"}},{"id":"waterway","description":"","fields":{"osm_id":"Number","class":"String"}},{"id":"water","description":"","fields":{"osm_id":"Number"}},{"id":"aeroway","description":"","fields":{"osm_id":"Number","type":"String"}},{"id":"building","description":"","fields":{"osm_id":"Number"}},{"id":"road","description":"","fields":{"osm_id":"Number","class":"String","is":"String"}},{"id":"admin","description":"","fields":{"osm_id":"Number","admin_level":"String","maritime":"Number","disputed":"Number"}},{"id":"country_label","description":"","fields":{"osm_id":"Number","name":"String","scalerank":"Number","code":"String"}},{"id":"place_label","description":"","fields":{"osm_id":"Number","name":"String","type":"String","ldir":"String","localrank":"Number"}},{"id":"poi_label","description":"","fields":{"osm_id":"Number","name":"String","scalerank":"Number","localrank":"Number","maki":"String"}},{"id":"road_label","description":"","fields":{"osm_id":"Number","shield":"String","name":"String","ref":"String","reflen":"Number","len":"Number"}}]}]]></Parameter>
-  <Parameter name="maxzoom">14</Parameter>
-  <Parameter name="minzoom">0</Parameter>
-  <Parameter name="name"><![CDATA[osm-bright]]></Parameter>
-</Parameters>
+    <Parameters>
+        <Parameter name="center">-122.4144,37.7907,14</Parameter>
+        <Parameter name="description"><![CDATA[Data source for Wikimedia's fork of osm-bright2]]></Parameter>
+        <Parameter name="format">pbf</Parameter>
+        <Parameter name="json"><![CDATA[{"vector_layers":[{"id":"landuse","description":"","fields":{"osm_id":"Number","class":"String","z_order":"Number","way_area":"Number"}},{"id":"waterway","description":"","fields":{"osm_id":"Number","class":"String"}},{"id":"water","description":"","fields":{"osm_id":"Number"}},{"id":"aeroway","description":"","fields":{"osm_id":"Number","type":"String"}},{"id":"building","description":"","fields":{"osm_id":"Number"}},{"id":"road","description":"","fields":{"osm_id":"Number","class":"String","is":"String"}},{"id":"admin","description":"","fields":{"osm_id":"Number","admin_level":"String","maritime":"Boolean","disputed":"Number"}},{"id":"country_label","description":"","fields":{"osm_id":"Number","name":"String","scalerank":"Number","code":"String"}},{"id":"place_label","description":"","fields":{"osm_id":"Number","name":"String","type":"String","ldir":"String","localrank":"Number"}},{"id":"poi_label","description":"","fields":{"osm_id":"Number","name":"String","scalerank":"Number","localrank":"Number","maki":"String"}},{"id":"road_label","description":"","fields":{"osm_id":"Number","shield":"String","name":"String","ref":"String","reflen":"Number","len":"Number"}}]}]]></Parameter>
+        <Parameter name="maxzoom">14</Parameter>
+        <Parameter name="minzoom">0</Parameter>
+        <Parameter name="name"><![CDATA[osm-bright]]></Parameter>
+    </Parameters>
 
 
-<Layer name="landuse"
-  buffer-size="8"
-  srs="+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over">
-    
-    <Datasource>
-       <Parameter name="dbname"><![CDATA[gis]]></Parameter>
-       <Parameter name="extent"><![CDATA[-20037508.34,-20037508.34,20037508.34,20037508.34]]></Parameter>
-       <Parameter name="geometry_field"><![CDATA[]]></Parameter>
-       <Parameter name="geometry_table"><![CDATA[]]></Parameter>
-       <Parameter name="host"><![CDATA[]]></Parameter>
-       <Parameter name="key_field"><![CDATA[]]></Parameter>
-       <Parameter name="key_field_as_attribute"><![CDATA[]]></Parameter>
-       <Parameter name="max_size"><![CDATA[512]]></Parameter>
-       <Parameter name="password"><![CDATA[]]></Parameter>
-       <Parameter name="port"><![CDATA[]]></Parameter>
-       <Parameter name="srid"><![CDATA[]]></Parameter>
-       <Parameter name="table"><![CDATA[(
+    <Layer name="landuse"
+           buffer-size="8"
+           srs="+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over">
+
+        <Datasource>
+            <Parameter name="dbname"><![CDATA[gis]]></Parameter>
+            <Parameter name="extent"><![CDATA[-20037508.34,-20037508.34,20037508.34,20037508.34]]></Parameter>
+            <Parameter name="geometry_field"><![CDATA[]]></Parameter>
+            <Parameter name="geometry_table"><![CDATA[]]></Parameter>
+            <Parameter name="host"><![CDATA[]]></Parameter>
+            <Parameter name="key_field"><![CDATA[]]></Parameter>
+            <Parameter name="key_field_as_attribute"><![CDATA[]]></Parameter>
+            <Parameter name="max_size"><![CDATA[512]]></Parameter>
+            <Parameter name="password"><![CDATA[]]></Parameter>
+            <Parameter name="port"><![CDATA[]]></Parameter>
+            <Parameter name="srid"><![CDATA[]]></Parameter>
+            <Parameter name="table"><![CDATA[(
 SELECT
     osm_id,
     way,
@@ -72,28 +72,28 @@ SELECT
     ORDER BY z_order, way_area DESC
 ) landuse
 ]]></Parameter>
-       <Parameter name="type"><![CDATA[postgis]]></Parameter>
-       <Parameter name="user"><![CDATA[]]></Parameter>
-    </Datasource>
-  </Layer>
+            <Parameter name="type"><![CDATA[postgis]]></Parameter>
+            <Parameter name="user"><![CDATA[]]></Parameter>
+        </Datasource>
+    </Layer>
 
-<Layer name="waterway"
-  buffer-size="8"
-  srs="+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over">
-    
-    <Datasource>
-       <Parameter name="dbname"><![CDATA[gis]]></Parameter>
-       <Parameter name="extent"><![CDATA[-20037508.34,-20037508.34,20037508.34,20037508.34]]></Parameter>
-       <Parameter name="geometry_field"><![CDATA[]]></Parameter>
-       <Parameter name="geometry_table"><![CDATA[]]></Parameter>
-       <Parameter name="host"><![CDATA[]]></Parameter>
-       <Parameter name="key_field"><![CDATA[]]></Parameter>
-       <Parameter name="key_field_as_attribute"><![CDATA[]]></Parameter>
-       <Parameter name="max_size"><![CDATA[512]]></Parameter>
-       <Parameter name="password"><![CDATA[]]></Parameter>
-       <Parameter name="port"><![CDATA[]]></Parameter>
-       <Parameter name="srid"><![CDATA[]]></Parameter>
-       <Parameter name="table"><![CDATA[(
+    <Layer name="waterway"
+           buffer-size="8"
+           srs="+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over">
+
+        <Datasource>
+            <Parameter name="dbname"><![CDATA[gis]]></Parameter>
+            <Parameter name="extent"><![CDATA[-20037508.34,-20037508.34,20037508.34,20037508.34]]></Parameter>
+            <Parameter name="geometry_field"><![CDATA[]]></Parameter>
+            <Parameter name="geometry_table"><![CDATA[]]></Parameter>
+            <Parameter name="host"><![CDATA[]]></Parameter>
+            <Parameter name="key_field"><![CDATA[]]></Parameter>
+            <Parameter name="key_field_as_attribute"><![CDATA[]]></Parameter>
+            <Parameter name="max_size"><![CDATA[512]]></Parameter>
+            <Parameter name="password"><![CDATA[]]></Parameter>
+            <Parameter name="port"><![CDATA[]]></Parameter>
+            <Parameter name="srid"><![CDATA[]]></Parameter>
+            <Parameter name="table"><![CDATA[(
 SELECT osm_id, way, waterway AS class
   FROM planet_osm_line
   WHERE
@@ -110,28 +110,28 @@ SELECT osm_id, way, waterway AS class
     )
     AND way && !bbox!
 ) waterway]]></Parameter>
-       <Parameter name="type"><![CDATA[postgis]]></Parameter>
-       <Parameter name="user"><![CDATA[]]></Parameter>
-    </Datasource>
-  </Layer>
+            <Parameter name="type"><![CDATA[postgis]]></Parameter>
+            <Parameter name="user"><![CDATA[]]></Parameter>
+        </Datasource>
+    </Layer>
 
-<Layer name="water"
-  buffer-size="8"
-  srs="+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over">
-    
-    <Datasource>
-       <Parameter name="dbname"><![CDATA[gis]]></Parameter>
-       <Parameter name="extent"><![CDATA[-20037508.34,-20037508.34,20037508.34,20037508.34]]></Parameter>
-       <Parameter name="geometry_field"><![CDATA[way]]></Parameter>
-       <Parameter name="geometry_table"><![CDATA[]]></Parameter>
-       <Parameter name="host"><![CDATA[]]></Parameter>
-       <Parameter name="key_field"><![CDATA[]]></Parameter>
-       <Parameter name="key_field_as_attribute"><![CDATA[]]></Parameter>
-       <Parameter name="max_size"><![CDATA[512]]></Parameter>
-       <Parameter name="password"><![CDATA[]]></Parameter>
-       <Parameter name="port"><![CDATA[]]></Parameter>
-       <Parameter name="srid"><![CDATA[]]></Parameter>
-       <Parameter name="table"><![CDATA[(
+    <Layer name="water"
+           buffer-size="8"
+           srs="+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over">
+
+        <Datasource>
+            <Parameter name="dbname"><![CDATA[gis]]></Parameter>
+            <Parameter name="extent"><![CDATA[-20037508.34,-20037508.34,20037508.34,20037508.34]]></Parameter>
+            <Parameter name="geometry_field"><![CDATA[way]]></Parameter>
+            <Parameter name="geometry_table"><![CDATA[]]></Parameter>
+            <Parameter name="host"><![CDATA[]]></Parameter>
+            <Parameter name="key_field"><![CDATA[]]></Parameter>
+            <Parameter name="key_field_as_attribute"><![CDATA[]]></Parameter>
+            <Parameter name="max_size"><![CDATA[512]]></Parameter>
+            <Parameter name="password"><![CDATA[]]></Parameter>
+            <Parameter name="port"><![CDATA[]]></Parameter>
+            <Parameter name="srid"><![CDATA[]]></Parameter>
+            <Parameter name="table"><![CDATA[(
 SELECT osm_id, way
   FROM planet_osm_polygon
   WHERE
@@ -153,28 +153,28 @@ SELECT 0 AS osm_id, way
   WHERE
     way && !bbox!
 ) water]]></Parameter>
-       <Parameter name="type"><![CDATA[postgis]]></Parameter>
-       <Parameter name="user"><![CDATA[]]></Parameter>
-    </Datasource>
-  </Layer>
+            <Parameter name="type"><![CDATA[postgis]]></Parameter>
+            <Parameter name="user"><![CDATA[]]></Parameter>
+        </Datasource>
+    </Layer>
 
-<Layer name="aeroway"
-  buffer-size="8"
-  srs="+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over">
-    
-    <Datasource>
-       <Parameter name="dbname"><![CDATA[gis]]></Parameter>
-       <Parameter name="extent"><![CDATA[-20037508.34,-20037508.34,20037508.34,20037508.34]]></Parameter>
-       <Parameter name="geometry_field"><![CDATA[]]></Parameter>
-       <Parameter name="geometry_table"><![CDATA[]]></Parameter>
-       <Parameter name="host"><![CDATA[]]></Parameter>
-       <Parameter name="key_field"><![CDATA[]]></Parameter>
-       <Parameter name="key_field_as_attribute"><![CDATA[]]></Parameter>
-       <Parameter name="max_size"><![CDATA[512]]></Parameter>
-       <Parameter name="password"><![CDATA[]]></Parameter>
-       <Parameter name="port"><![CDATA[]]></Parameter>
-       <Parameter name="srid"><![CDATA[]]></Parameter>
-       <Parameter name="table"><![CDATA[(
+    <Layer name="aeroway"
+           buffer-size="8"
+           srs="+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over">
+
+        <Datasource>
+            <Parameter name="dbname"><![CDATA[gis]]></Parameter>
+            <Parameter name="extent"><![CDATA[-20037508.34,-20037508.34,20037508.34,20037508.34]]></Parameter>
+            <Parameter name="geometry_field"><![CDATA[]]></Parameter>
+            <Parameter name="geometry_table"><![CDATA[]]></Parameter>
+            <Parameter name="host"><![CDATA[]]></Parameter>
+            <Parameter name="key_field"><![CDATA[]]></Parameter>
+            <Parameter name="key_field_as_attribute"><![CDATA[]]></Parameter>
+            <Parameter name="max_size"><![CDATA[512]]></Parameter>
+            <Parameter name="password"><![CDATA[]]></Parameter>
+            <Parameter name="port"><![CDATA[]]></Parameter>
+            <Parameter name="srid"><![CDATA[]]></Parameter>
+            <Parameter name="table"><![CDATA[(
 SELECT osm_id, way, aeroway AS type
   FROM planet_osm_polygon
   WHERE
@@ -190,28 +190,28 @@ SELECT osm_id, way, aeroway AS type
     AND z(!scale_denominator!) >= 12
     AND way && !bbox!
 ) aeroway]]></Parameter>
-       <Parameter name="type"><![CDATA[postgis]]></Parameter>
-       <Parameter name="user"><![CDATA[]]></Parameter>
-    </Datasource>
-  </Layer>
+            <Parameter name="type"><![CDATA[postgis]]></Parameter>
+            <Parameter name="user"><![CDATA[]]></Parameter>
+        </Datasource>
+    </Layer>
 
-<Layer name="building"
-  buffer-size="8"
-  srs="+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over">
-    
-    <Datasource>
-       <Parameter name="dbname"><![CDATA[gis]]></Parameter>
-       <Parameter name="extent"><![CDATA[-20037508.34,-20037508.34,20037508.34,20037508.34]]></Parameter>
-       <Parameter name="geometry_field"><![CDATA[]]></Parameter>
-       <Parameter name="geometry_table"><![CDATA[]]></Parameter>
-       <Parameter name="host"><![CDATA[]]></Parameter>
-       <Parameter name="key_field"><![CDATA[]]></Parameter>
-       <Parameter name="key_field_as_attribute"><![CDATA[]]></Parameter>
-       <Parameter name="max_size"><![CDATA[512]]></Parameter>
-       <Parameter name="password"><![CDATA[]]></Parameter>
-       <Parameter name="port"><![CDATA[]]></Parameter>
-       <Parameter name="srid"><![CDATA[]]></Parameter>
-       <Parameter name="table"><![CDATA[(
+    <Layer name="building"
+           buffer-size="8"
+           srs="+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over">
+
+        <Datasource>
+            <Parameter name="dbname"><![CDATA[gis]]></Parameter>
+            <Parameter name="extent"><![CDATA[-20037508.34,-20037508.34,20037508.34,20037508.34]]></Parameter>
+            <Parameter name="geometry_field"><![CDATA[]]></Parameter>
+            <Parameter name="geometry_table"><![CDATA[]]></Parameter>
+            <Parameter name="host"><![CDATA[]]></Parameter>
+            <Parameter name="key_field"><![CDATA[]]></Parameter>
+            <Parameter name="key_field_as_attribute"><![CDATA[]]></Parameter>
+            <Parameter name="max_size"><![CDATA[512]]></Parameter>
+            <Parameter name="password"><![CDATA[]]></Parameter>
+            <Parameter name="port"><![CDATA[]]></Parameter>
+            <Parameter name="srid"><![CDATA[]]></Parameter>
+            <Parameter name="table"><![CDATA[(
   SELECT osm_id, way
     FROM planet_osm_polygon
     WHERE
@@ -220,28 +220,28 @@ SELECT osm_id, way, aeroway AS type
       AND building <> 'no'
       AND way && !bbox!
 ) building]]></Parameter>
-       <Parameter name="type"><![CDATA[postgis]]></Parameter>
-       <Parameter name="user"><![CDATA[]]></Parameter>
-    </Datasource>
-  </Layer>
+            <Parameter name="type"><![CDATA[postgis]]></Parameter>
+            <Parameter name="user"><![CDATA[]]></Parameter>
+        </Datasource>
+    </Layer>
 
-<Layer name="road"
-  buffer-size="8"
-  srs="+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over">
-    
-    <Datasource>
-       <Parameter name="dbname"><![CDATA[gis]]></Parameter>
-       <Parameter name="extent"><![CDATA[-20037508.34,-20037508.34,20037508.34,20037508.34]]></Parameter>
-       <Parameter name="geometry_field"><![CDATA[way]]></Parameter>
-       <Parameter name="geometry_table"><![CDATA[]]></Parameter>
-       <Parameter name="host"><![CDATA[]]></Parameter>
-       <Parameter name="key_field"><![CDATA[]]></Parameter>
-       <Parameter name="key_field_as_attribute"><![CDATA[]]></Parameter>
-       <Parameter name="max_size"><![CDATA[512]]></Parameter>
-       <Parameter name="password"><![CDATA[]]></Parameter>
-       <Parameter name="port"><![CDATA[]]></Parameter>
-       <Parameter name="srid"><![CDATA[]]></Parameter>
-       <Parameter name="table"><![CDATA[(
+    <Layer name="road"
+           buffer-size="8"
+           srs="+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over">
+
+        <Datasource>
+            <Parameter name="dbname"><![CDATA[gis]]></Parameter>
+            <Parameter name="extent"><![CDATA[-20037508.34,-20037508.34,20037508.34,20037508.34]]></Parameter>
+            <Parameter name="geometry_field"><![CDATA[way]]></Parameter>
+            <Parameter name="geometry_table"><![CDATA[]]></Parameter>
+            <Parameter name="host"><![CDATA[]]></Parameter>
+            <Parameter name="key_field"><![CDATA[]]></Parameter>
+            <Parameter name="key_field_as_attribute"><![CDATA[]]></Parameter>
+            <Parameter name="max_size"><![CDATA[512]]></Parameter>
+            <Parameter name="password"><![CDATA[]]></Parameter>
+            <Parameter name="port"><![CDATA[]]></Parameter>
+            <Parameter name="srid"><![CDATA[]]></Parameter>
+            <Parameter name="table"><![CDATA[(
 SELECT osm_id, way, class, "is" FROM (
 SELECT
     osm_id,
@@ -346,32 +346,32 @@ SELECT
     END
 ) road
 ]]></Parameter>
-       <Parameter name="type"><![CDATA[postgis]]></Parameter>
-       <Parameter name="user"><![CDATA[]]></Parameter>
-    </Datasource>
-  </Layer>
+            <Parameter name="type"><![CDATA[postgis]]></Parameter>
+            <Parameter name="user"><![CDATA[]]></Parameter>
+        </Datasource>
+    </Layer>
 
-<Layer name="admin"
-  buffer-size="8"
-  srs="+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over">
-    
-    <Datasource>
-       <Parameter name="dbname"><![CDATA[gis]]></Parameter>
-       <Parameter name="extent"><![CDATA[-20037508.34,-20037508.34,20037508.34,20037508.34]]></Parameter>
-       <Parameter name="geometry_field"><![CDATA[]]></Parameter>
-       <Parameter name="geometry_table"><![CDATA[]]></Parameter>
-       <Parameter name="host"><![CDATA[]]></Parameter>
-       <Parameter name="key_field"><![CDATA[]]></Parameter>
-       <Parameter name="key_field_as_attribute"><![CDATA[]]></Parameter>
-       <Parameter name="max_size"><![CDATA[512]]></Parameter>
-       <Parameter name="password"><![CDATA[]]></Parameter>
-       <Parameter name="port"><![CDATA[]]></Parameter>
-       <Parameter name="srid"><![CDATA[]]></Parameter>
-       <Parameter name="table"><![CDATA[(
+    <Layer name="admin"
+           buffer-size="8"
+           srs="+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over">
+
+        <Datasource>
+            <Parameter name="dbname"><![CDATA[gis]]></Parameter>
+            <Parameter name="extent"><![CDATA[-20037508.34,-20037508.34,20037508.34,20037508.34]]></Parameter>
+            <Parameter name="geometry_field"><![CDATA[]]></Parameter>
+            <Parameter name="geometry_table"><![CDATA[]]></Parameter>
+            <Parameter name="host"><![CDATA[]]></Parameter>
+            <Parameter name="key_field"><![CDATA[]]></Parameter>
+            <Parameter name="key_field_as_attribute"><![CDATA[]]></Parameter>
+            <Parameter name="max_size"><![CDATA[512]]></Parameter>
+            <Parameter name="password"><![CDATA[]]></Parameter>
+            <Parameter name="port"><![CDATA[]]></Parameter>
+            <Parameter name="srid"><![CDATA[]]></Parameter>
+            <Parameter name="table"><![CDATA[(
 SELECT
     osm_id, way,
     admin_level::SMALLINT,
-    (tags->'maritime')::INT AS maritime,
+    maritime,
     CASE
       WHEN
         tags->'disputed' = 'yes'
@@ -383,7 +383,7 @@ SELECT
     END AS disputed
   FROM admin
   WHERE
-    COALESCE(tags->'maritime', '') <> '1'
+    maritime <> TRUE
     AND (
       ( admin_level = '2' AND z(!scale_denominator!) >= 2 )
       OR ( admin_level = '4' AND z(!scale_denominator!) >= 3 )
@@ -392,28 +392,28 @@ SELECT
     AND COALESCE(tags->'right:country', '') <> 'Demarcation Zone'
     AND way && !bbox!
 ) admin_]]></Parameter>
-       <Parameter name="type"><![CDATA[postgis]]></Parameter>
-       <Parameter name="user"><![CDATA[]]></Parameter>
-    </Datasource>
-  </Layer>
+            <Parameter name="type"><![CDATA[postgis]]></Parameter>
+            <Parameter name="user"><![CDATA[]]></Parameter>
+        </Datasource>
+    </Layer>
 
-<Layer name="country_label"
-  buffer-size="64"
-  srs="+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over">
-    
-    <Datasource>
-       <Parameter name="dbname"><![CDATA[gis]]></Parameter>
-       <Parameter name="extent"><![CDATA[-20037508.34,-20037508.34,20037508.34,20037508.34]]></Parameter>
-       <Parameter name="geometry_field"><![CDATA[]]></Parameter>
-       <Parameter name="geometry_table"><![CDATA[]]></Parameter>
-       <Parameter name="host"><![CDATA[]]></Parameter>
-       <Parameter name="key_field"><![CDATA[]]></Parameter>
-       <Parameter name="key_field_as_attribute"><![CDATA[]]></Parameter>
-       <Parameter name="max_size"><![CDATA[512]]></Parameter>
-       <Parameter name="password"><![CDATA[]]></Parameter>
-       <Parameter name="port"><![CDATA[]]></Parameter>
-       <Parameter name="srid"><![CDATA[]]></Parameter>
-       <Parameter name="table"><![CDATA[(
+    <Layer name="country_label"
+           buffer-size="64"
+           srs="+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over">
+
+        <Datasource>
+            <Parameter name="dbname"><![CDATA[gis]]></Parameter>
+            <Parameter name="extent"><![CDATA[-20037508.34,-20037508.34,20037508.34,20037508.34]]></Parameter>
+            <Parameter name="geometry_field"><![CDATA[]]></Parameter>
+            <Parameter name="geometry_table"><![CDATA[]]></Parameter>
+            <Parameter name="host"><![CDATA[]]></Parameter>
+            <Parameter name="key_field"><![CDATA[]]></Parameter>
+            <Parameter name="key_field_as_attribute"><![CDATA[]]></Parameter>
+            <Parameter name="max_size"><![CDATA[512]]></Parameter>
+            <Parameter name="password"><![CDATA[]]></Parameter>
+            <Parameter name="port"><![CDATA[]]></Parameter>
+            <Parameter name="srid"><![CDATA[]]></Parameter>
+            <Parameter name="table"><![CDATA[(
 SELECT osm_id, way, name, (hstore_to_json(extract_names(tags)))::text name_, CASE
       WHEN to_int(population) >= 250000000 THEN 1
       WHEN to_int(population) BETWEEN 100000000 AND  250000000 THEN 2
@@ -430,28 +430,28 @@ SELECT osm_id, way, name, (hstore_to_json(extract_names(tags)))::text name_, CAS
     AND way && !bbox!
   ORDER BY to_int(population) DESC NULLS LAST
 ) country_label]]></Parameter>
-       <Parameter name="type"><![CDATA[postgis]]></Parameter>
-       <Parameter name="user"><![CDATA[]]></Parameter>
-    </Datasource>
-  </Layer>
+            <Parameter name="type"><![CDATA[postgis]]></Parameter>
+            <Parameter name="user"><![CDATA[]]></Parameter>
+        </Datasource>
+    </Layer>
 
-<Layer name="place_label"
-  buffer-size="64"
-  srs="+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over">
-    
-    <Datasource>
-       <Parameter name="dbname"><![CDATA[gis]]></Parameter>
-       <Parameter name="extent"><![CDATA[-20037508.34,-20037508.34,20037508.34,20037508.34]]></Parameter>
-       <Parameter name="geometry_field"><![CDATA[]]></Parameter>
-       <Parameter name="geometry_table"><![CDATA[]]></Parameter>
-       <Parameter name="host"><![CDATA[]]></Parameter>
-       <Parameter name="key_field"><![CDATA[]]></Parameter>
-       <Parameter name="key_field_as_attribute"><![CDATA[]]></Parameter>
-       <Parameter name="max_size"><![CDATA[512]]></Parameter>
-       <Parameter name="password"><![CDATA[]]></Parameter>
-       <Parameter name="port"><![CDATA[]]></Parameter>
-       <Parameter name="srid"><![CDATA[]]></Parameter>
-       <Parameter name="table"><![CDATA[(
+    <Layer name="place_label"
+           buffer-size="64"
+           srs="+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over">
+
+        <Datasource>
+            <Parameter name="dbname"><![CDATA[gis]]></Parameter>
+            <Parameter name="extent"><![CDATA[-20037508.34,-20037508.34,20037508.34,20037508.34]]></Parameter>
+            <Parameter name="geometry_field"><![CDATA[]]></Parameter>
+            <Parameter name="geometry_table"><![CDATA[]]></Parameter>
+            <Parameter name="host"><![CDATA[]]></Parameter>
+            <Parameter name="key_field"><![CDATA[]]></Parameter>
+            <Parameter name="key_field_as_attribute"><![CDATA[]]></Parameter>
+            <Parameter name="max_size"><![CDATA[512]]></Parameter>
+            <Parameter name="password"><![CDATA[]]></Parameter>
+            <Parameter name="port"><![CDATA[]]></Parameter>
+            <Parameter name="srid"><![CDATA[]]></Parameter>
+            <Parameter name="table"><![CDATA[(
 SELECT
     osm_id,
     way,
@@ -511,28 +511,28 @@ SELECT
 ) data ORDER BY sort_order DESC
 ) place_label
 ]]></Parameter>
-       <Parameter name="type"><![CDATA[postgis]]></Parameter>
-       <Parameter name="user"><![CDATA[]]></Parameter>
-    </Datasource>
-  </Layer>
+            <Parameter name="type"><![CDATA[postgis]]></Parameter>
+            <Parameter name="user"><![CDATA[]]></Parameter>
+        </Datasource>
+    </Layer>
 
-<Layer name="poi_label"
-  buffer-size="64"
-  srs="+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over">
-    
-    <Datasource>
-       <Parameter name="dbname"><![CDATA[gis]]></Parameter>
-       <Parameter name="extent"><![CDATA[-20037508.34,-20037508.34,20037508.34,20037508.34]]></Parameter>
-       <Parameter name="geometry_field"><![CDATA[]]></Parameter>
-       <Parameter name="geometry_table"><![CDATA[]]></Parameter>
-       <Parameter name="host"><![CDATA[]]></Parameter>
-       <Parameter name="key_field"><![CDATA[]]></Parameter>
-       <Parameter name="key_field_as_attribute"><![CDATA[]]></Parameter>
-       <Parameter name="max_size"><![CDATA[512]]></Parameter>
-       <Parameter name="password"><![CDATA[]]></Parameter>
-       <Parameter name="port"><![CDATA[]]></Parameter>
-       <Parameter name="srid"><![CDATA[]]></Parameter>
-       <Parameter name="table"><![CDATA[(
+    <Layer name="poi_label"
+           buffer-size="64"
+           srs="+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over">
+
+        <Datasource>
+            <Parameter name="dbname"><![CDATA[gis]]></Parameter>
+            <Parameter name="extent"><![CDATA[-20037508.34,-20037508.34,20037508.34,20037508.34]]></Parameter>
+            <Parameter name="geometry_field"><![CDATA[]]></Parameter>
+            <Parameter name="geometry_table"><![CDATA[]]></Parameter>
+            <Parameter name="host"><![CDATA[]]></Parameter>
+            <Parameter name="key_field"><![CDATA[]]></Parameter>
+            <Parameter name="key_field_as_attribute"><![CDATA[]]></Parameter>
+            <Parameter name="max_size"><![CDATA[512]]></Parameter>
+            <Parameter name="password"><![CDATA[]]></Parameter>
+            <Parameter name="port"><![CDATA[]]></Parameter>
+            <Parameter name="srid"><![CDATA[]]></Parameter>
+            <Parameter name="table"><![CDATA[(
 SELECT osm_id, way1 AS way, name, rank AS scalerank, localrank, maki FROM
 (
   SELECT
@@ -596,28 +596,28 @@ UNION ALL
   ) AS ranks(class, rank) ON class=maki
   ORDER BY scalerank, maki DESC, osm_id
 ) poi_label]]></Parameter>
-       <Parameter name="type"><![CDATA[postgis]]></Parameter>
-       <Parameter name="user"><![CDATA[]]></Parameter>
-    </Datasource>
-  </Layer>
+            <Parameter name="type"><![CDATA[postgis]]></Parameter>
+            <Parameter name="user"><![CDATA[]]></Parameter>
+        </Datasource>
+    </Layer>
 
-<Layer name="road_label"
-  buffer-size="64"
-  srs="+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over">
-    
-    <Datasource>
-       <Parameter name="dbname"><![CDATA[gis]]></Parameter>
-       <Parameter name="extent"><![CDATA[-20037508.34,-20037508.34,20037508.34,20037508.34]]></Parameter>
-       <Parameter name="geometry_field"><![CDATA[]]></Parameter>
-       <Parameter name="geometry_table"><![CDATA[]]></Parameter>
-       <Parameter name="host"><![CDATA[]]></Parameter>
-       <Parameter name="key_field"><![CDATA[]]></Parameter>
-       <Parameter name="key_field_as_attribute"><![CDATA[]]></Parameter>
-       <Parameter name="max_size"><![CDATA[512]]></Parameter>
-       <Parameter name="password"><![CDATA[]]></Parameter>
-       <Parameter name="port"><![CDATA[]]></Parameter>
-       <Parameter name="srid"><![CDATA[]]></Parameter>
-       <Parameter name="table"><![CDATA[(
+    <Layer name="road_label"
+           buffer-size="64"
+           srs="+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over">
+
+        <Datasource>
+            <Parameter name="dbname"><![CDATA[gis]]></Parameter>
+            <Parameter name="extent"><![CDATA[-20037508.34,-20037508.34,20037508.34,20037508.34]]></Parameter>
+            <Parameter name="geometry_field"><![CDATA[]]></Parameter>
+            <Parameter name="geometry_table"><![CDATA[]]></Parameter>
+            <Parameter name="host"><![CDATA[]]></Parameter>
+            <Parameter name="key_field"><![CDATA[]]></Parameter>
+            <Parameter name="key_field_as_attribute"><![CDATA[]]></Parameter>
+            <Parameter name="max_size"><![CDATA[512]]></Parameter>
+            <Parameter name="password"><![CDATA[]]></Parameter>
+            <Parameter name="port"><![CDATA[]]></Parameter>
+            <Parameter name="srid"><![CDATA[]]></Parameter>
+            <Parameter name="table"><![CDATA[(
 SELECT osm_id, 'default' AS shield, way, name, name_, ref, reflen, len FROM (
 SELECT
     osm_id,
@@ -699,9 +699,9 @@ SELECT
     END
 ) AS road_label
 ]]></Parameter>
-       <Parameter name="type"><![CDATA[postgis]]></Parameter>
-       <Parameter name="user"><![CDATA[]]></Parameter>
-    </Datasource>
-  </Layer>
+            <Parameter name="type"><![CDATA[postgis]]></Parameter>
+            <Parameter name="user"><![CDATA[]]></Parameter>
+        </Datasource>
+    </Layer>
 
 </Map>
