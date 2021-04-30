@@ -1,25 +1,4 @@
 --
--- Name: planet_osm_line_index; Type: INDEX; Schema: public; Owner: osmimporter; Tablespace:
---
-
-DO $$
-BEGIN
-
-IF NOT EXISTS (
-    SELECT 1
-    FROM   pg_class c
-    JOIN   pg_namespace n ON n.oid = c.relnamespace
-    WHERE  c.relname = 'planet_osm_line_index'
-    AND    n.nspname = 'public'
-    ) THEN
-
-	CREATE INDEX planet_osm_line_index ON planet_osm_line USING gist (way);
-END IF;
-
-END$$;
-
-
---
 -- Name: planet_osm_line_pkey; Type: INDEX; Schema: public; Owner: osmimporter; Tablespace:
 --
 
@@ -38,28 +17,6 @@ IF NOT EXISTS (
 END IF;
 
 END$$;
-
-
---
--- Name: planet_osm_point_index; Type: INDEX; Schema: public; Owner: osmimporter; Tablespace:
---
-
-DO $$
-BEGIN
-
-IF NOT EXISTS (
-    SELECT 1
-    FROM   pg_class c
-    JOIN   pg_namespace n ON n.oid = c.relnamespace
-    WHERE  c.relname = 'planet_osm_point_index'
-    AND    n.nspname = 'public'
-    ) THEN
-
-	CREATE INDEX planet_osm_point_index ON planet_osm_point USING gist (way);
-END IF;
-
-END$$;
-
 
 --
 -- Name: planet_osm_point_pkey; Type: INDEX; Schema: public; Owner: osmimporter; Tablespace:
@@ -80,28 +37,6 @@ IF NOT EXISTS (
 END IF;
 
 END$$;
-
-
---
--- Name: planet_osm_polygon_index; Type: INDEX; Schema: public; Owner: osmimporter; Tablespace:
---
-
-DO $$
-BEGIN
-
-IF NOT EXISTS (
-    SELECT 1
-    FROM   pg_class c
-    JOIN   pg_namespace n ON n.oid = c.relnamespace
-    WHERE  c.relname = 'planet_osm_polygon_index'
-    AND    n.nspname = 'public'
-    ) THEN
-
-	CREATE INDEX planet_osm_polygon_index ON planet_osm_polygon USING gist (way);
-END IF;
-
-END$$;
-
 
 --
 -- Name: planet_osm_polygon_pkey; Type: INDEX; Schema: public; Owner: osmimporter; Tablespace:
