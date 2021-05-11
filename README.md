@@ -2,19 +2,26 @@
 Data source for [Kartotherian's fork  of OSM Bright](https://github.com/kartotherian/osm-bright.tm2)
 
 # Install
-This style requires an osm2pgsql database with ocean data, custom indexes, and custom functions.
+This style requires an imposm3 database with ocean data, custom indexes, and custom functions.
 
-It's probably easiest to grab an PBF of OSM data from [geofabrik](http://download.geofabrik.de/). Once you've installed PostgreSQL and PostGIS, create a database and import with osm2pgsql:
+It's probably easiest to grab an PBF of OSM data from [geofabrik](http://download.geofabrik.de/). Once you've installed PostgreSQL and PostGIS, create a database and import with imposm3:
 
 ```sh
 createdb gis
 psql -d gis -c 'CREATE EXTENSION postgis; CREATE EXTENSION hstore;'
-osm2pgsql -d gis -E 3857 --hstore ~/path/to/data.osm.pbf
+imposm import \
+    -config ~/path/to/imposm/config.json \
+    -mapping ./imposm_mapping.yml \
+    -overwritecache \
+    -read ~/path/to/data.osm.pbf \
+    -diff \
+    -write
+imposm import \
+    -config ~/path/to/imposm/config.json \
+    -deployproduction 
 ```
 
-You can find a more detailed guide to setting up a database and loading data with osm2pgsql at [switch2osm.org](http://switch2osm.org/loading-osm-data/).
-
-Next we need some shapefiles
+Next we need some shapefiles for water_polygons and water_polygons_simplfied
 
 ```sh
 curl -O http://data.openstreetmapdata.com/water-polygons-split-3857.zip
@@ -23,17 +30,26 @@ cd water-polygons-split-3857
 shp2pgsql -I -s 3857 -g way water_polygons.shp water_polygons | psql -Xqd gis
 ```
 
-Then some custom functions and indexes
+```sh
+curl -O http://data.openstreetmapdata.com/simplified-water-polygons-split-3857.zip
+unzip simplified-water-polygons-split-3857.zip && rm simplified-water-polygons-split-3857.zip
+cd simplified-water-polygons-split-3857
+shp2pgsql -I -s 3857 -g way simplified_water_polygons.shp water_polygons_simplified | psql -Xqd gis
+```
+
+Then the custom functions, indexes, and the layers functions
 
 ```sh
 cd .. # return to osm-bright.tm2source directory
 npm install
 psql -Xqd gis -f node_modules/@kartotherian/postgis-vt-util/lib.sql
-psql -Xqd gis -f sql/admin.sql
-psql -Xqd gis -f sql/functions.sql
-psql -Xqd gis -f sql/create-indexes.sql
-psql -Xqd gis -f sql/names.sql
-psql -d gis -c 'select populate_admin();'
+psql -Xqd gis -f sql/helpers/functions.sql
+psql -Xqd gis -f sql/helpers/create-indexes.sql
+psql -Xqd gis -f sql/helpers/names.sql
+for sql_file in ./sql/layers/*.sql; do 
+    echo $sql_file;
+    psql -Xqd gis -f $sql_file;
+done
 ```
 
 # Editing
