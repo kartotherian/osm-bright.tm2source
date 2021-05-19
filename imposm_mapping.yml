@@ -7,6 +7,7 @@ tags:
   exclude: [note, "note:*", source, source_ref, "source:*", attribution, comment, fixme, created_by, odbl, "odbl:note", "SK53_bulk:load",  "tiger:*",  "NHD:*", "nhd:*",  "gnis:*",  "geobase:*", "accuracy:meters", "sub_sea:type", "waterway:type",  "KSJ2:*", "yh:*",  "osak:*",  "kms:*",  "ngbe:*",  "naptan:*",  "CLC:*",  "3dshapes:ggmodelk", AND_nosr_r, import, "it:fvg:*"]
 
 generalized_tables:
+  # landuse
   planet_osm_polygon_landuse_gen_z6:
     source: planet_osm_polygon_landuse_gen_z7
     tolerance: 2445.98490513
@@ -73,7 +74,7 @@ tables:
         name: tags
         type: hstore_tags
       - name: way
-        type: validated_geometry
+        type: geometry
 
   planet_osm_polygon:
     type: polygon
@@ -299,7 +300,7 @@ tables:
         name: tags
         type: hstore_tags
       - name: way
-        type: validated_geometry
+        type: geometry
       - key: aeroway
         name: aeroway
         type: string
@@ -342,7 +343,7 @@ tables:
         type: id
         from_member: true
       - name: way
-        type: validated_geometry
+        type: geometry
       - key: name
         name: name
         type: string

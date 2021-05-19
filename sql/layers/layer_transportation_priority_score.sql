@@ -40,8 +40,8 @@ AS
         feature_priority
       ;
 
-      -- feature_boost 
-      SELECT 
+      -- feature_boost
+      SELECT
         CASE "is"
           WHEN 'tunnel' THEN -100000
           WHEN 'road' THEN 0
@@ -51,8 +51,8 @@ AS
       ;
 
       -- compute final_score
-      SELECT 
-        z_order + feature_priority + feature_boost 
+      SELECT
+        z_order + feature_priority + feature_boost
       INTO final_score;
 
       RETURN final_score;

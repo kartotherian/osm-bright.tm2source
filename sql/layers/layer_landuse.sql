@@ -29,6 +29,31 @@ AS $BODY$
       area,
       landuse,
       leisure,
+      name,
+      boundary,
+      "natural",
+      z_order,
+      way
+    FROM
+      planet_osm_polygon_landuse_gen_z6
+    WHERE
+      zoom_level = 6 AND
+      (
+        "natural" = 'wood'
+        OR landuse IN ('wood', 'forest')
+        OR leisure IN ('national_reserve', 'nature_reserve', 'golf_course')
+        OR boundary = 'national_park'
+      )
+    UNION ALL
+
+    SELECT
+      osm_id,
+      aeroway,
+      amenity,
+      area,
+      landuse,
+      leisure,
+      name,
       boundary,
       "natural",
       z_order,
@@ -52,6 +77,7 @@ AS $BODY$
       area,
       landuse,
       leisure,
+      name,
       boundary,
       "natural",
       z_order,
@@ -75,6 +101,7 @@ AS $BODY$
       area,
       landuse,
       leisure,
+      name,
       boundary,
       "natural",
       z_order,
@@ -98,6 +125,7 @@ AS $BODY$
       area,
       landuse,
       leisure,
+      name,
       boundary,
       "natural",
       z_order,
@@ -125,6 +153,7 @@ AS $BODY$
       area,
       landuse,
       leisure,
+      name,
       boundary,
       "natural",
       z_order,
@@ -152,6 +181,7 @@ AS $BODY$
       area,
       landuse,
       leisure,
+      name,
       boundary,
       "natural",
       z_order,
@@ -179,6 +209,7 @@ AS $BODY$
       area,
       landuse,
       leisure,
+      name,
       boundary,
       "natural",
       z_order,
@@ -206,6 +237,7 @@ AS $BODY$
       area,
       landuse,
       leisure,
+      name,
       boundary,
       "natural",
       z_order,
@@ -230,4 +262,3 @@ AS $BODY$
     ORDER BY z_order, area DESC
   ;
 $BODY$;
-

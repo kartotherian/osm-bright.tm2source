@@ -59,7 +59,7 @@ END IF;
 END$$;
 
 --
--- Name: planet_osm_line_pkey; Type: INDEX; Schema: public; Owner: osmimporter; layer_place_label:
+-- Name: planet_osm_point_place; Type: INDEX; Schema: public; Owner: osmimporter; layer_place_label:
 --
 
 DO $$
