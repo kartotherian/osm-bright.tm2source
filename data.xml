@@ -117,7 +117,7 @@
             <Parameter name="password"><![CDATA[]]></Parameter>
             <Parameter name="port"><![CDATA[]]></Parameter>
             <Parameter name="srid"><![CDATA[3857]]></Parameter>
-            <Parameter name="table"><![CDATA[(SELECT osm_id, geometry as way FROM layer_building(!bbox!, z(!scale_denominator!))) building]]></Parameter>
+            <Parameter name="table"><![CDATA[(SELECT osm_id, geometry as way FROM layer_buildings(!bbox!, z(!scale_denominator!))) building]]></Parameter>
             <Parameter name="type"><![CDATA[postgis]]></Parameter>
             <Parameter name="user"><![CDATA[]]></Parameter>
         </Datasource>
@@ -183,7 +183,7 @@
             <Parameter name="password"><![CDATA[]]></Parameter>
             <Parameter name="port"><![CDATA[]]></Parameter>
             <Parameter name="srid"><![CDATA[3857]]></Parameter>
-            <Parameter name="table"><![CDATA[(SELECT * FROM layer_country_label(!bbox!, z(!scale_denominator!))) country_label]]></Parameter>
+            <Parameter name="table"><![CDATA[(SELECT * FROM layer_country_labels(!bbox!, z(!scale_denominator!))) country_label]]></Parameter>
             <Parameter name="type"><![CDATA[postgis]]></Parameter>
             <Parameter name="user"><![CDATA[]]></Parameter>
         </Datasource>

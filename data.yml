@@ -130,7 +130,7 @@ Layer:
       srid: 3857
       table: |-
         (
-          SELECT osm_id, geometry as way FROM layer_building(!bbox!, z(!scale_denominator!))
+          SELECT osm_id, geometry as way FROM layer_buildings(!bbox!, z(!scale_denominator!))
         ) building
       type: postgis
       user: ''
@@ -210,7 +210,7 @@ Layer:
       srid: 3857
       table: |-
         (
-          SELECT osm_id, geometry as way, name, name_, scalerank, code FROM layer_country_label(!bbox!, z(!scale_denominator!))
+          SELECT osm_id, geometry as way, name, name_, scalerank, code FROM layer_country_labels(!bbox!, z(!scale_denominator!))
         ) country_label
       type: postgis
       user: ''
