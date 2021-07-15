@@ -25,6 +25,8 @@ AS $BODY$
     admin
   WHERE
     maritime <> TRUE
+    AND
+    tags->'boundary' = 'administrative'    -- TODO: Remove when we filter out elements in imposm
     AND (
       (
         admin_level = '2' AND zoom_level >= 2 
