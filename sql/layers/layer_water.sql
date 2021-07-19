@@ -31,7 +31,7 @@ AS $BODY$
   FROM
     water_polygons
   WHERE
-    zoom_level >= 10 AND zoom_level < 14
+    zoom_level >= 10
     AND way && bbox
   UNION ALL
   SELECT
