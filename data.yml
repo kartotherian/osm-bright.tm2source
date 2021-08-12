@@ -238,7 +238,7 @@ Layer:
       srid: 3857
       table: |
         (
-          SELECT osm_id, geometry as way, ldir, localrank, name, type FROM layer_place_label(!bbox!, z(!scale_denominator!), !pixel_width!)
+          SELECT osm_id, geometry as way, ldir, localrank, name, name_, type FROM layer_place_label(!bbox!, z(!scale_denominator!), !pixel_width!)
         ) place_label
       type: postgis
       user: ''
