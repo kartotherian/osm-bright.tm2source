@@ -1,5 +1,5 @@
-_prefs: 
-  disabled: 
+_prefs:
+  disabled:
     - place_label
     - building
   inspector: false
@@ -7,17 +7,17 @@ _prefs:
   rev: ''
   saveCenter: true
 attribution: ''
-center: 
+center:
   - -122.4144
   - 37.7907
   - 14
 description: Data source for Wikimedia's fork of osm-bright2
-Layer: 
+Layer:
   - id: landuse
-    Datasource: 
+    Datasource:
       dbname: gis
       extent: -20037508.34,-20037508.34,20037508.34,20037508.34
-      geometry_field: ''
+      geometry_field: way
       geometry_table: ''
       host: ''
       key_field: ''
@@ -25,66 +25,27 @@ Layer:
       max_size: 512
       password: ''
       port: ''
-      srid: ''
+      srid: 3857
       table: |
         (
-        SELECT
-            osm_id,
-            way,
-            CASE
-              WHEN "natural" = 'wood' OR landuse IN ('wood', 'forest') THEN 'wood'
-              WHEN leisure IN ('national_reserve', 'nature_reserve', 'golf_course') OR boundary = 'national_park' THEN 'park'
-              WHEN landuse IN ('cemetery', 'industrial') THEN landuse
-              WHEN aeroway IS NOT NULL THEN 'industrial'
-              WHEN landuse = 'village_green' OR leisure IN ('park', 'playground') THEN 'park'
-              WHEN amenity IN ('school', 'university') THEN 'school'
-              WHEN amenity = 'hospital' THEN 'hospital'
-              ELSE bail_out('Unexpected landuse row with osm_id=%s', osm_id::TEXT)
-            END AS class,
-            z_order,
-            way_area
-          FROM planet_osm_polygon
-          WHERE
-            (
-                (
-                    (
-                      "natural" = 'wood' OR landuse IN ('wood', 'forest')
-                      OR leisure IN ('national_reserve', 'nature_reserve', 'golf_course')
-                      OR boundary = 'national_park'
-                    )
-                    AND z(!scale_denominator!) >= 7
-                ) OR (
-                    (
-                      landuse IN ('cemetery', 'industrial', 'village_green')
-                      OR aeroway IS NOT NULL
-                      OR leisure IN ('park', 'playground')
-                      OR amenity IN ('school', 'university')
-                    )
-                    AND z(!scale_denominator!) >= 10
-                ) OR (
-                    amenity = 'hospital'
-                    AND z(!scale_denominator!) >= 12
-                )
-            )
-            AND way && !bbox!
-            ORDER BY z_order, way_area DESC
+        SELECT class, osm_id, way_area, z_order, geometry as way FROM layer_landuse(!bbox!, z(!scale_denominator!))
         ) landuse
       type: postgis
       user: ''
     description: ''
-    fields: 
+    fields:
       class: String
       osm_id: Number
       way_area: Number
       z_order: Number
-    properties: 
+    properties:
       "buffer-size": 8
     srs: +proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over
   - id: waterway
-    Datasource: 
+    Datasource:
       dbname: gis
       extent: -20037508.34,-20037508.34,20037508.34,20037508.34
-      geometry_field: ''
+      geometry_field: way
       geometry_table: ''
       host: ''
       key_field: ''
@@ -92,36 +53,22 @@ Layer:
       max_size: 512
       password: ''
       port: ''
-      srid: ''
+      srid: 3857
       table: |-
         (
-        SELECT osm_id, way, waterway AS class
-          FROM planet_osm_line
-          WHERE
-            (
-              (
-                waterway IN ('river', 'canal')
-                AND z(!scale_denominator!) >= 8
-              )
-              OR
-              (
-                waterway IN ('stream', 'stream_intermittent')
-                AND z(!scale_denominator!) >= 13
-              )
-            )
-            AND way && !bbox!
+          SELECT class, osm_id, geometry AS way FROM layer_waterway(!bbox!, z(!scale_denominator!))
         ) waterway
       type: postgis
       user: ''
     description: ''
-    fields: 
+    fields:
       class: String
       osm_id: Number
-    properties: 
+    properties:
       "buffer-size": 8
     srs: +proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over
   - id: water
-    Datasource: 
+    Datasource:
       dbname: gis
       extent: -20037508.34,-20037508.34,20037508.34,20037508.34
       geometry_field: way
@@ -132,43 +79,21 @@ Layer:
       max_size: 512
       password: ''
       port: ''
-      srid: ''
-      table: |-
-        (
-        SELECT osm_id, way
-          FROM planet_osm_polygon
-          WHERE
-            (
-              "natural" = 'water'
-              OR waterway IS NOT NULL
-              OR landuse = 'reservoir'
-              OR landuse = 'pond'
-            )
-            AND
-            (
-              z(!scale_denominator!) >= 14
-              OR way_area >= 5000000000 / 2.3^z(!scale_denominator!)
-            )
-            AND way && !bbox!
-        UNION ALL
-        SELECT 0 AS osm_id, way
-          FROM water_polygons
-          WHERE
-            way && !bbox!
-        ) water
+      srid: 3857
+      table: (SELECT osm_id, geometry AS way FROM layer_water(!bbox!, z(!scale_denominator!))) water
       type: postgis
       user: ''
     description: ''
-    fields: 
+    fields:
       osm_id: Number
-    properties: 
+    properties:
       "buffer-size": 8
     srs: +proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over
   - id: aeroway
-    Datasource: 
+    Datasource:
       dbname: gis
       extent: -20037508.34,-20037508.34,20037508.34,20037508.34
-      geometry_field: ''
+      geometry_field: way
       geometry_table: ''
       host: ''
       key_field: ''
@@ -176,66 +101,22 @@ Layer:
       max_size: 512
       password: ''
       port: ''
-      srid: ''
+      srid: 3857
       table: |-
         (
-        SELECT osm_id, way, aeroway AS type
-          FROM planet_osm_polygon
-          WHERE
-            aeroway IS NOT NULL
-            AND aeroway IN ('apron', 'helipad', 'runway', 'taxiway')
-            AND z(!scale_denominator!) >= 12
-            AND way && !bbox!
-        UNION ALL
-        SELECT osm_id, way, aeroway AS type
-          FROM planet_osm_line
-          WHERE
-            aeroway IS NOT NULL
-            AND z(!scale_denominator!) >= 12
-            AND way && !bbox!
+          SELECT osm_id, geometry AS way FROM layer_aeroway(!bbox!, z(!scale_denominator!))
         ) aeroway
       type: postgis
       user: ''
     description: ''
-    fields: 
+    fields:
       osm_id: Number
       type: String
-    properties: 
+    properties:
       "buffer-size": 8
     srs: +proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over
   - id: building
-    Datasource: 
-      dbname: gis
-      extent: -20037508.34,-20037508.34,20037508.34,20037508.34
-      geometry_field: ''
-      geometry_table: ''
-      host: ''
-      key_field: ''
-      key_field_as_attribute: ''
-      max_size: 512
-      password: ''
-      port: ''
-      srid: ''
-      table: |-
-        (
-          SELECT osm_id, way
-            FROM planet_osm_polygon
-            WHERE
-              z(!scale_denominator!) >= 14
-              AND building IS NOT NULL
-              AND building <> 'no'
-              AND way && !bbox!
-        ) building
-      type: postgis
-      user: ''
-    description: ''
-    fields: 
-      osm_id: Number
-    properties: 
-      "buffer-size": 8
-    srs: +proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over
-  - id: road
-    Datasource: 
+    Datasource:
       dbname: gis
       extent: -20037508.34,-20037508.34,20037508.34,20037508.34
       geometry_field: way
@@ -246,127 +127,51 @@ Layer:
       max_size: 512
       password: ''
       port: ''
-      srid: ''
+      srid: 3857
+      table: |-
+        (
+          SELECT osm_id, geometry as way FROM layer_building(!bbox!, z(!scale_denominator!))
+        ) building
+      type: postgis
+      user: ''
+    description: ''
+    fields:
+      osm_id: Number
+    properties:
+      "buffer-size": 8
+    srs: +proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over
+  - id: road
+    Datasource:
+      dbname: gis
+      extent: -20037508.34,-20037508.34,20037508.34,20037508.34
+      geometry_field: way
+      geometry_table: ''
+      host: ''
+      key_field: ''
+      key_field_as_attribute: ''
+      max_size: 512
+      password: ''
+      port: ''
+      srid: 3857
       table: |
         (
-        SELECT osm_id, way, class, "is" FROM (
-        SELECT
-            osm_id,
-            way,
-            CASE
-              WHEN highway IN ('motorway', 'motorway_link', 'driveway') THEN highway
-              WHEN highway IN ('primary', 'primary_link', 'trunk', 'trunk_link', 'secondary', 'secondary_link', 'tertiary', 'tertiary_link') THEN 'main'
-              WHEN highway IN ('residential', 'unclassified', 'living_street') THEN 'street'
-              WHEN highway IN ('pedestrian', 'construction') OR access = 'private' THEN 'street_limited'
-              WHEN railway IN ('rail', 'monorail', 'narrow_gauge', 'subway', 'tram') THEN 'major_rail'
-              WHEN highway IN ('service', 'track') THEN 'service'
-              WHEN highway IN ('path', 'cycleway', 'ski', 'steps', 'bridleway', 'footway') THEN 'path'
-              WHEN railway IN ('funicular', 'light_rail', 'preserved') THEN 'minor_rail'
-              ELSE bail_out('Unexpected road row with osm_id=%s', osm_id::TEXT)
-            END AS class,
-            z_order,
-            CASE
-              WHEN bridge IS NOT NULL AND bridge <> 'no' AND bridge <> '0' THEN 'bridge'
-              WHEN tunnel IS NOT NULL AND tunnel <> 'no' AND tunnel <> '0' THEN 'tunnel'
-              ELSE 'road'
-            END AS "is"
-          FROM planet_osm_line
-          WHERE
-            (
-                (
-                  highway IN ('motorway', -- 'motorway'
-                    'primary', 'primary_link', 'trunk', 'trunk_link' -- 'main'
-                  )
-                  AND z(!scale_denominator!) >= 6
-                )
-                OR
-                ( -- 'main'
-                  highway IN ('secondary', 'secondary_link')
-                  AND z(!scale_denominator!) >= 9
-                )
-                OR
-                ( -- 'main'
-                  highway IN ('tertiary', 'tertiary_link')
-                  AND z(!scale_denominator!) >= 12
-                )
-                OR
-                ( -- 'street'
-                  highway IN ('residential', 'unclassified', 'living_street')
-                  AND z(!scale_denominator!) >= 12
-                )
-                OR
-                ( -- 'street_limited'
-                  (highway IN ('pedestrian', 'construction') OR access = 'private')
-                  AND z(!scale_denominator!) >= 12
-                )
-                OR
-                ( -- 'major_rail'
-                  railway IN ('rail', 'monorail', 'narrow_gauge', 'subway', 'tram')
-                  AND z(!scale_denominator!) >= 12
-                )
-                OR
-                ( -- 'motorway_link'
-                  highway IN ('motorway_link')
-                  AND z(!scale_denominator!) >= 13
-                )
-                OR
-                ( -- 'service'
-                  highway IN ('service', 'track')
-                  AND z(!scale_denominator!) >= 14
-                )
-                OR
-                ( -- 'driveway'
-                  highway IN ('driveway')
-                  AND z(!scale_denominator!) >= 14
-                )
-                OR
-                ( -- 'path'
-                  highway IN ('path', 'cycleway', 'ski', 'steps', 'bridleway', 'footway')
-                  AND z(!scale_denominator!) >= 14
-                )
-                OR
-                ( -- 'minor_rail'
-                  railway IN ('funicular', 'light_rail', 'preserved')
-                  AND z(!scale_denominator!) >= 14
-                )
-              )
-            AND way && !bbox!
-        ) data JOIN (
-          VALUES
-            ('motorway', 1000),
-            ('main', 900),
-            ('street', 800),
-            ('motorway_link', 700),
-            ('street_limited', 600),
-            ('driveway', 500),
-            ('major_rail', 400),
-            ('service', 300),
-            ('minor_rail', 200),
-            ('path', 100)
-        ) AS ordertable(feature, prio) ON class=feature
-          ORDER BY z_order + prio +
-            CASE "is"
-              WHEN 'tunnel' THEN -100000
-              WHEN 'road' THEN 0
-              WHEN 'bridge' THEN 100000
-              ELSE bail_out('Unexpected row with is=%s, osm_id=%s', "is", osm_id::TEXT)::INT
-            END
+          SELECT osm_id, geometry as way, class, z_order, "is" FROM layer_transportation(!bbox!, z(!scale_denominator!))
         ) road
       type: postgis
       user: ''
     description: ''
-    fields: 
+    fields:
       class: String
       is: String
       osm_id: Number
-    properties: 
+    properties:
       "buffer-size": 8
     srs: +proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over
   - id: admin
-    Datasource: 
+    Datasource:
       dbname: gis
       extent: -20037508.34,-20037508.34,20037508.34,20037508.34
-      geometry_field: ''
+      geometry_field: way
       geometry_table: ''
       host: ''
       key_field: ''
@@ -374,49 +179,27 @@ Layer:
       max_size: 512
       password: ''
       port: ''
-      srid: ''
+      srid: 3857
       table: |-
         (
-        SELECT
-            osm_id, way,
-            admin_level::SMALLINT,
-            (tags->'maritime')::INT AS maritime,
-            CASE
-              WHEN
-                tags->'disputed' = 'yes'
-                OR tags->'dispute' = 'yes'
-                OR (tags->'disputed_by') IS NOT NULL
-                OR tags->'status' = 'partially_recognized_state'
-              THEN 1
-              ELSE 0
-            END AS disputed
-          FROM admin
-          WHERE
-            COALESCE(tags->'maritime', '') <> '1'
-            AND (
-              ( admin_level = '2' AND z(!scale_denominator!) >= 2 )
-              OR ( admin_level = '4' AND z(!scale_denominator!) >= 3 )
-            )
-            AND COALESCE(tags->'left:country', '') <> 'Demarcation Zone'
-            AND COALESCE(tags->'right:country', '') <> 'Demarcation Zone'
-            AND way && !bbox!
+          SELECT osm_id, geometry as way, admin_level, maritime, disputed FROM layer_admin(!bbox!, z(!scale_denominator!))
         ) admin_
       type: postgis
       user: ''
     description: ''
-    fields: 
+    fields:
       admin_level: String
       disputed: Number
-      maritime: Number
+      maritime: Boolean
       osm_id: Number
-    properties: 
+    properties:
       "buffer-size": 8
     srs: +proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over
   - id: country_label
-    Datasource: 
+    Datasource:
       dbname: gis
       extent: -20037508.34,-20037508.34,20037508.34,20037508.34
-      geometry_field: ''
+      geometry_field: way
       geometry_table: ''
       host: ''
       key_field: ''
@@ -424,41 +207,27 @@ Layer:
       max_size: 512
       password: ''
       port: ''
-      srid: ''
+      srid: 3857
       table: |-
         (
-        SELECT osm_id, way, name, (hstore_to_json(extract_names(tags)))::text name_, CASE
-              WHEN to_int(population) >= 250000000 THEN 1
-              WHEN to_int(population) BETWEEN 100000000 AND  250000000 THEN 2
-              WHEN to_int(population) BETWEEN 50000000 AND 100000000 THEN 3
-              WHEN to_int(population) BETWEEN 25000000 AND 50000000 THEN 4
-              WHEN to_int(population) BETWEEN 10000000 AND 25000000 THEN 5
-              WHEN to_int(population) < 10000000 THEN 6
-            END scalerank,
-            COALESCE(tags->'ISO3166-1', tags->'country_code_iso3166_1_alpha_2') code
-          FROM planet_osm_point
-          WHERE
-            place = 'country'
-            AND z(!scale_denominator!) BETWEEN 3 AND 10
-            AND way && !bbox!
-          ORDER BY to_int(population) DESC NULLS LAST
+          SELECT osm_id, geometry as way, name, name_, scalerank, code FROM layer_country_label(!bbox!, z(!scale_denominator!))
         ) country_label
       type: postgis
       user: ''
     description: ''
-    fields: 
+    fields:
       code: String
       name: String
       osm_id: Number
       scalerank: Number
-    properties: 
+    properties:
       "buffer-size": 64
     srs: +proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over
   - id: place_label
-    Datasource: 
+    Datasource:
       dbname: gis
       extent: -20037508.34,-20037508.34,20037508.34,20037508.34
-      geometry_field: ''
+      geometry_field: way
       geometry_table: ''
       host: ''
       key_field: ''
@@ -466,84 +235,28 @@ Layer:
       max_size: 512
       password: ''
       port: ''
-      srid: ''
+      srid: 3857
       table: |
         (
-        SELECT
-            osm_id,
-            way,
-            name,
-            name_,
-            "type",
-            ldir,
-            localrank
-        FROM(
-        SELECT
-          DISTINCT ON (labelgrid(way, 16, !pixel_width!))
-            osm_id,
-            way,
-            get_label_name(name) AS name,
-            (hstore_to_json(extract_names(tags)))::text name_,
-            place AS "type",
-            'SE' AS ldir,
-            1 AS localrank, -- TODO:
-            CASE
-              WHEN place = 'city' THEN 5000000000 + to_int(population)
-              WHEN place = 'town' THEN 3000000000 + to_int(population)
-              WHEN place = 'village' THEN 1000000000 + to_int(population)
-              ELSE to_int(population)
-            END AS sort_order
-          FROM planet_osm_point
-          WHERE
-            (
-              (
-                place = 'city'
-                AND z(!scale_denominator!) >= 4
-                -- On zoom 4, display cities with 1M+ population. Decrease by 250k every level
-                AND (to_int(population) + z(!scale_denominator!) * 250000 - 2000000) > 0
-              )
-              OR
-              (
-                place = 'town'
-                AND z(!scale_denominator!) >= 9
-              )
-              OR
-              (
-                place = 'village'
-                AND z(!scale_denominator!) >= 11
-              )
-              OR
-              (
-                place IN ('hamlet', 'suburb','neighbourhood')
-                AND z(!scale_denominator!) >= 13
-              )
-            )
-            AND name IS NOT NULL
-            AND way && !bbox! --ST_Expand(!bbox!, 64*!pixel_width!)
-          ORDER BY
-            labelgrid(way, 16, !pixel_width!),
-            sort_order DESC,
-            pg_catalog.length(name) DESC,
-            name
-        ) data ORDER BY sort_order DESC
+          SELECT osm_id, geometry as way, ldir, localrank, name, name_, type FROM layer_place_label(!bbox!, z(!scale_denominator!), !pixel_width!)
         ) place_label
       type: postgis
       user: ''
     description: ''
-    fields: 
+    fields:
       ldir: String
       localrank: Number
       name: String
       osm_id: Number
       type: String
-    properties: 
+    properties:
       "buffer-size": 64
     srs: +proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over
   - id: poi_label
-    Datasource: 
+    Datasource:
       dbname: gis
       extent: -20037508.34,-20037508.34,20037508.34,20037508.34
-      geometry_field: ''
+      geometry_field: way
       geometry_table: ''
       host: ''
       key_field: ''
@@ -551,89 +264,28 @@ Layer:
       max_size: 512
       password: ''
       port: ''
-      srid: ''
+      srid: 3857
       table: |-
         (
-        SELECT osm_id, way1 AS way, name, rank AS scalerank, localrank, maki FROM
-        (
-          SELECT
-            osm_id,
-            name,
-            (hstore_to_json(extract_names(tags)))::text name_,
-            CASE
-              WHEN railway='station' THEN 'rail'
-              WHEN (tags->'subway') IS NOT NULL THEN 'rail-metro'
-              WHEN highway='bus_stop' THEN 'bus'
-              WHEN railway='tram_stop' THEN 'rail-light'
-              WHEN amenity='ferry_terminal' THEN 'ferry'
-              ELSE bail_out('Cannot classify poi_label, osm_id=%s', osm_id::TEXT)
-            END AS maki,
-            1 AS localrank,
-            way AS way1
-          FROM planet_osm_point
-          WHERE
-            z(!scale_denominator!) >= 14
-            AND
-              (
-                (public_transport='stop_position' AND (tags->'subway') IS NOT NULL)
-                OR railway IN ('station', 'tram_stop')
-                OR highway='bus_stop'
-                OR amenity='ferry_terminal'
-              )
-            AND way && !bbox!
-        UNION ALL
-          SELECT
-            osm_id,
-            name,
-            (hstore_to_json(extract_names(tags)))::text name_,
-            CASE
-              WHEN railway='station' THEN 'rail'
-              WHEN (tags->'subway') IS NOT NULL THEN 'rail-metro'
-              WHEN highway='bus_stop' THEN 'bus'
-              WHEN railway='tram_stop' THEN 'rail-light'
-              WHEN amenity='ferry_terminal' THEN 'ferry'
-              ELSE bail_out('Cannot classify poi_label, osm_id=%s', osm_id::TEXT)
-            END AS maki,
-            1 AS localrank,
-            ST_Centroid(way) AS way1
-          FROM planet_osm_polygon
-          WHERE
-            z(!scale_denominator!) >= 14
-            AND
-              (
-                (public_transport='stop_position' AND (tags->'subway') IS NOT NULL)
-                OR railway IN ('station', 'tram_stop')
-                OR highway='bus_stop'
-                OR amenity='ferry_terminal'
-              )
-            AND way && !bbox!
-        ) data JOIN (
-          VALUES
-            ('rail', 1),
-            ('rail-metro', 1),
-            ('rail-light', 1),
-            ('ferry', 1),
-            ('bus', 3)
-          ) AS ranks(class, rank) ON class=maki
-          ORDER BY scalerank, maki DESC, osm_id
+          SELECT osm_id, geometry as way, localrank, scalerank, maki, name FROM layer_poi_label(!bbox!, z(!scale_denominator!))
         ) poi_label
       type: postgis
       user: ''
     description: ''
-    fields: 
+    fields:
       localrank: Number
       maki: String
       name: String
       osm_id: Number
       scalerank: Number
-    properties: 
+    properties:
       "buffer-size": 64
     srs: +proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over
   - id: road_label
-    Datasource: 
+    Datasource:
       dbname: gis
       extent: -20037508.34,-20037508.34,20037508.34,20037508.34
-      geometry_field: ''
+      geometry_field: way
       geometry_table: ''
       host: ''
       key_field: ''
@@ -641,100 +293,22 @@ Layer:
       max_size: 512
       password: ''
       port: ''
-      srid: ''
+      srid: 3857
       table: |
         (
-        SELECT osm_id, 'default' AS shield, way, name, name_, ref, reflen, len FROM (
-        SELECT
-            osm_id,
-            way,
-            name,
-            (hstore_to_json(extract_names(tags)))::text name_,
-            CASE
-              WHEN highway IN ('motorway', 'motorway_link', 'driveway') THEN highway
-              WHEN highway IN ('primary', 'primary_link', 'trunk', 'trunk_link', 'secondary', 'secondary_link', 'tertiary', 'tertiary_link') THEN 'main'
-              WHEN highway IN ('residential', 'unclassified', 'living_street') THEN 'street'
-              WHEN highway IN ('pedestrian', 'construction') OR access = 'private' THEN 'street_limited'
-              WHEN railway IN ('rail', 'monorail', 'narrow_gauge', 'subway', 'tram') THEN 'major_rail'
-              WHEN highway IN ('service', 'track') THEN 'service'
-              WHEN highway IN ('path', 'cycleway', 'ski', 'steps', 'bridleway', 'footway') THEN 'path'
-              WHEN railway IN ('funicular', 'light_rail', 'preserved') THEN 'minor_rail'
-              ELSE bail_out('Unexpected road row with osm_id=%s', osm_id::TEXT)
-            END AS class,
-            z_order,
-            CASE
-              WHEN bridge IS NOT NULL AND bridge <> 'no' AND bridge <> '0' THEN 'bridge'
-              WHEN tunnel IS NOT NULL AND tunnel <> 'no' AND tunnel <> '0' THEN 'tunnel'
-              ELSE 'road'
-            END AS "is",
-            ref,
-            pg_catalog.char_length(ref) AS reflen,
-            ROUND(merc_length(way)) AS len
-          FROM planet_osm_line
-          WHERE
-            (
-                (
-                  highway IN ('motorway', 'primary', 'primary_link', 'trunk',
-                      'trunk_link', 'secondary', 'secondary_link'
-                    )
-                  AND ( name IS NOT NULL OR ref IS NOT NULL)
-                  AND z(!scale_denominator!) >= 11
-                )
-                OR
-                ( -- 'main'
-                  highway IN ('tertiary', 'tertiary_link', 'residential', 'unclassified',
-                      'living_street', 'pedestrian', 'construction', 'rail', 'monorail',
-                      'narrow_gauge', 'subway', 'tram'
-                    )
-                  AND name IS NOT NULL
-                  AND z(!scale_denominator!) >= 12
-                )
-                OR
-                ( -- 'motorway_link'
-                  highway IN ('motorway_link', 'service', 'track', 'driveway', 'path',
-                      'cycleway', 'ski', 'steps', 'bridleway', 'footway', 'funicular',
-                      'light_rail', 'preserved'
-                    )
-                  AND name IS NOT NULL
-                  AND z(!scale_denominator!) >= 14
-                )
-              )
-            --AND linelabel(z(!scale_denominator!), name, way)
-            AND way && !bbox!
-        ) data JOIN (
-          VALUES
-            ('motorway', 1000),
-            ('main', 900),
-            ('street', 800),
-            ('motorway_link', 700),
-            ('street_limited', 600),
-            ('driveway', 500),
-            ('major_rail', 400),
-            ('service', 300),
-            ('minor_rail', 200),
-            ('path', 100)
-        ) AS ordertable(feature, prio) ON class=feature
-          -- Sort the same way as the road layer, so that more important streets go
-          -- first and have a higher priority to be rendered
-          ORDER BY z_order + prio +
-            CASE "is"
-              WHEN 'tunnel' THEN -100000
-              WHEN 'road' THEN 0
-              WHEN 'bridge' THEN 100000
-              ELSE bail_out('Unexpected row with is=%s, osm_id=%s', "is", osm_id::TEXT)::INT
-            END
+          SELECT osm_id, geometry as way, shield, name, name_, ref, reflen, len FROM layer_transportation_name(!bbox!, z(!scale_denominator!))
         ) AS road_label
       type: postgis
       user: ''
     description: ''
-    fields: 
+    fields:
       len: Number
       name: String
       osm_id: Number
       ref: String
       reflen: Number
       shield: String
-    properties: 
+    properties:
       "buffer-size": 64
     srs: +proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over
 maxzoom: 14
