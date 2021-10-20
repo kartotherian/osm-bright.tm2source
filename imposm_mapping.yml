@@ -370,3 +370,67 @@ tables:
       require:
         admin_level: ['2', '4']
         boundary: ['administrative']
+
+  water:
+    type: polygon
+    mapping:
+      natural: [ "water" ]
+      waterway: [ __any__ ]
+      landuse: [ "reservoir", "pond" ]
+    columns:
+      - name: osm_id
+        type: id
+      - key: landuse
+        name: landuse
+        type: string
+      - key: leisure
+        name: leisure
+        type: string
+      - key: natural
+        name: natural
+        type: string
+      - key: waterway
+        name: waterway
+        type: string
+      - key: way_area
+        name: way_area
+        type: area
+      - name: way
+        type: geometry
+
+  wikidata_relation_members:
+    type: relation_member
+    columns:
+      - name: osm_id
+        type: id
+      - name: geometry
+        type: geometry
+      - key: wikidata
+        name: wikidata
+        type: string
+    relation_types:
+      - multipolygon
+      - route
+      - route_master
+      - restriction
+      - boundary
+      - public_transport
+      - destination_sign
+      - waterway
+      - enforcement
+      - connectivity
+    mapping:
+      wikidata: [__any__]
+
+  wikidata_relation_polygon:
+    type: polygon
+    mapping:
+      wikidata: [__any__]
+    columns:
+      - name: osm_id
+        type: id
+      - key: wikidata
+        name: wikidata
+        type: string
+      - name: geometry
+        type: geometry
