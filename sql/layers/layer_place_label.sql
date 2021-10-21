@@ -60,7 +60,7 @@ AS $BODY$
       AND
         (name IS NOT NULL AND name <> '')
       AND
-        way && bbox --ST_Expand(!BBOX!, 64*pixel_width)
+        way && ST_Expand(bbox, 64*pixel_width)
     ORDER BY
       labelgrid(way, 16, pixel_width),
       sort_order DESC,

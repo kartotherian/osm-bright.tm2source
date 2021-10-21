@@ -1,4 +1,4 @@
-CREATE OR REPLACE FUNCTION public.layer_country_label(bbox geometry, zoom_level integer)
+CREATE OR REPLACE FUNCTION public.layer_country_label(bbox geometry, zoom_level integer, pixel_width numeric)
     RETURNS TABLE(osm_id bigint, geometry geometry, name text, name_ text, scalerank integer, code text)
     LANGUAGE 'sql'
     COST 100
@@ -26,7 +26,7 @@ AS $BODY$
   WHERE
     place = 'country'
     AND zoom_level BETWEEN 3 AND 10
-    AND way && bbox
+    AND way && ST_Expand(bbox, 64*pixel_width)
   ORDER BY
     to_int(population) DESC NULLS LAST
   ;
