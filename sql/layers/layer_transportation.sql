@@ -14,81 +14,169 @@ AS $BODY$
     "is"
   FROM (
     SELECT
-        osm_id,
-        way,
-        layer_transportation_name_to_class(highway, railway, access, osm_id) AS class,
-        z_order,
-        CASE
-          -- maybe handle all these cases at the data import?
-          WHEN bridge IS NOT NULL AND bridge <> '' AND bridge <> 'no' AND bridge <> '0' THEN 'bridge'
-          WHEN tunnel IS NOT NULL AND tunnel <> '' AND tunnel <> 'no' AND tunnel <> '0' THEN 'tunnel'
-          ELSE 'road'
-        END AS "is"
-      FROM
-        planet_osm_line
-      WHERE
-        (
-            (
-              highway IN ('motorway', -- 'motorway'
-                'primary', 'primary_link', 'trunk', 'trunk_link' -- 'main'
-              )
-              AND zoom_level >= 6
-            )
-            OR
-            ( -- 'main'
-              highway IN ('secondary', 'secondary_link')
-              AND zoom_level >= 9
-            )
-            OR
-            ( -- 'main'
-              highway IN ('tertiary', 'tertiary_link')
-              AND zoom_level >= 12
-            )
-            OR
-            ( -- 'street'
-              highway IN ('residential', 'unclassified', 'living_street')
-              AND zoom_level >= 12
-            )
-            OR
-            ( -- 'street_limited'
-              (highway IN ('pedestrian', 'construction') OR access = 'private')
-              AND zoom_level >= 12
-            )
-            OR
-            ( -- 'major_rail'
-              railway IN ('rail', 'monorail', 'narrow_gauge', 'subway', 'tram')
-              AND zoom_level >= 12
-            )
-            OR
-            ( -- 'motorway_link'
-              highway IN ('motorway_link')
-              AND zoom_level >= 13
-            )
-            OR
-            ( -- 'service'
-              highway IN ('service', 'track')
-              AND zoom_level >= 14
-            )
-            OR
-            ( -- 'driveway'
-              highway IN ('driveway')
-              AND zoom_level >= 14
-            )
-            OR
-            ( -- 'path'
-              highway IN ('path', 'cycleway', 'ski', 'steps', 'bridleway', 'footway')
-              AND zoom_level >= 14
-            )
-            OR
-            ( -- 'minor_rail'
-              railway IN ('funicular', 'light_rail', 'preserved')
-              AND zoom_level >= 14
-            )
-          )
-        AND way && bbox
-    ) AS transportation
-    ORDER BY
-      layer_transportation_priority_score(class, "is", z_order)
+      osm_id,
+      way,
+      layer_transportation_name_to_class(highway, railway, access, osm_id) AS class,
+      z_order,
+      CASE
+	    -- maybe handle all these cases at the data import?
+        WHEN bridge IS NOT NULL AND bridge <> '' AND bridge <> 'no' AND bridge <> '0' THEN 'bridge'
+        WHEN tunnel IS NOT NULL AND tunnel <> '' AND tunnel <> 'no' AND tunnel <> '0' THEN 'tunnel'
+        ELSE 'road'
+      END AS "is"
+    FROM
+      planet_osm_merge_line_transportation_gen_z5
+    WHERE
+      zoom_level = 5
+    UNION ALL
+
+    SELECT
+      osm_id,
+      way,
+      layer_transportation_name_to_class(highway, railway, access, osm_id) AS class,
+      z_order,
+      CASE
+        WHEN bridge IS NOT NULL AND bridge <> '' AND bridge <> 'no' AND bridge <> '0' THEN 'bridge'
+        WHEN tunnel IS NOT NULL AND tunnel <> '' AND tunnel <> 'no' AND tunnel <> '0' THEN 'tunnel'
+        ELSE 'road'
+      END AS "is"
+    FROM
+      planet_osm_merge_line_transportation_gen_z6
+    WHERE
+      zoom_level = 6
+    UNION ALL
+
+    SELECT
+      osm_id,
+      way,
+      layer_transportation_name_to_class(highway, railway, access, osm_id) AS class,
+      z_order,
+      CASE
+        WHEN bridge IS NOT NULL AND bridge <> '' AND bridge <> 'no' AND bridge <> '0' THEN 'bridge'
+        WHEN tunnel IS NOT NULL AND tunnel <> '' AND tunnel <> 'no' AND tunnel <> '0' THEN 'tunnel'
+        ELSE 'road'
+      END AS "is"
+    FROM
+      planet_osm_merge_line_transportation_gen_z7
+    WHERE
+      zoom_level = 7
+    UNION ALL
+
+    SELECT
+      osm_id,
+      way,
+      layer_transportation_name_to_class(highway, railway, access, osm_id) AS class,
+      z_order,
+      CASE
+        WHEN bridge IS NOT NULL AND bridge <> '' AND bridge <> 'no' AND bridge <> '0' THEN 'bridge'
+        WHEN tunnel IS NOT NULL AND tunnel <> '' AND tunnel <> 'no' AND tunnel <> '0' THEN 'tunnel'
+        ELSE 'road'
+      END AS "is"
+    FROM
+      planet_osm_merge_line_transportation_gen_z8
+    WHERE
+      zoom_level = 8
+    UNION ALL
+
+    SELECT
+      osm_id,
+      way,
+      layer_transportation_name_to_class(highway, railway, access, osm_id) AS class,
+      z_order,
+      CASE
+        WHEN bridge IS NOT NULL AND bridge <> '' AND bridge <> 'no' AND bridge <> '0' THEN 'bridge'
+        WHEN tunnel IS NOT NULL AND tunnel <> '' AND tunnel <> 'no' AND tunnel <> '0' THEN 'tunnel'
+        ELSE 'road'
+      END AS "is"
+    FROM
+      planet_osm_merge_line_transportation_gen_z9
+    WHERE
+      zoom_level = 9
+    UNION ALL
+
+    SELECT
+      osm_id,
+      way,
+      layer_transportation_name_to_class(highway, railway, access, osm_id) AS class,
+      z_order,
+      CASE
+        WHEN bridge IS NOT NULL AND bridge <> '' AND bridge <> 'no' AND bridge <> '0' THEN 'bridge'
+        WHEN tunnel IS NOT NULL AND tunnel <> '' AND tunnel <> 'no' AND tunnel <> '0' THEN 'tunnel'
+        ELSE 'road'
+      END AS "is"
+    FROM
+      planet_osm_merge_line_transportation_gen_z10
+    WHERE
+      zoom_level = 10
+    UNION ALL
+
+    SELECT
+      osm_id,
+      way,
+      layer_transportation_name_to_class(highway, railway, access, osm_id) AS class,
+      z_order,
+      CASE
+        WHEN bridge IS NOT NULL AND bridge <> '' AND bridge <> 'no' AND bridge <> '0' THEN 'bridge'
+        WHEN tunnel IS NOT NULL AND tunnel <> '' AND tunnel <> 'no' AND tunnel <> '0' THEN 'tunnel'
+        ELSE 'road'
+      END AS "is"
+    FROM
+      planet_osm_merge_line_transportation_gen_z11
+    WHERE
+      zoom_level = 11
+    UNION ALL
+
+    SELECT
+      osm_id,
+      way,
+      layer_transportation_name_to_class(highway, railway, access, osm_id) AS class,
+      z_order,
+      CASE
+        WHEN bridge IS NOT NULL AND bridge <> '' AND bridge <> 'no' AND bridge <> '0' THEN 'bridge'
+        WHEN tunnel IS NOT NULL AND tunnel <> '' AND tunnel <> 'no' AND tunnel <> '0' THEN 'tunnel'
+        ELSE 'road'
+      END AS "is"
+    FROM
+      planet_osm_line
+    WHERE
+      zoom_level = 12
+    UNION ALL
+
+    SELECT
+      osm_id,
+      way,
+      layer_transportation_name_to_class(highway, railway, access, osm_id) AS class,
+      z_order,
+      CASE
+        WHEN bridge IS NOT NULL AND bridge <> '' AND bridge <> 'no' AND bridge <> '0' THEN 'bridge'
+        WHEN tunnel IS NOT NULL AND tunnel <> '' AND tunnel <> 'no' AND tunnel <> '0' THEN 'tunnel'
+        ELSE 'road'
+      END AS "is"
+    FROM
+      planet_osm_line
+    WHERE
+      zoom_level = 13
+    UNION ALL
+
+    SELECT
+      osm_id,
+      way,
+      layer_transportation_name_to_class(highway, railway, access, osm_id) AS class,
+      z_order,
+      CASE
+        WHEN bridge IS NOT NULL AND bridge <> '' AND bridge <> 'no' AND bridge <> '0' THEN 'bridge'
+        WHEN tunnel IS NOT NULL AND tunnel <> '' AND tunnel <> 'no' AND tunnel <> '0' THEN 'tunnel'
+        ELSE 'road'
+      END AS "is"
+    FROM
+      planet_osm_line
+    WHERE
+      zoom_level >= 14
+  ) AS layer_data
+  WHERE
+    way && bbox
+  ORDER BY
+    layer_transportation_priority_score(class, "is", z_order)
   ;
 
 $BODY$;
